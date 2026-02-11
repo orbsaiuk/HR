@@ -1,0 +1,1 @@
+export { jobPositionService } from "./jobPositionService";
