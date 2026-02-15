@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { updateJobPositionStatus } from "@/features/job-positions/services/jobPositionService";
 
 export async function PATCH(request, { params }) {
   try {
+    await resolveOrgContext();
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const { status } = await request.json();
     if (!status || !["draft", "open", "on-hold", "closed"].includes(status)) {
@@ -24,9 +21,10 @@ export async function PATCH(request, { params }) {
     return NextResponse.json(position);
   } catch (error) {
     console.error("Error updating position status:", error);
+    const status = error.status || 500;
     return NextResponse.json(
       { error: error.message || "Failed to update status" },
-      { status: 500 },
+      { status },
     );
   }
 }

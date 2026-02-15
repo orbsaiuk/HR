@@ -1,36 +1,55 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, Users } from "lucide-react";
+import { useState, useMemo } from "react";
 import { useApplicationsList } from "../model/useApplicationsList";
 import { useApplicationActions } from "../model/useApplicationActions";
+import { ApplicationsPageHeader } from "./ApplicationsPageHeader";
+import { ApplicationsStatsBar } from "./ApplicationsStatsBar";
+import { ApplicationsViewToggle } from "./ApplicationsViewToggle";
+import { ApplicationsEmptyState } from "./ApplicationsEmptyState";
 import { ApplicationsTable } from "./ApplicationsTable";
+import { KanbanBoard } from "./KanbanBoard";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export function PositionApplicationsPage({ positionId }) {
+  const [view, setView] = useState("kanban");
   const { applications, loading, error, refetch, setApplications } =
     useApplicationsList(positionId);
   const { updateStatus, deleteApplication } = useApplicationActions();
   const { toast, showToast, hideToast } = useToast();
 
+  const stats = useMemo(() => {
+    if (!applications) return {};
+    return {
+      total: applications.length,
+      new: applications.filter((a) => a.status === "new").length,
+      inProgress: applications.filter((a) =>
+        ["screening", "interview", "offered"].includes(a.status),
+      ).length,
+      hired: applications.filter((a) => a.status === "hired").length,
+      rejected: applications.filter((a) => a.status === "rejected").length,
+    };
+  }, [applications]);
+
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={refetch} />;
 
   const handleStatusChange = async (appId, newStatus) => {
+    // Optimistic update
+    const previous = applications;
+    setApplications(
+      applications.map((a) =>
+        a._id === appId ? { ...a, status: newStatus } : a,
+      ),
+    );
+
+    // Persist in background, revert on failure
     const result = await updateStatus(appId, newStatus);
-    if (result.success) {
-      setApplications(
-        applications.map((a) =>
-          a._id === appId ? { ...a, status: newStatus } : a,
-        ),
-      );
-      showToast(`Application moved to ${newStatus}`, "success");
-    } else {
+    if (!result.success) {
+      setApplications(previous);
       showToast(result.error, "error");
     }
   };
@@ -47,35 +66,38 @@ export function PositionApplicationsPage({ positionId }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href={`/dashboard/positions/${positionId}`}>
-              <ArrowLeft size={20} />
-            </Link>
-          </Button>
-          <div className="flex items-center gap-2">
-            <Users size={22} className="text-blue-500" />
-            <h1 className="text-2xl font-bold text-gray-900">Applications</h1>
-            <Badge variant="secondary">{applications.length}</Badge>
-          </div>
-        </div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <ApplicationsPageHeader
+          positionId={positionId}
+          totalApplications={applications.length}
+        />
+        <ApplicationsViewToggle view={view} onViewChange={setView} />
       </div>
 
-      {/* Table */}
+      {/* Stats Bar */}
+      {applications.length > 0 && <ApplicationsStatsBar stats={stats} />}
+
+      {/* Content */}
       {applications.length === 0 ? (
-        <div className="py-16 text-center text-muted-foreground">
-          No applications yet. Candidates will appear here when they apply.
-        </div>
-      ) : (
-        <ApplicationsTable
+        <ApplicationsEmptyState />
+      ) : view === "kanban" ? (
+        <KanbanBoard
           applications={applications}
           positionId={positionId}
           onStatusChange={handleStatusChange}
           onDelete={handleDelete}
         />
+      ) : (
+        <div className="max-w-5xl">
+          <ApplicationsTable
+            applications={applications}
+            positionId={positionId}
+            onStatusChange={handleStatusChange}
+            onDelete={handleDelete}
+          />
+        </div>
       )}
 
       {toast && (

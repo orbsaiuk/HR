@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import {
   getMessages,
   sendMessage,
@@ -10,9 +11,13 @@ import {
 export async function GET(request, { params }) {
   try {
     const user = await currentUser();
-
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // If team member, validate org context
+    if (user.publicMetadata?.role === "teamMember") {
+      await resolveOrgContext();
     }
 
     const { id: conversationId } = await params;
@@ -21,9 +26,10 @@ export async function GET(request, { params }) {
     return NextResponse.json(messages);
   } catch (error) {
     console.error("Error fetching messages:", error);
+    const status = error.status || 500;
     return NextResponse.json(
       { error: "Failed to fetch messages", details: error.message },
-      { status: 500 },
+      { status },
     );
   }
 }
@@ -32,9 +38,13 @@ export async function GET(request, { params }) {
 export async function POST(request, { params }) {
   try {
     const user = await currentUser();
-
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // If team member, validate org context
+    if (user.publicMetadata?.role === "teamMember") {
+      await resolveOrgContext();
     }
 
     const { id: conversationId } = await params;
@@ -78,9 +88,10 @@ export async function POST(request, { params }) {
     return NextResponse.json(message);
   } catch (error) {
     console.error("Error sending message:", error);
+    const status = error.status || 500;
     return NextResponse.json(
       { error: "Failed to send message", details: error.message },
-      { status: 500 },
+      { status },
     );
   }
 }

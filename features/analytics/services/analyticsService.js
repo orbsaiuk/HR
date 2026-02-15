@@ -1,15 +1,15 @@
 import { client } from '@/sanity/client';
 import { analyticsQueries } from '@/sanity/queries';
 
-export async function getFormAnalytics(formId) {
+export async function getFormAnalytics(formId, orgId) {
     const responses = await client.fetch(
         analyticsQueries.getResponsesByFormId,
-        { formId },
+        { formId, orgId },
     );
 
     const form = await client.fetch(
         analyticsQueries.getFormById,
-        { id: formId },
+        { id: formId, orgId },
     );
 
     const totalResponses = responses.length;

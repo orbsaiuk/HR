@@ -10,11 +10,6 @@ export const API_ENDPOINTS = {
   FORM_PUBLISH: (id) => `/api/forms/${id}/publish`,
   FORM_CLOSE: (id) => `/api/forms/${id}/close`,
 
-  // Responses
-  RESPONSES: "/api/responses",
-  RESPONSE_BY_ID: (id) => `/api/responses/${id}`,
-  FORM_RESPONSES: (formId) => `/api/forms/${formId}/responses`,
-
   // Analytics
   ANALYTICS: "/api/analytics",
   FORM_ANALYTICS: (formId) => `/api/analytics/${formId}`,
@@ -28,12 +23,6 @@ export const API_ENDPOINTS = {
   MESSAGES: (conversationId) => `/api/conversations/${conversationId}/messages`,
   MARK_AS_READ: (conversationId) =>
     `/api/conversations/${conversationId}/mark-read`,
-
-  // User Submissions
-  USER_SUBMISSIONS: "/api/user/submissions",
-  USER_SUBMISSION_BY_ID: (id) => `/api/user/submissions/${id}`,
-  USER_SUBMISSION_MARK_READ: (id) => `/api/user/submissions/${id}/mark-read`,
-  USER_SUBMISSIONS_MARK_ALL_READ: "/api/user/submissions/mark-all-read",
 
   // Team Member Management
   TEAM_MEMBER_INVITES: "/api/team-members/invites",
@@ -53,4 +42,35 @@ export const API_ENDPOINTS = {
   APPLICATION_BY_ID: (id) => `/api/applications/${id}`,
   APPLICATION_STATUS: (id) => `/api/applications/${id}/status`,
   APPLICATION_STATS: "/api/applications/stats",
+
+  // Scorecards
+  SCORECARDS: (applicationId) =>
+    `/api/applications/${applicationId}/scorecards`,
+  SCORECARD_MINE: (applicationId) =>
+    `/api/applications/${applicationId}/scorecards/mine`,
+  SCORECARD_SUMMARY: (applicationId) =>
+    `/api/applications/${applicationId}/scorecards/summary`,
+
+  // Careers (public)
+  CAREERS: "/api/careers",
+  CAREER_BY_ID: (id) => `/api/careers/${id}`,
+  CAREER_FILTERS: "/api/careers/filters",
+  CAREER_APPLY: (id) => `/api/careers/${id}/apply`,
+
+  // Organizations
+  ORGANIZATIONS: "/api/organizations",
+  ORGANIZATION_BY_ID: (id) => `/api/organizations/${id}`,
+  ORGANIZATION_MEMBERS: (id) => `/api/organizations/${id}/members`,
+
+  // Candidate Portal (user)
+  MY_APPLICATIONS: "/api/user/applications",
+  MY_APPLICATION_BY_ID: (id) => `/api/user/applications/${id}`,
+
+  // Evaluation Scorecards
+  SCORECARDS: (applicationId) =>
+    `/api/applications/${applicationId}/scorecards`,
+  SCORECARD_MINE: (applicationId) =>
+    `/api/applications/${applicationId}/scorecards/mine`,
+  SCORECARD_SUMMARY: (applicationId) =>
+    `/api/applications/${applicationId}/scorecards/summary`,
 };

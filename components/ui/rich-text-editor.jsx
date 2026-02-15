@@ -18,6 +18,71 @@ import {
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
+/*  Sanitise pasted HTML                                               */
+/* ------------------------------------------------------------------ */
+
+const ALLOWED_TAGS = new Set([
+  "P", "BR", "B", "STRONG", "I", "EM", "U", "A",
+  "H2", "H3", "H4", "UL", "OL", "LI",
+  "BLOCKQUOTE", "HR", "DIV",
+]);
+
+function sanitizePastedHtml(html) {
+  // Strip HTML comments (<!--StartFragment-->, etc.)
+  let clean = html.replace(/<!--[\s\S]*?-->/g, "");
+
+  // Parse into a temporary DOM element
+  const tmp = document.createElement("div");
+  tmp.innerHTML = clean;
+
+  // Remove <meta>, <style>, <script>, <link> tags
+  tmp.querySelectorAll("meta, style, script, link").forEach((el) => el.remove());
+
+  // Walk all elements: strip data-* and style attributes, unwrap disallowed tags
+  const walker = document.createTreeWalker(tmp, NodeFilter.SHOW_ELEMENT);
+  const toUnwrap = [];
+
+  while (walker.nextNode()) {
+    const el = walker.currentNode;
+
+    // Remove all data-* attributes and style
+    [...el.attributes].forEach((attr) => {
+      if (attr.name.startsWith("data-") || attr.name === "style" || attr.name === "class") {
+        el.removeAttribute(attr.name);
+      }
+    });
+
+    // Collect disallowed tags (will unwrap them, keeping children)
+    if (!ALLOWED_TAGS.has(el.tagName)) {
+      // SPAN with no meaningful content → unwrap
+      toUnwrap.push(el);
+    }
+  }
+
+  // Unwrap disallowed elements (replace with their children)
+  toUnwrap.forEach((el) => {
+    while (el.firstChild) {
+      el.parentNode.insertBefore(el.firstChild, el);
+    }
+    el.remove();
+  });
+
+  // Remove empty elements (no text, no children)
+  tmp.querySelectorAll("*").forEach((el) => {
+    if (
+      !el.textContent.trim() &&
+      !el.querySelector("img, br, hr") &&
+      el.tagName !== "BR" &&
+      el.tagName !== "HR"
+    ) {
+      el.remove();
+    }
+  });
+
+  return tmp.innerHTML.trim();
+}
+
+/* ------------------------------------------------------------------ */
 /*  Toolbar configuration                                              */
 /* ------------------------------------------------------------------ */
 
@@ -151,14 +216,19 @@ const RichTextEditor = React.forwardRef(
       [handleInput],
     );
 
-    // Handle paste — strip formatting to keep things clean
+    // Handle paste — sanitize incoming HTML to keep things clean
     const handlePaste = useCallback(
       (e) => {
         e.preventDefault();
-        const text =
-          e.clipboardData.getData("text/html") ||
-          e.clipboardData.getData("text/plain");
-        document.execCommand("insertHTML", false, text);
+        const html = e.clipboardData.getData("text/html");
+        const plain = e.clipboardData.getData("text/plain");
+
+        if (html) {
+          const sanitized = sanitizePastedHtml(html);
+          document.execCommand("insertHTML", false, sanitized);
+        } else {
+          document.execCommand("insertHTML", false, plain);
+        }
         handleInput();
       },
       [handleInput],
@@ -204,7 +274,7 @@ const RichTextEditor = React.forwardRef(
           onPaste={handlePaste}
           data-placeholder={placeholder}
           className={cn(
-            "rich-editor min-h-[120px] w-full bg-transparent px-3 py-2 text-base text-gray-900 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm rounded-b-md",
+            "rich-editor min-h-30 w-full bg-transparent px-3 py-2 text-base text-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm rounded-b-md",
             "prose prose-sm max-w-none",
             "[&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-3 [&_h2]:mb-1",
             "[&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-2 [&_h3]:mb-1",

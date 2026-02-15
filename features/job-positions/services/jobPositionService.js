@@ -2,19 +2,19 @@ import { client } from "@/sanity/client";
 import { currentUser } from "@clerk/nextjs/server";
 import { jobPositionQueries } from "@/sanity/queries";
 
-export async function getJobPositions(teamMemberId) {
-  return client.fetch(jobPositionQueries.getAll, { teamMemberId });
+export async function getJobPositions(orgId) {
+  return client.fetch(jobPositionQueries.getAll, { orgId });
 }
 
 export async function getJobPositionById(id) {
   return client.fetch(jobPositionQueries.getById, { id });
 }
 
-export async function getJobPositionStats(teamMemberId) {
-  return client.fetch(jobPositionQueries.getStats, { teamMemberId });
+export async function getJobPositionStats(orgId) {
+  return client.fetch(jobPositionQueries.getStats, { orgId });
 }
 
-export async function createJobPosition(input) {
+export async function createJobPosition(input, orgId) {
   const user = await currentUser();
   if (!user) throw new Error("Unauthorized");
 
@@ -27,6 +27,7 @@ export async function createJobPosition(input) {
   const doc = {
     _type: "jobPosition",
     teamMember: { _type: "reference", _ref: teamMember._id },
+    organization: { _type: "reference", _ref: orgId },
     title: input.title,
     department: input.department || "",
     description: input.description || "",

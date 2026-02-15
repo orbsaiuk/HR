@@ -2,16 +2,19 @@ import { client } from "@/sanity/client";
 import { currentUser } from "@clerk/nextjs/server";
 import { formsQueries } from "@/sanity/queries";
 
-export async function getForms(teamMemberId) {
-  const query = formsQueries.getAll(teamMemberId);
-  return client.fetch(query, { teamMemberId });
+export async function getForms(orgId) {
+  return client.fetch(formsQueries.getAll, { orgId });
+}
+
+export async function getFormsByTeamMember(orgId, teamMemberId) {
+  return client.fetch(formsQueries.getByTeamMember, { orgId, teamMemberId });
 }
 
 export async function getFormById(id) {
   return client.fetch(formsQueries.getById, { id });
 }
 
-export async function createForm(input) {
+export async function createForm(input, orgId) {
   const user = await currentUser();
   if (!user) throw new Error("Unauthorized");
 
@@ -25,6 +28,7 @@ export async function createForm(input) {
   return client.create({
     _type: "form",
     teamMember: { _type: "reference", _ref: teamMember._id },
+    organization: { _type: "reference", _ref: orgId },
     ...input,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -63,6 +67,7 @@ export async function deleteForm(id) {
 
 export const formService = {
   getForms,
+  getFormsByTeamMember,
   getFormById,
   createForm,
   updateForm,

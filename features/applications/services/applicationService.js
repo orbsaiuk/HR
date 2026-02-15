@@ -2,10 +2,20 @@ import { client } from "@/sanity/client";
 import { applicationQueries } from "@/sanity/queries";
 
 /**
- * Get all applications for the current recruiter's positions
+ * Get all applications for the organization's positions
  */
-export async function getApplications(teamMemberId) {
-  return client.fetch(applicationQueries.getByTeamMemberId, { teamMemberId });
+export async function getApplications(orgId) {
+  return client.fetch(applicationQueries.getByOrgId, { orgId });
+}
+
+/**
+ * Get applications for a specific recruiter's positions within the org
+ */
+export async function getApplicationsByTeamMember(orgId, teamMemberId) {
+  return client.fetch(applicationQueries.getByTeamMemberId, {
+    orgId,
+    teamMemberId,
+  });
 }
 
 /**
@@ -23,10 +33,10 @@ export async function getApplicationById(id) {
 }
 
 /**
- * Get application stats for the recruiter dashboard
+ * Get application stats for the recruiter dashboard — scoped by org
  */
-export async function getApplicationStats(teamMemberId) {
-  return client.fetch(applicationQueries.getStats, { teamMemberId });
+export async function getApplicationStats(orgId) {
+  return client.fetch(applicationQueries.getStats, { orgId });
 }
 
 /**
@@ -79,6 +89,12 @@ export async function createApplication(input) {
     throw new Error("You have already applied to this position");
   }
 
+  // Fetch the job position to get its organization reference (denormalized)
+  const jobPosition = await client.fetch(
+    `*[_type == "jobPosition" && _id == $id][0]{ organization }`,
+    { id: input.jobPositionId },
+  );
+
   const doc = {
     _type: "application",
     jobPosition: { _type: "reference", _ref: input.jobPositionId },
@@ -93,11 +109,20 @@ export async function createApplication(input) {
     doc.form = { _type: "reference", _ref: input.formId };
   }
 
+  // Denormalize organization reference from the job position for query performance
+  if (jobPosition?.organization?._ref) {
+    doc.organization = {
+      _type: "reference",
+      _ref: jobPosition.organization._ref,
+    };
+  }
+
   return client.create(doc);
 }
 
 export const applicationService = {
   getApplications,
+  getApplicationsByTeamMember,
   getApplicationsByPosition,
   getApplicationById,
   getApplicationStats,

@@ -1,33 +1,18 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
-import { client } from "@/sanity/client";
-import { formsQueries } from "@/sanity/queries";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { getJobPositionStats } from "@/features/job-positions/services/jobPositionService";
 
 export async function GET() {
   try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const teamMember = await client.fetch(formsQueries.getTeamMemberByClerkId, {
-      clerkId: user.id,
-    });
-    if (!teamMember) {
-      return NextResponse.json(
-        { error: "Team member not found" },
-        { status: 404 },
-      );
-    }
-
-    const stats = await getJobPositionStats(teamMember._id);
+    const { orgId } = await resolveOrgContext();
+    const stats = await getJobPositionStats(orgId);
     return NextResponse.json(stats);
   } catch (error) {
     console.error("Error fetching position stats:", error);
+    const status = error.status || 500;
     return NextResponse.json(
-      { error: "Failed to fetch stats" },
-      { status: 500 },
+      { error: error.message || "Failed to fetch stats" },
+      { status },
     );
   }
 }

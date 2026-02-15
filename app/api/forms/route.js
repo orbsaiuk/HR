@@ -1,47 +1,31 @@
 import { NextResponse } from "next/server";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { getForms, createForm } from "@/features/forms/services/formService";
-import { client } from "@/sanity/client";
-import { currentUser } from "@clerk/nextjs/server";
-import { formsQueries } from "@/sanity/queries";
 
 export async function GET() {
   try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Get team member from Sanity
-    const teamMember = await client.fetch(formsQueries.getTeamMemberByClerkId, {
-      clerkId: user.id,
-    });
-
-    if (!teamMember) {
-      return NextResponse.json(
-        { error: "Team member not found" },
-        { status: 404 },
-      );
-    }
-
-    const forms = await getForms(teamMember._id);
+    const { orgId } = await resolveOrgContext();
+    const forms = await getForms(orgId);
     return NextResponse.json(forms);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error("Error fetching forms:", error);
+    const status = error.status || 500;
+    return NextResponse.json({ error: error.message }, { status });
   }
 }
 
 export async function POST(request) {
   try {
+    const { orgId } = await resolveOrgContext();
     const input = await request.json();
-    const form = await createForm(input);
+    const form = await createForm(input, orgId);
     return NextResponse.json(form, { status: 201 });
   } catch (error) {
+    console.error("Error creating form:", error);
+    const status = error.status || 500;
     return NextResponse.json(
-      { error: "Failed to create form" },
-      { status: 500 },
+      { error: error.message || "Failed to create form" },
+      { status },
     );
   }
 }

@@ -1,27 +1,23 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import {
-  isOwner,
-  removeTeamMember,
   getOwnerTeamMember,
+  removeTeamMember,
 } from "@/features/team-member-management/services/teamMemberManagementService";
 
 export async function DELETE(request, { params }) {
   try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { orgId, orgRole } = await resolveOrgContext();
 
-    const ownerCheck = await isOwner(user.id);
-    if (!ownerCheck) {
+    // Only admins can remove team members
+    if (orgRole !== "org:admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const { id } = await params;
 
-    // Prevent owner from removing themselves
-    const owner = await getOwnerTeamMember();
+    // Prevent removing the org owner (first team member)
+    const owner = await getOwnerTeamMember(orgId);
     if (owner && owner._id === id) {
       return NextResponse.json(
         { error: "Cannot remove the account owner" },
@@ -33,9 +29,10 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error removing team member:", error);
+    const status = error.status || 500;
     return NextResponse.json(
-      { error: "Failed to remove team member" },
-      { status: 500 },
+      { error: error.message || "Failed to remove team member" },
+      { status },
     );
   }
 }

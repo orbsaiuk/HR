@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { updateApplicationStatus } from "@/features/applications/services/applicationService";
 
 const VALID_STATUSES = [
@@ -13,11 +13,8 @@ const VALID_STATUSES = [
 
 export async function PATCH(request, { params }) {
   try {
+    await resolveOrgContext();
     const { id } = await params;
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const body = await request.json();
     const { status, notes, rejectionReason, rating } = body;
@@ -39,9 +36,10 @@ export async function PATCH(request, { params }) {
     return NextResponse.json(application);
   } catch (error) {
     console.error("Error updating application status:", error);
+    const status = error.status || 500;
     return NextResponse.json(
       { error: error.message || "Failed to update status" },
-      { status: 500 },
+      { status },
     );
   }
 }

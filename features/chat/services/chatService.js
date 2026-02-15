@@ -1,13 +1,15 @@
 import { client } from "@/sanity/client";
-import { chatQueries } from "@/sanity/queries/chat";
+import { chatQueries } from "@/sanity/queries/messaging";
 
-export async function getConversations(role, userId) {
-  const query =
-    role === "teamMember"
-      ? chatQueries.getConversationsByTeamMember
-      : chatQueries.getConversationsByUser;
-
-  return client.fetch(query, { userId });
+export async function getConversations(role, userId, orgId) {
+  if (role === "teamMember") {
+    return client.fetch(chatQueries.getConversationsByTeamMember, {
+      userId,
+      orgId,
+    });
+  }
+  // User conversations don't need org scoping (users see their own conversations)
+  return client.fetch(chatQueries.getConversationsByUser, { userId });
 }
 
 export async function getConversationById(conversationId) {
@@ -63,6 +65,7 @@ export async function findOrCreateConversation(
   teamMemberId,
   userId,
   relatedFormId,
+  orgId,
 ) {
   // Check if conversation already exists
   const existingConversation = await client.fetch(
@@ -74,8 +77,8 @@ export async function findOrCreateConversation(
     return existingConversation;
   }
 
-  // Create new conversation
-  return client.create({
+  // Create new conversation with organization reference
+  const doc = {
     _type: "conversation",
     teamMember: { _type: "reference", _ref: teamMemberId },
     user: { _type: "reference", _ref: userId },
@@ -84,7 +87,13 @@ export async function findOrCreateConversation(
       : undefined,
     lastMessageAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
-  });
+  };
+
+  if (orgId) {
+    doc.organization = { _type: "reference", _ref: orgId };
+  }
+
+  return client.create(doc);
 }
 
 export async function getTeamMemberIdByClerkId(clerkId) {

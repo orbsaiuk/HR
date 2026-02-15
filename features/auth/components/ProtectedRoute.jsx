@@ -1,29 +1,29 @@
-'use client'
+"use client";
 
-import { useAuth } from '@clerk/nextjs'
-import { useRouter, usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useAuth, useClerk } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 export function ProtectedRoute({ children }) {
-    const { isLoaded, userId } = useAuth()
-    const router = useRouter()
-    const pathname = usePathname()
+  const { isLoaded, userId } = useAuth();
+  const { openSignIn } = useClerk();
+  const pathname = usePathname();
 
-    useEffect(() => {
-        if (isLoaded && !userId) {
-            // Preserve the current URL to redirect back after sign-in
-            const returnUrl = encodeURIComponent(pathname)
-            router.push(`/sign-in?redirect_url=${returnUrl}`)
-        }
-    }, [isLoaded, userId, router, pathname])
-
-    if (!isLoaded) {
-        return <div>Loading...</div>
+  useEffect(() => {
+    if (isLoaded && !userId) {
+      openSignIn({
+        forceRedirectUrl: pathname,
+      });
     }
+  }, [isLoaded, userId, openSignIn, pathname]);
 
-    if (!userId) {
-        return null
-    }
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
 
-    return <>{children}</>
+  if (!userId) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

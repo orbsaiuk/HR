@@ -1,80 +1,90 @@
-import { StructureBuilder } from "sanity/structure";
+/**
+ * Sanity Studio Structure
+ *
+ * Organized by domain for better navigation:
+ * - Team & Users: Team members, users, and invites
+ * - Forms: Form management
+ * - Recruitment: Job positions, applications, and evaluations
+ * - Messaging: Conversations and messages
+ */
 
 export const structure = (S) =>
   S.list()
     .title("Content")
     .items([
-      // Team Members
+      // Team & Users Group
       S.listItem()
-        .title("Team Members")
-        .icon(() => "🧑‍💼")
-        .child(S.documentTypeList("teamMember").title("Team Members")),
+        .title("Team & Users")
+        .icon(() => "👥")
+        .child(
+          S.list()
+            .title("Team & Users")
+            .items([
+              S.listItem()
+                .title("Team Members")
+                .icon(() => "🧑‍💼")
+                .child(S.documentTypeList("teamMember").title("Team Members")),
 
-      // Users
-      S.listItem()
-        .title("Users")
-        .icon(() => "👤")
-        .child(S.documentTypeList("user").title("Users")),
+              S.listItem()
+                .title("Users")
+                .icon(() => "👤")
+                .child(S.documentTypeList("user").title("Users")),
 
-      // Forms
+              S.listItem()
+                .title("Team Invites")
+                .icon(() => "✉️")
+                .child(S.documentTypeList("teamMemberInvite").title("Team Invites")),
+            ])
+        ),
+
+      // Forms Group
       S.listItem()
         .title("Forms")
         .icon(() => "📝")
         .child(S.documentTypeList("form").title("Forms")),
 
-      // Responses organized by Form
+      // Recruitment Group
       S.listItem()
-        .title("Responses by Form")
-        .icon(() => "📊")
+        .title("Recruitment")
+        .icon(() => "💼")
         .child(
-          // First level: List all forms
-          S.documentTypeList("form")
-            .title("Select a Form")
-            .child((formId) =>
-              // Second level: Show responses for selected form
-              S.documentList()
-                .title("Responses")
-                .filter('_type == "response" && form._ref == $formId')
-                .params({ formId })
-                .defaultOrdering([{ field: "submittedAt", direction: "desc" }]),
-            ),
+          S.list()
+            .title("Recruitment")
+            .items([
+              S.listItem()
+                .title("Job Positions")
+                .icon(() => "📋")
+                .child(S.documentTypeList("jobPosition").title("Job Positions")),
+
+              S.listItem()
+                .title("Applications")
+                .icon(() => "📄")
+                .child(S.documentTypeList("application").title("Applications")),
+
+              S.listItem()
+                .title("Evaluation Scorecards")
+                .icon(() => "⭐")
+                .child(S.documentTypeList("evaluationScorecard").title("Evaluation Scorecards")),
+            ])
         ),
 
-      // All Responses (flat list)
+      // Messaging Group
       S.listItem()
-        .title("All Responses")
-        .icon(() => "📋")
-        .child(
-          S.documentTypeList("response")
-            .title("All Responses")
-            .defaultOrdering([{ field: "submittedAt", direction: "desc" }]),
-        ),
-
-      // Conversations
-      S.listItem()
-        .title("Conversations")
+        .title("Messaging")
         .icon(() => "💬")
-        .child(S.documentTypeList("conversation").title("Conversations")),
+        .child(
+          S.list()
+            .title("Messaging")
+            .items([
+              S.listItem()
+                .title("Conversations")
+                .icon(() => "💭")
+                .child(S.documentTypeList("conversation").title("Conversations")),
 
-      // Messages
-      S.listItem()
-        .title("Messages")
-        .icon(() => "✉️")
-        .child(S.documentTypeList("message").title("Messages")),
-
-      // Divider
-      S.divider(),
-
-      // All other document types (if any)
-      ...S.documentTypeListItems().filter(
-        (listItem) =>
-          ![
-            "teamMember",
-            "user",
-            "form",
-            "response",
-            "conversation",
-            "message",
-          ].includes(listItem.getId()),
-      ),
+              S.listItem()
+                .title("Messages")
+                .icon(() => "📩")
+                .child(S.documentTypeList("message").title("Messages")),
+            ])
+        ),
     ]);

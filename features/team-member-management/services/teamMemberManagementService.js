@@ -1,24 +1,24 @@
 import { client } from "@/sanity/client";
 import { teamMemberInviteQueries } from "@/sanity/queries";
 
-export async function getInvites() {
-  return client.fetch(teamMemberInviteQueries.getAllInvites);
+export async function getInvites(orgId) {
+  return client.fetch(teamMemberInviteQueries.getAllInvites, { orgId });
 }
 
-export async function createInvite(email, invitedByTeamMemberId) {
-  // Check for existing invite with this email
+export async function createInvite(email, invitedByTeamMemberId, orgId) {
+  // Check for existing invite with this email in this org
   const existing = await client.fetch(
     teamMemberInviteQueries.getInviteByEmail,
-    { email },
+    { email, orgId },
   );
   if (existing) {
     throw new Error("An invite for this email already exists");
   }
 
-  // Check if email is already a team member
+  // Check if email is already a team member in this org
   const existingTeamMember = await client.fetch(
-    `*[_type == "teamMember" && email == $email][0]`,
-    { email },
+    `*[_type == "teamMember" && email == $email && organization._ref == $orgId][0]`,
+    { email, orgId },
   );
   if (existingTeamMember) {
     throw new Error("A team member with this email already exists");
@@ -28,6 +28,7 @@ export async function createInvite(email, invitedByTeamMemberId) {
     _type: "teamMemberInvite",
     email: email.toLowerCase().trim(),
     status: "pending",
+    organization: { _type: "reference", _ref: orgId },
     invitedBy: {
       _type: "reference",
       _ref: invitedByTeamMemberId,
@@ -40,15 +41,17 @@ export async function deleteInvite(id) {
   return client.delete(id);
 }
 
-export async function getInviteByEmail(email) {
+export async function getInviteByEmail(email, orgId) {
   return client.fetch(teamMemberInviteQueries.getInviteByEmail, {
     email: email.toLowerCase().trim(),
+    orgId,
   });
 }
 
-export async function markInviteJoined(email, teamMemberId) {
+export async function markInviteJoined(email, teamMemberId, orgId) {
   const invite = await client.fetch(teamMemberInviteQueries.getInviteByEmail, {
     email: email.toLowerCase().trim(),
+    orgId,
   });
 
   if (!invite) return null;
@@ -65,18 +68,22 @@ export async function markInviteJoined(email, teamMemberId) {
     .commit();
 }
 
-export async function getOwnerTeamMember() {
-  return client.fetch(teamMemberInviteQueries.getOwnerTeamMember);
+export async function getOwnerTeamMember(orgId) {
+  return client.fetch(teamMemberInviteQueries.getOwnerTeamMember, { orgId });
 }
 
-export async function isOwner(clerkId) {
-  const owner = await client.fetch(teamMemberInviteQueries.getOwnerTeamMember);
+export async function isOwner(clerkId, orgId) {
+  const owner = await client.fetch(teamMemberInviteQueries.getOwnerTeamMember, {
+    orgId,
+  });
   if (!owner) return false;
   return owner.clerkId === clerkId;
 }
 
-export async function getAllTeamMembers() {
-  return client.fetch(teamMemberInviteQueries.getAllTeamMembersManaged);
+export async function getAllTeamMembers(orgId) {
+  return client.fetch(teamMemberInviteQueries.getAllTeamMembersManaged, {
+    orgId,
+  });
 }
 
 export async function removeTeamMember(id) {

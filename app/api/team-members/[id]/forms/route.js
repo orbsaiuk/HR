@@ -5,17 +5,19 @@ export async function GET(request, { params }) {
   try {
     const { id } = await params;
 
-    // Get published forms for this team member
+    // Get published forms for this team member (public-facing, no org auth needed)
+    // But include organization info for multi-tenant display
     const forms = await client.fetch(
       `*[_type == "form" && teamMember._ref == $teamMemberId && status == "published"] | order(updatedAt desc) {
-                _id,
-                title,
-                description,
-                status,
-                "responseCount": count(*[_type == "response" && form._ref == ^._id]),
-                createdAt,
-                updatedAt
-            }`,
+        _id,
+        title,
+        description,
+        status,
+        "responseCount": count(*[_type == "response" && form._ref == ^._id]),
+        "organizationName": organization->name,
+        createdAt,
+        updatedAt
+      }`,
       { teamMemberId: id },
     );
 

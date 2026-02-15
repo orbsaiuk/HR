@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
-import {
-  isOwner,
-  deleteInvite,
-} from "@/features/team-member-management/services/teamMemberManagementService";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { deleteInvite } from "@/features/team-member-management/services/teamMemberManagementService";
 
 export async function DELETE(request, { params }) {
   try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { orgRole } = await resolveOrgContext();
 
-    const ownerCheck = await isOwner(user.id);
-    if (!ownerCheck) {
+    // Only admins can delete invites
+    if (orgRole !== "org:admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -22,9 +16,10 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting invite:", error);
+    const status = error.status || 500;
     return NextResponse.json(
-      { error: "Failed to delete invite" },
-      { status: 500 },
+      { error: error.message || "Failed to delete invite" },
+      { status },
     );
   }
 }

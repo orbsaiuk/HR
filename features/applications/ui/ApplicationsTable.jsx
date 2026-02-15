@@ -70,28 +70,50 @@ export function ApplicationsTable({
     );
   };
 
+  const statusCounts = STATUS_OPTIONS.reduce(
+    (acc, s) => {
+      acc[s] = applications.filter((a) => a.status === s).length;
+      return acc;
+    },
+    { all: applications.length },
+  );
+
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3">
         <Input
-          placeholder="Search applicants..."
+          placeholder="Search by name or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="sm:max-w-xs"
+          className="max-w-sm"
         />
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="flex h-9 w-full sm:w-48 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        >
-          <option value="all">All statuses</option>
-          {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </option>
-          ))}
-        </select>
+        <div className="flex flex-wrap gap-1.5">
+          {["all", ...STATUS_OPTIONS].map((s) => {
+            const isActive = statusFilter === s;
+            const count = s === "all" ? statusCounts.all : statusCounts[s] || 0;
+            return (
+              <button
+                key={s}
+                onClick={() => setStatusFilter(s)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${
+                  isActive
+                    ? "bg-gray-900 text-white border-gray-900"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+                <span
+                  className={`text-[10px] font-bold ${
+                    isActive ? "text-gray-300" : "text-muted-foreground"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Table */}

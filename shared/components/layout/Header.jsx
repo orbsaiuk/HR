@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useAuth } from "@/features/auth/hooks/useAuth.js";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { MessageSquare } from "lucide-react";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
-import { SubmissionsDropdown } from "@/features/user-submissions";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
-  const { isSignedIn, isTeamMember } = useAuth();
-  const { unreadCount } = useUnreadCount(isSignedIn && !isTeamMember);
+  const { isSignedIn, isTeamMember, isUser, isUserLoaded } = useAuth();
+  const { unreadCount } = useUnreadCount(isSignedIn && isUser);
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -22,14 +22,16 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center gap-6">
+          {/* Public links — visible to everyone */}
           <Link
-            href="/team-members"
+            href="/careers"
             className="text-gray-600 hover:text-gray-900 transition-colors"
           >
-            Team Members
+            Careers
           </Link>
 
-          {isSignedIn && isTeamMember && (
+          {/* Team member links */}
+          {isSignedIn && isUserLoaded && isTeamMember && (
             <Link
               href="/dashboard"
               className="text-gray-600 hover:text-gray-900 transition-colors"
@@ -38,9 +40,15 @@ export function Header() {
             </Link>
           )}
 
-          {isSignedIn && !isTeamMember && (
+          {/* Regular user links */}
+          {isSignedIn && isUserLoaded && isUser && (
             <>
-              <SubmissionsDropdown />
+              <Link
+                href="/my-applications"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                My Applications
+              </Link>
               <Link
                 href="/messages"
                 className="relative text-gray-600 hover:text-gray-900 transition-colors p-2"
@@ -48,11 +56,23 @@ export function Header() {
               >
                 <MessageSquare size={24} />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5">
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-5 h-5 flex items-center justify-center px-1.5">
                     {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 )}
               </Link>
+            </>
+          )}
+
+          {/* Auth buttons */}
+          {!isSignedIn && (
+            <>
+              <SignInButton mode="modal">
+                <Button variant="outline">Sign In</Button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <Button>Sign Up</Button>
+              </SignUpButton>
             </>
           )}
 

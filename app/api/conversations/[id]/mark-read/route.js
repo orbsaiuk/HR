@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { resolveOrgContext } from "@/shared/lib/orgContext";
 import {
   markAsRead,
   getConversationById,
@@ -9,9 +10,13 @@ import {
 export async function PATCH(request, { params }) {
   try {
     const user = await currentUser();
-
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // If team member, validate org context
+    if (user.publicMetadata?.role === "teamMember") {
+      await resolveOrgContext();
     }
 
     const { id: conversationId } = await params;
@@ -38,9 +43,10 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error marking messages as read:", error);
+    const status = error.status || 500;
     return NextResponse.json(
       { error: "Failed to mark messages as read", details: error.message },
-      { status: 500 },
+      { status },
     );
   }
 }
