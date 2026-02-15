@@ -1,5 +1,8 @@
 import { client, clientRead } from "@/sanity/client";
-import { careerQueries, applicationQueries } from "@/sanity/queries/recruitment";
+import {
+  careerQueries,
+  applicationQueries,
+} from "@/sanity/queries/recruitment";
 
 /**
  * Get all open positions for the public careers page.

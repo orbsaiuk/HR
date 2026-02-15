@@ -12,7 +12,7 @@ export async function GET(request, { params }) {
     if (!position) {
       return NextResponse.json(
         { error: "Position not found or no longer open" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -21,7 +21,7 @@ export async function GET(request, { params }) {
     console.error("GET /api/careers/[id] error:", error);
     return NextResponse.json(
       { error: "Failed to fetch position" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

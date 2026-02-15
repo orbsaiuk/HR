@@ -16,7 +16,7 @@ export async function GET() {
     console.error("GET /api/careers/filters error:", error);
     return NextResponse.json(
       { error: "Failed to fetch filters" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

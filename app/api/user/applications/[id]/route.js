@@ -18,25 +18,25 @@ export async function GET(request, { params }) {
     // Look up Sanity user by Clerk ID
     const sanityUser = await client.fetch(
       `*[_type == "user" && clerkId == $clerkId][0]{ _id }`,
-      { clerkId: user.id }
+      { clerkId: user.id },
     );
 
     if (!sanityUser) {
       return NextResponse.json(
         { error: "Application not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     const application = await candidatePortalService.getUserApplicationById(
       id,
-      sanityUser._id
+      sanityUser._id,
     );
 
     if (!application) {
       return NextResponse.json(
         { error: "Application not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -45,7 +45,7 @@ export async function GET(request, { params }) {
     console.error("GET /api/user/applications/[id] error:", error);
     return NextResponse.json(
       { error: "Failed to fetch application" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

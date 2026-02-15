@@ -53,7 +53,10 @@ export function CareersFilters({
         </div>
 
         {/* Department */}
-        <Select value={department || "all"} onValueChange={(v) => onDepartmentChange(v === "all" ? "" : v)}>
+        <Select
+          value={department || "all"}
+          onValueChange={(v) => onDepartmentChange(v === "all" ? "" : v)}
+        >
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="All Departments" />
           </SelectTrigger>
@@ -68,7 +71,10 @@ export function CareersFilters({
         </Select>
 
         {/* Location */}
-        <Select value={location || "all"} onValueChange={(v) => onLocationChange(v === "all" ? "" : v)}>
+        <Select
+          value={location || "all"}
+          onValueChange={(v) => onLocationChange(v === "all" ? "" : v)}
+        >
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="All Locations" />
           </SelectTrigger>
@@ -83,7 +89,10 @@ export function CareersFilters({
         </Select>
 
         {/* Employment Type */}
-        <Select value={type || "all"} onValueChange={(v) => onTypeChange(v === "all" ? "" : v)}>
+        <Select
+          value={type || "all"}
+          onValueChange={(v) => onTypeChange(v === "all" ? "" : v)}
+        >
           <SelectTrigger className="w-full md:w-[160px]">
             <SelectValue placeholder="All Types" />
           </SelectTrigger>

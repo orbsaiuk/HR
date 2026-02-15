@@ -22,9 +22,23 @@ import { cn } from "@/lib/utils";
 /* ------------------------------------------------------------------ */
 
 const ALLOWED_TAGS = new Set([
-  "P", "BR", "B", "STRONG", "I", "EM", "U", "A",
-  "H2", "H3", "H4", "UL", "OL", "LI",
-  "BLOCKQUOTE", "HR", "DIV",
+  "P",
+  "BR",
+  "B",
+  "STRONG",
+  "I",
+  "EM",
+  "U",
+  "A",
+  "H2",
+  "H3",
+  "H4",
+  "UL",
+  "OL",
+  "LI",
+  "BLOCKQUOTE",
+  "HR",
+  "DIV",
 ]);
 
 function sanitizePastedHtml(html) {
@@ -36,7 +50,9 @@ function sanitizePastedHtml(html) {
   tmp.innerHTML = clean;
 
   // Remove <meta>, <style>, <script>, <link> tags
-  tmp.querySelectorAll("meta, style, script, link").forEach((el) => el.remove());
+  tmp
+    .querySelectorAll("meta, style, script, link")
+    .forEach((el) => el.remove());
 
   // Walk all elements: strip data-* and style attributes, unwrap disallowed tags
   const walker = document.createTreeWalker(tmp, NodeFilter.SHOW_ELEMENT);
@@ -47,7 +63,11 @@ function sanitizePastedHtml(html) {
 
     // Remove all data-* attributes and style
     [...el.attributes].forEach((attr) => {
-      if (attr.name.startsWith("data-") || attr.name === "style" || attr.name === "class") {
+      if (
+        attr.name.startsWith("data-") ||
+        attr.name === "style" ||
+        attr.name === "class"
+      ) {
         el.removeAttribute(attr.name);
       }
     });

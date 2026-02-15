@@ -16,7 +16,7 @@ export async function GET() {
     // Look up Sanity user by Clerk ID
     const sanityUser = await client.fetch(
       `*[_type == "user" && clerkId == $clerkId][0]{ _id }`,
-      { clerkId: user.id }
+      { clerkId: user.id },
     );
 
     if (!sanityUser) {
@@ -24,7 +24,7 @@ export async function GET() {
     }
 
     const applications = await candidatePortalService.getUserApplications(
-      sanityUser._id
+      sanityUser._id,
     );
 
     return NextResponse.json(applications);
@@ -32,7 +32,7 @@ export async function GET() {
     console.error("GET /api/user/applications error:", error);
     return NextResponse.json(
       { error: "Failed to fetch applications" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

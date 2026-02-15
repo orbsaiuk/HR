@@ -22,19 +22,19 @@ export async function GET(request) {
           p.title?.toLowerCase().includes(q) ||
           p.department?.toLowerCase().includes(q) ||
           p.description?.toLowerCase().includes(q) ||
-          p.location?.toLowerCase().includes(q)
+          p.location?.toLowerCase().includes(q),
       );
     }
 
     if (department) {
       positions = positions.filter(
-        (p) => p.department?.toLowerCase() === department.toLowerCase()
+        (p) => p.department?.toLowerCase() === department.toLowerCase(),
       );
     }
 
     if (location) {
       positions = positions.filter(
-        (p) => p.location?.toLowerCase() === location.toLowerCase()
+        (p) => p.location?.toLowerCase() === location.toLowerCase(),
       );
     }
 
@@ -47,7 +47,7 @@ export async function GET(request) {
     console.error("GET /api/careers error:", error);
     return NextResponse.json(
       { error: "Failed to fetch positions" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

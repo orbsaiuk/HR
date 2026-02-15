@@ -36,14 +36,8 @@ const STATUS_OPTIONS = [
 ];
 
 export function MyApplicationsPage() {
-  const {
-    applications,
-    stats,
-    loading,
-    error,
-    statusFilter,
-    setStatusFilter,
-  } = useMyApplications();
+  const { applications, stats, loading, error, statusFilter, setStatusFilter } =
+    useMyApplications();
 
   if (loading) return <Loading fullPage />;
   if (error) return <Error message={error} />;
@@ -52,7 +46,9 @@ export function MyApplicationsPage() {
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">My Applications</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            My Applications
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Track and manage your job applications
           </p>
