@@ -62,6 +62,11 @@ export const API_ENDPOINTS = {
   ORGANIZATION_BY_ID: (id) => `/api/organizations/${id}`,
   ORGANIZATION_MEMBERS: (id) => `/api/organizations/${id}/members`,
 
+  // User Profile
+  USER_PROFILE: "/api/user/profile",
+  USER_PROFILE_RESUME: "/api/user/profile/resume",
+  USER_PROFILE_COMPLETENESS: "/api/user/profile/completeness",
+
   // Candidate Portal (user)
   MY_APPLICATIONS: "/api/user/applications",
   MY_APPLICATION_BY_ID: (id) => `/api/user/applications/${id}`,
