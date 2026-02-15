@@ -41,6 +41,23 @@ export function useCareerApplication(positionId) {
     }
   }
 
+  async function submitProfileApplication() {
+    try {
+      setSubmitting(true);
+      setError(null);
+      await careersApi.apply(positionId, {});
+      setSubmitted(true);
+    } catch (err) {
+      if (err.message?.includes("already applied") || err.status === 409) {
+        setAlreadyApplied(true);
+      } else {
+        setError(err.message || "Failed to submit application");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   function goBack() {
     router.push(`/careers/${positionId}`);
   }
@@ -56,6 +73,7 @@ export function useCareerApplication(positionId) {
     checkingApplied,
     error,
     submitApplication,
+    submitProfileApplication,
     checkAlreadyApplied,
     goBack,
     goToCareers,

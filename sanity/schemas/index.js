@@ -1,12 +1,3 @@
-/**
- * Sanity Schema Types
- *
- * Schemas are organized by domain for better maintainability:
- * - users: User, TeamMember, TeamMemberInvite
- * - forms: Form, FormField
- * - messaging: Conversation, Message
- * - recruitment: JobPosition, Application, EvaluationScorecard, ScorecardCriterion
- */
 
 // Organization schemas
 import organizationSchemas from "./organizations";
@@ -37,7 +28,7 @@ export const schema = {
 };
 
 // Re-export individual schemas for convenience
-export { organization } from "./organizations";
+export { organization, organizationRequest } from "./organizations";
 export { user, teamMember, teamMemberInvite } from "./users";
 export { form, formField } from "./forms";
 export { conversation, message } from "./messaging";

@@ -36,6 +36,16 @@ export function PositionReviewSummary({ formData }) {
           </p>
         </div>
         <div>
+          <p className="font-medium">Application Method</p>
+          <p className="text-muted-foreground">
+            {formData.applicationMethod === "profile"
+              ? "Apply with Profile"
+              : formData.applicationMethod === "both"
+                ? "Both — Profile + Form"
+                : "Apply with Form"}
+          </p>
+        </div>
+        <div>
           <p className="font-medium">Application Deadline</p>
           <p className="text-muted-foreground">
             {formData.deadline || "Not set"}

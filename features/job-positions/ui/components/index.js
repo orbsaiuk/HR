@@ -10,3 +10,4 @@ export { PositionDetailsCard } from "./PositionDetailsCard";
 export { PositionStepProgress } from "./PositionStepProgress";
 export { PositionStepActions } from "./PositionStepActions";
 export { PositionReviewSummary } from "./PositionReviewSummary";
+export { ApplicationMethodSelector } from "./ApplicationMethodSelector";

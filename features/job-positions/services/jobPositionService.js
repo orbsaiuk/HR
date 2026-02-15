@@ -37,6 +37,7 @@ export async function createJobPosition(input, orgId) {
     salaryMin: input.salaryMin || null,
     salaryMax: input.salaryMax || null,
     currency: input.currency || "USD",
+    applicationMethod: input.applicationMethod || "form",
     status: input.status || "draft",
     deadline: input.deadline || null,
     createdAt: new Date().toISOString(),

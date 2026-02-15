@@ -118,11 +118,26 @@ export default {
             type: "datetime",
         },
         {
+            name: "applicationMethod",
+            title: "Application Method",
+            type: "string",
+            options: {
+                list: [
+                    { title: "Apply with Profile", value: "profile" },
+                    { title: "Apply with Form", value: "form" },
+                    { title: "Both - Profile + Form", value: "both" },
+                ],
+            },
+            initialValue: "form",
+            description: "How applicants should apply to this position",
+        },
+        {
             name: "form",
             title: "Application Form",
             type: "reference",
             to: [{ type: "form" }],
             description: "The application form linked to this position",
+            hidden: ({ parent }) => parent?.applicationMethod === "profile",
         },
         {
             name: "createdAt",

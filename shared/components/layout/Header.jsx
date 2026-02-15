@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/features/auth/hooks/useAuth.js";
 import { UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
-import { MessageSquare } from "lucide-react";
+import { Building2, MessageSquare, User } from "lucide-react";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
 import { Button } from "@/components/ui/button";
 
@@ -30,6 +30,17 @@ export function Header() {
             Careers
           </Link>
 
+          {/* Register as Organization — visible to signed-in non-team-member users */}
+          {isSignedIn && isUserLoaded && isUser && !isTeamMember && (
+            <Link
+              href="/register-organization"
+              className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1"
+            >
+              <Building2 size={16} />
+              Register Organization
+            </Link>
+          )}
+
           {/* Team member links */}
           {isSignedIn && isUserLoaded && isTeamMember && (
             <Link
@@ -43,6 +54,13 @@ export function Header() {
           {/* Regular user links */}
           {isSignedIn && isUserLoaded && isUser && (
             <>
+              <Link
+                href="/user/profile"
+                className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1"
+              >
+                <User size={16} />
+                My Profile
+              </Link>
               <Link
                 href="/my-applications"
                 className="text-gray-600 hover:text-gray-900 transition-colors"

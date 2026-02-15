@@ -7,6 +7,7 @@ import { useApplicationActions } from "../model/useApplicationActions";
 import { ApplicationDetailHeader } from "./ApplicationDetailHeader";
 import { ApplicantInfoCard } from "./ApplicantInfoCard";
 import { ApplicationAnswersCard } from "./ApplicationAnswersCard";
+import { ProfileSnapshotSection } from "./components/profile-snapshot/ProfileSnapshotSection";
 import { PositionInfoCard } from "./PositionInfoCard";
 import { StatusActionsCard } from "./StatusActionsCard";
 import { RatingAndNotesCard } from "./RatingAndNotesCard";
@@ -85,7 +86,8 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
   if (error) return <Error message={error} />;
   if (!application) return <Error message="Application not found" />;
 
-  const { applicant, jobPosition, answers, status, appliedAt } = application;
+  const { applicant, jobPosition, answers, profileSnapshot, status, appliedAt } =
+    application;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -102,6 +104,15 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <ApplicantInfoCard name={applicant?.name} email={applicant?.email} />
+
+          {profileSnapshot && (
+            <ProfileSnapshotSection
+              profileSnapshot={profileSnapshot}
+              applicantName={applicant?.name}
+              applicantEmail={applicant?.email}
+            />
+          )}
+
           <ApplicationAnswersCard answers={answers} />
 
           {/* Evaluation Scorecards */}

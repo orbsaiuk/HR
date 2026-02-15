@@ -77,6 +77,7 @@ export const applicationQueries = {
         notes,
         rejectionReason,
         answers,
+        profileSnapshot,
         appliedAt,
         updatedAt,
         "applicant": applicant->{

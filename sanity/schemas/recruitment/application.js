@@ -135,6 +135,62 @@ export default {
             ],
         },
         {
+            name: "profileSnapshot",
+            title: "Profile Snapshot",
+            type: "object",
+            description: "Copy of applicant profile at time of application",
+            fields: [
+                { name: "headline", title: "Headline", type: "string" },
+                { name: "bio", title: "Bio", type: "text" },
+                { name: "phone", title: "Phone", type: "string" },
+                { name: "location", title: "Location", type: "string" },
+                { name: "resumeUrl", title: "Resume URL", type: "url" },
+                {
+                    name: "skills",
+                    title: "Skills",
+                    type: "array",
+                    of: [{ type: "string" }],
+                },
+                { name: "linkedinUrl", title: "LinkedIn", type: "url" },
+                { name: "portfolioUrl", title: "Portfolio", type: "url" },
+                {
+                    name: "workExperience",
+                    title: "Work Experience",
+                    type: "array",
+                    of: [
+                        {
+                            type: "object",
+                            fields: [
+                                { name: "company", title: "Company", type: "string" },
+                                { name: "title", title: "Title", type: "string" },
+                                { name: "startDate", title: "Start Date", type: "date" },
+                                { name: "endDate", title: "End Date", type: "date" },
+                                { name: "isCurrent", title: "Is Current", type: "boolean" },
+                                { name: "description", title: "Description", type: "text" },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    name: "education",
+                    title: "Education",
+                    type: "array",
+                    of: [
+                        {
+                            type: "object",
+                            fields: [
+                                { name: "institution", title: "Institution", type: "string" },
+                                { name: "degree", title: "Degree", type: "string" },
+                                { name: "fieldOfStudy", title: "Field of Study", type: "string" },
+                                { name: "startDate", title: "Start Date", type: "date" },
+                                { name: "endDate", title: "End Date", type: "date" },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
             name: "appliedAt",
             title: "Applied At",
             type: "datetime",

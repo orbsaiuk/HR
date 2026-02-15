@@ -2,6 +2,8 @@
  * Sanity Studio Structure
  *
  * Organized by domain for better navigation:
+ * - Platform Admin: Organization requests (pending/approved/rejected)
+ * - Organizations: All organizations
  * - Team & Users: Team members, users, and invites
  * - Forms: Form management
  * - Recruitment: Job positions, applications, and evaluations
@@ -12,6 +14,69 @@ export const structure = (S) =>
   S.list()
     .title("Content")
     .items([
+      // Platform Admin Group
+      S.listItem()
+        .title("Platform Admin")
+        .icon(() => "🛡️")
+        .child(
+          S.list()
+            .title("Platform Admin")
+            .items([
+              S.listItem()
+                .title("Organization Requests")
+                .icon(() => "📋")
+                .child(
+                  S.list()
+                    .title("Organization Requests")
+                    .items([
+                      S.listItem()
+                        .title("Pending Requests")
+                        .icon(() => "⏳")
+                        .child(
+                          S.documentTypeList("organizationRequest")
+                            .title("Pending Requests")
+                            .filter('_type == "organizationRequest" && status == "pending"'),
+                        ),
+
+                      S.listItem()
+                        .title("Approved Requests")
+                        .icon(() => "✅")
+                        .child(
+                          S.documentTypeList("organizationRequest")
+                            .title("Approved Requests")
+                            .filter('_type == "organizationRequest" && status == "approved"'),
+                        ),
+
+                      S.listItem()
+                        .title("Rejected Requests")
+                        .icon(() => "❌")
+                        .child(
+                          S.documentTypeList("organizationRequest")
+                            .title("Rejected Requests")
+                            .filter('_type == "organizationRequest" && status == "rejected"'),
+                        ),
+
+                      S.divider(),
+
+                      S.listItem()
+                        .title("All Requests")
+                        .icon(() => "📄")
+                        .child(
+                          S.documentTypeList("organizationRequest")
+                            .title("All Organization Requests"),
+                        ),
+                    ]),
+                ),
+
+              S.listItem()
+                .title("All Organizations")
+                .icon(() => "🏢")
+                .child(S.documentTypeList("organization").title("Organizations")),
+            ]),
+        ),
+
+      S.divider(),
+
       // Team & Users Group
       S.listItem()
         .title("Team & Users")

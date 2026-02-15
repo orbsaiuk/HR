@@ -62,6 +62,12 @@ export const API_ENDPOINTS = {
   ORGANIZATION_BY_ID: (id) => `/api/organizations/${id}`,
   ORGANIZATION_MEMBERS: (id) => `/api/organizations/${id}/members`,
 
+  // Organization Requests
+  ORG_REQUESTS: "/api/organization-requests",
+  ORG_REQUEST_BY_ID: (id) => `/api/organization-requests/${id}`,
+  ORG_REQUEST_APPROVE: (id) => `/api/organization-requests/${id}/approve`,
+  ORG_REQUEST_REJECT: (id) => `/api/organization-requests/${id}/reject`,
+
   // User Profile
   USER_PROFILE: "/api/user/profile",
   USER_PROFILE_RESUME: "/api/user/profile/resume",

@@ -1,5 +1,6 @@
 import organization from "./organization";
+import organizationRequest from "./organizationRequest";
 
-export { organization };
+export { organization, organizationRequest };
 
-export default [organization];
+export default [organization, organizationRequest];

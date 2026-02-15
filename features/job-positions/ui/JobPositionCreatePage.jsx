@@ -13,6 +13,7 @@ import {
   PositionStepProgress,
   PositionStepActions,
   PositionReviewSummary,
+  ApplicationMethodSelector,
 } from "./components";
 import { ApplicationFormSection } from "./ApplicationFormSection";
 
@@ -42,6 +43,7 @@ export function JobPositionCreatePage() {
     status: "draft",
     deadline: "",
     formId: "",
+    applicationMethod: "form",
   });
 
   // Application form section state
@@ -138,20 +140,41 @@ export function JobPositionCreatePage() {
         )}
 
         {currentStep === 2 && (
-          <ApplicationFormSection
-            formId={formData.formId}
-            onFormIdChange={(id) =>
-              setFormData((prev) => ({ ...prev, formId: id }))
-            }
-            newForm={newForm}
-            onNewFormChange={setNewForm}
-            mode={formMode}
-            onModeChange={setFormMode}
-            deadline={formData.deadline}
-            onDeadlineChange={(val) =>
-              setFormData((prev) => ({ ...prev, deadline: val }))
-            }
-          />
+          <div className="space-y-6">
+            <ApplicationMethodSelector
+              value={formData.applicationMethod}
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, applicationMethod: val }))
+              }
+            />
+
+            {(formData.applicationMethod === "form" ||
+              formData.applicationMethod === "both") && (
+                <ApplicationFormSection
+                  formId={formData.formId}
+                  onFormIdChange={(id) =>
+                    setFormData((prev) => ({ ...prev, formId: id }))
+                  }
+                  newForm={newForm}
+                  onNewFormChange={setNewForm}
+                  mode={formMode}
+                  onModeChange={setFormMode}
+                  deadline={formData.deadline}
+                  onDeadlineChange={(val) =>
+                    setFormData((prev) => ({ ...prev, deadline: val }))
+                  }
+                />
+              )}
+
+            {formData.applicationMethod === "profile" && (
+              <div className="rounded-lg border border-dashed border-gray-300 p-6 bg-gray-50/50 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Applicants will submit their user profile when applying.
+                  No application form is needed.
+                </p>
+              </div>
+            )}
+          </div>
         )}
 
         {currentStep === 3 && <PositionReviewSummary formData={formData} />}

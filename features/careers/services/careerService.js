@@ -69,6 +69,10 @@ export async function submitApplication(input) {
     doc.form = { _type: "reference", _ref: input.formId };
   }
 
+  if (input.profileSnapshot) {
+    doc.profileSnapshot = input.profileSnapshot;
+  }
+
   return client.create(doc);
 }
 

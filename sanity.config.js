@@ -3,6 +3,8 @@ import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemas";
 import { structure } from "./sanity/structure";
+import { approveOrgRequestAction } from "./sanity/actions/approveOrgRequestAction";
+import { rejectOrgRequestAction } from "./sanity/actions/rejectOrgRequestAction";
 
 export default defineConfig({
     name: "default",
@@ -18,5 +20,17 @@ export default defineConfig({
     ],
     schema: {
         types: schemaTypes,
+    },
+    document: {
+        actions: (prev, context) => {
+            if (context.schemaType === "organizationRequest") {
+                return [
+                    approveOrgRequestAction,
+                    rejectOrgRequestAction,
+                    ...prev,
+                ];
+            }
+            return prev;
+        },
     },
 });

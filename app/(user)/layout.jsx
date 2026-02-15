@@ -1,6 +1,7 @@
 import { Header } from "@/shared/components/layout/Header.jsx";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute.jsx";
 import { SyncUser } from "@/features/auth/components/SyncUser.jsx";
+import { ProfileCompletionBanner } from "@/features/user-profile";
 
 export default function UserLayout({ children }) {
   return (
@@ -8,7 +9,10 @@ export default function UserLayout({ children }) {
       <SyncUser>
         <div className="min-h-screen bg-gray-50">
           <Header />
-          <main className="container mx-auto px-4 py-8">{children}</main>
+          <main className="container mx-auto px-4 py-8">
+            <ProfileCompletionBanner />
+            {children}
+          </main>
         </div>
       </SyncUser>
     </ProtectedRoute>

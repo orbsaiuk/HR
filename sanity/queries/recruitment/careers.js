@@ -15,6 +15,7 @@ export const careerQueries = {
     salaryMax,
     currency,
     deadline,
+    applicationMethod,
     createdAt,
     "teamMember": teamMember->{
       _id,
@@ -42,6 +43,7 @@ export const careerQueries = {
     salaryMax,
     currency,
     deadline,
+    applicationMethod,
     createdAt,
     "teamMember": teamMember->{
       _id,
