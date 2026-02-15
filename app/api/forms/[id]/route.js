@@ -4,10 +4,10 @@ import {
   getFormById,
   updateForm,
   deleteForm,
+  getUserByClerkId,
+  getExistingResponse,
 } from "@/features/forms/services/formService";
-import { client } from "@/sanity/client";
 import { currentUser } from "@clerk/nextjs/server";
-import { formsQueries } from "@/sanity/queries";
 
 export async function GET(request, { params }) {
   try {
@@ -20,15 +20,10 @@ export async function GET(request, { params }) {
     // Check if current user has already submitted (for public form view)
     const user = await currentUser();
     if (user) {
-      const sanityUser = await client.fetch(formsQueries.getUserByClerkId, {
-        clerkId: user.id,
-      });
+      const sanityUser = await getUserByClerkId(user.id);
 
       if (sanityUser) {
-        const existingResponse = await client.fetch(
-          formsQueries.checkUserResponse,
-          { formId: id, userId: sanityUser._id },
-        );
+        const existingResponse = await getExistingResponse(id, sanityUser._id);
         form.userHasSubmitted = !!existingResponse;
       }
     }

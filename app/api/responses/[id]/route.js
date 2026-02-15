@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { responsesQueries } from "@/sanity/queries/forms";
+import { getResponseById } from "@/features/responses/services/responseService";
 import { client } from "@/sanity/client";
 
 export async function GET(request, { params }) {
   try {
     await resolveOrgContext();
     const { id } = await params;
-    const response = await client.fetch(responsesQueries.getById, { id });
+    const response = await getResponseById(id);
 
     if (!response) {
       return NextResponse.json(

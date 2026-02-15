@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { responsesQueries } from "@/sanity/queries/forms";
-import { client } from "@/sanity/client";
+import { getResponsesByFormId } from "@/features/responses/services/responseService";
 
 export async function GET(request) {
   try {
@@ -16,10 +15,7 @@ export async function GET(request) {
       );
     }
 
-    const responses = await client.fetch(responsesQueries.getByFormId, {
-      formId,
-      orgId,
-    });
+    const responses = await getResponsesByFormId(formId);
     return NextResponse.json(responses);
   } catch (error) {
     console.error("Error fetching responses:", error);

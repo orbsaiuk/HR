@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { client } from "@/sanity/client";
+import { getUserByClerkId } from "@/features/auth/services/userService";
 import { careerService } from "@/features/careers/services/careerService";
 
 /**
@@ -21,10 +22,7 @@ export async function POST(request, { params }) {
     const { answers, formId } = body;
 
     // Look up Sanity user by Clerk ID
-    const sanityUser = await client.fetch(
-      `*[_type == "user" && clerkId == $clerkId][0]{ _id }`,
-      { clerkId: user.id },
-    );
+    const sanityUser = await getUserByClerkId(user.id);
 
     if (!sanityUser) {
       return NextResponse.json(
@@ -36,10 +34,9 @@ export async function POST(request, { params }) {
     // Fetch the form to get field metadata for structuring answers
     let processedAnswers = [];
     if (formId && answers && typeof answers === "object") {
-      const form = await client.fetch(
-        `*[_type == "form" && _id == $formId][0]{ fields }`,
-        { formId: formId },
-      );
+      const { getFormFields } =
+        await import("@/features/forms/services/formService");
+      const form = await getFormFields(formId);
 
       processedAnswers = Object.entries(answers).map(([key, value]) => {
         const field = form?.fields?.find((f) => f._key === key);
@@ -97,19 +94,15 @@ export async function GET(request, { params }) {
 
     const { id } = await params;
 
-    const sanityUser = await client.fetch(
-      `*[_type == "user" && clerkId == $clerkId][0]{ _id }`,
-      { clerkId: user.id },
-    );
+    const sanityUser = await getUserByClerkId(user.id);
 
     if (!sanityUser) {
       return NextResponse.json({ alreadyApplied: false }, { status: 200 });
     }
 
-    const alreadyApplied = await client.fetch(
-      `count(*[_type == "application" && jobPosition._ref == $positionId && applicant._ref == $userId]) > 0`,
-      { positionId: id, userId: sanityUser._id },
-    );
+    const { checkApplicationExists } =
+      await import("@/features/careers/services/careersService");
+    const alreadyApplied = await checkApplicationExists(id, sanityUser._id);
 
     return NextResponse.json({ alreadyApplied: Boolean(alreadyApplied) });
   } catch (error) {

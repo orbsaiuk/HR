@@ -45,10 +45,42 @@ export async function getOrganizationMembers(orgId) {
   return client.fetch(organizationQueries.getMembers, { orgId });
 }
 
+/**
+ * Create a new organization
+ */
+export async function createOrganization(data) {
+  return client.create({
+    _type: "organization",
+    name: data.name,
+    slug: { _type: "slug", current: data.slug },
+    clerkOrgId: data.id,
+    description: data.public_metadata?.description || "",
+    website: data.public_metadata?.website || undefined,
+    settings: {
+      brandColor: data.public_metadata?.brandColor || undefined,
+      careerPageEnabled: true,
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+/**
+ * Get team member by Clerk ID and organization ID
+ */
+export async function getTeamMemberByClerkAndOrg(clerkId, orgId) {
+  return client.fetch(organizationQueries.getTeamMemberByClerkAndOrg, {
+    clerkId,
+    orgId,
+  });
+}
+
 export const organizationService = {
   getOrganizationById,
   getOrganizationByClerkOrgId,
   getOrganizationBySlug,
   updateOrganization,
   getOrganizationMembers,
+  createOrganization,
+  getTeamMemberByClerkAndOrg,
 };

@@ -2,6 +2,11 @@ import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { client } from "@/sanity/client";
 import { NextResponse } from "next/server";
 import {
+  getUserByClerkId,
+  getLegacyTeacher,
+} from "@/features/auth/services/userService";
+import { getTeamMemberByClerkId } from "@/features/team-member-management/services/teamMemberService";
+import {
   getInviteByEmail,
   markInviteJoined,
 } from "@/features/team-member-management/services/teamMemberManagementService";
@@ -17,10 +22,7 @@ export async function POST() {
   const role = user.publicMetadata?.role;
 
   // Check if user exists in Sanity
-  const existingUser = await client.fetch(
-    `*[_type == "user" && clerkId == $clerkId][0]`,
-    { clerkId: user.id },
-  );
+  const existingUser = await getUserByClerkId(user.id);
 
   if (!existingUser) {
     // Create user in Sanity
@@ -39,10 +41,7 @@ export async function POST() {
   const invite = userEmail ? await getInviteByEmail(userEmail) : null;
 
   // Ensure team member exists for invited or role-based access
-  const existingTeamMember = await client.fetch(
-    `*[_type == "teamMember" && clerkId == $clerkId][0]`,
-    { clerkId: user.id },
-  );
+  const existingTeamMember = await getTeamMemberByClerkId(user.id);
 
   const shouldCreateTeamMember =
     !existingTeamMember &&
@@ -51,10 +50,7 @@ export async function POST() {
       (invite && invite.status === "pending"));
 
   if (shouldCreateTeamMember) {
-    const legacyTeacher = await client.fetch(
-      `*[_type == "teacher" && clerkId == $clerkId][0]`,
-      { clerkId: user.id },
-    );
+    const legacyTeacher = await getLegacyTeacher(user.id);
 
     const teamMember = await client.create({
       _type: "teamMember",

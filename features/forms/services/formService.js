@@ -45,6 +45,36 @@ export async function updateForm(id, input) {
     .commit();
 }
 
+export async function getPublishedFormsByTeamMember(teamMemberId) {
+  return client.fetch(
+    `*[_type == "form" && teamMember._ref == $teamMemberId && status == "published"] | order(updatedAt desc) {
+      _id,
+      title,
+      description,
+      status,
+      "responseCount": count(*[_type == "response" && form._ref == ^._id]),
+      "organizationName": organization->name,
+      createdAt,
+      updatedAt
+    }`,
+    { teamMemberId },
+  );
+}
+
+export async function getFormFields(formId) {
+  return client.fetch(`*[_type == "form" && _id == $formId][0]{ fields }`, {
+    formId,
+  });
+}
+
+export async function getUserByClerkId(clerkId) {
+  return client.fetch(formsQueries.getUserByClerkId, { clerkId });
+}
+
+export async function getExistingResponse(formId, userId) {
+  return client.fetch(formsQueries.checkUserResponse, { formId, userId });
+}
+
 export async function deleteForm(id) {
   // First, check if there are any responses associated with this form
   const responses = await client.fetch(
@@ -69,6 +99,9 @@ export const formService = {
   getForms,
   getFormsByTeamMember,
   getFormById,
+  getPublishedFormsByTeamMember,
+  getUserByClerkId,
+  getExistingResponse,
   createForm,
   updateForm,
   deleteForm,

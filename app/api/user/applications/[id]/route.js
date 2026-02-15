@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { client } from "@/sanity/client";
+import { getUserByClerkId } from "@/features/auth/services/userService";
 import { candidatePortalService } from "@/features/candidate-portal/services/candidatePortalService";
 
 /**
@@ -16,10 +16,7 @@ export async function GET(request, { params }) {
     const { id } = await params;
 
     // Look up Sanity user by Clerk ID
-    const sanityUser = await client.fetch(
-      `*[_type == "user" && clerkId == $clerkId][0]{ _id }`,
-      { clerkId: user.id },
-    );
+    const sanityUser = await getUserByClerkId(user.id);
 
     if (!sanityUser) {
       return NextResponse.json(
