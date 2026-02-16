@@ -17,9 +17,11 @@ export const careerQueries = {
     deadline,
     applicationMethod,
     createdAt,
-    "teamMember": teamMember->{
+    "recruiter": recruiter->{
       _id,
-      name
+      name,
+      email,
+      avatar
     },
     "organizationName": organization->name,
     "organizationLogo": organization->logo,
@@ -45,9 +47,11 @@ export const careerQueries = {
     deadline,
     applicationMethod,
     createdAt,
-    "teamMember": teamMember->{
+    "recruiter": recruiter->{
       _id,
-      name
+      name,
+      email,
+      avatar
     },
     "organizationName": organization->name,
     "organizationLogo": organization->logo,
@@ -70,4 +74,9 @@ export const careerQueries = {
    * List unique locations from open positions (for filter dropdown)
    */
   getLocations: `array::unique(*[_type == "jobPosition" && status == "open"].location)`,
+
+  /**
+   * Check if a user has already applied to a position (returns boolean)
+   */
+  checkApplicationExists: `count(*[_type == "application" && jobPosition._ref == $positionId && applicant._ref == $userId]) > 0`,
 };

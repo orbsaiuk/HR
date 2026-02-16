@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { getTeamMemberById } from "@/features/team-member-management/services/teamMemberService";
+import { client } from "@/sanity/client";
+import { teamMembersQueries } from "@/sanity/queries";
 
 export async function GET(request, { params }) {
   try {
-    await resolveOrgContext();
+    const { orgId } = await resolveOrgContext();
     const { id } = await params;
-    const teamMember = await getTeamMemberById(id);
+
+    // Find team member by user ID within the organization's embedded array
+    const teamMember = await client.fetch(teamMembersQueries.getByUserId, {
+      orgId,
+      userId: id,
+    });
 
     if (!teamMember) {
       return NextResponse.json(

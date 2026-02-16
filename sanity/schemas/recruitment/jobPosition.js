@@ -25,10 +25,10 @@ export default {
     },
     fields: [
         {
-            name: "teamMember",
+            name: "recruiter",
             title: "Recruiter",
             type: "reference",
-            to: [{ type: "teamMember" }],
+            to: [{ type: "user" }],
             validation: (Rule) => Rule.required(),
             description: "The recruiter who created this position",
         },

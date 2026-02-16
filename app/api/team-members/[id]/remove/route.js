@@ -16,16 +16,16 @@ export async function DELETE(request, { params }) {
 
     const { id } = await params;
 
-    // Prevent removing the org owner (first team member)
+    // Prevent removing the org owner (first/earliest joined team member)
     const owner = await getOwnerTeamMember(orgId);
-    if (owner && owner._id === id) {
+    if (owner && owner.user._id === id) {
       return NextResponse.json(
         { error: "Cannot remove the account owner" },
         { status: 400 },
       );
     }
 
-    await removeTeamMember(id);
+    await removeTeamMember(id, orgId);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error removing team member:", error);

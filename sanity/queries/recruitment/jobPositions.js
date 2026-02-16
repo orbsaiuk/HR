@@ -14,10 +14,11 @@ export const jobPositionQueries = {
         deadline,
         createdAt,
         updatedAt,
-        "teamMember": teamMember->{
+        "recruiter": recruiter->{
             _id,
             name,
-            email
+            email,
+            avatar
         },
         "form": form->{
             _id,
@@ -43,10 +44,11 @@ export const jobPositionQueries = {
         deadline,
         createdAt,
         updatedAt,
-        "teamMember": teamMember->{
+        "recruiter": recruiter->{
             _id,
             name,
-            email
+            email,
+            avatar
         },
         "form": form->{
             _id,
@@ -56,11 +58,20 @@ export const jobPositionQueries = {
         "applicationCount": count(*[_type == "application" && jobPosition._ref == ^._id])
     }`,
 
-    getByTeamMemberId: `*[_type == "jobPosition" && organization._ref == $orgId && teamMember._ref == $teamMemberId] | order(createdAt desc) {
+    /**
+     * Get job positions by recruiter (user) ID.
+     * Uses recruiter._ref instead of the old teamMember._ref.
+     */
+    getByTeamMemberId: `*[_type == "jobPosition" && organization._ref == $orgId && recruiter._ref == $userId] | order(createdAt desc) {
         _id,
         title,
         status
     }`,
+
+    /**
+     * Get the organization reference from a job position (for denormalization)
+     */
+    getOrganizationRef: `*[_type == "jobPosition" && _id == $id][0]{ organization }`,
 
     getStats: `{
         "total": count(*[_type == "jobPosition" && organization._ref == $orgId]),

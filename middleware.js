@@ -2,6 +2,11 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const isDashboardRoute = createRouteMatcher(["/dashboard(.*)"]);
+const isUserRoute = createRouteMatcher([
+  "/user(.*)",
+  "/my-applications(.*)",
+  "/messages(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId, orgId } = await auth();
@@ -13,9 +18,16 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.redirect(signInUrl);
     }
     if (!orgId) {
-      const selectOrgUrl = new URL("/select-organization", req.url);
-      return NextResponse.redirect(selectOrgUrl);
+      const homeUrl = new URL("/", req.url);
+      return NextResponse.redirect(homeUrl);
     }
+  }
+
+  // User-directory routes are for regular users only.
+  // Team members (users with an active org) should use the dashboard instead.
+  if (isUserRoute(req) && userId && orgId) {
+    const dashboardUrl = new URL("/dashboard", req.url);
+    return NextResponse.redirect(dashboardUrl);
   }
 });
 

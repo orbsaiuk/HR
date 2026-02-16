@@ -1,24 +1,21 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { client } from "@/sanity/client";
 import {
   getOrganizationByClerkOrgId,
   createOrganization,
   updateOrganization,
   getTeamMemberByClerkAndOrg,
+  addTeamMemberToOrg,
+  updateTeamMemberRole,
+  removeTeamMemberFromOrg,
 } from "@/features/organizations/services/organizationService";
 import {
-  createTeamMember,
-  updateTeamMember,
-  deleteTeamMember,
-} from "@/features/team-member-management/services/teamMemberService";
+  getUserByClerkId,
+  createUser,
+} from "@/features/auth/services/userService";
 
-/**
- * Map Clerk organization roles to application roles.
- * @param {string} clerkRole - The Clerk org role (e.g. "org:admin", "org:member")
- * @returns {string} The mapped application role
- */
+
 function mapClerkRoleToAppRole(clerkRole) {
   switch (clerkRole) {
     case "org:admin":
@@ -29,11 +26,7 @@ function mapClerkRoleToAppRole(clerkRole) {
   }
 }
 
-/**
- * Verify the incoming webhook request using svix.
- * @param {Request} req - The incoming request
- * @returns {Promise<object>} The verified webhook payload
- */
+
 async function verifyWebhook(req) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
@@ -62,7 +55,7 @@ async function verifyWebhook(req) {
 
 /**
  * Handle organization.created event.
- * Creates a new organization document in Sanity.
+ * Creates a new organization document in Sanity with initialized teamMembers and invites arrays.
  */
 async function handleOrganizationCreated(data) {
   const existing = await getOrganizationByClerkOrgId(data.id);
@@ -98,7 +91,7 @@ async function handleOrganizationUpdated(data) {
 
 /**
  * Handle organizationMembership.created event.
- * Creates or links a teamMember with the organization reference and role.
+ * Finds the user document and adds them to the organization's embedded teamMembers array.
  */
 async function handleMembershipCreated(data) {
   const clerkUserId = data.public_user_data?.user_id;
@@ -116,7 +109,23 @@ async function handleMembershipCreated(data) {
     return { message: "Organization not found in Sanity", clerkOrgId };
   }
 
-  // Check if team member already exists for this user + org
+  // Find the user document in Sanity
+  let userDoc = await getUserByClerkId(clerkUserId);
+
+  if (!userDoc) {
+    // Create user document if it doesn't exist yet
+    const userData = data.public_user_data;
+    userDoc = await createUser({
+      clerkId: clerkUserId,
+      name:
+        [userData?.first_name, userData?.last_name].filter(Boolean).join(" ") ||
+        "",
+      email: userData?.identifier || "",
+      avatar: userData?.image_url || undefined,
+    });
+  }
+
+  // Check if user is already a team member in this org's embedded array
   const existingMember = await getTeamMemberByClerkAndOrg(
     clerkUserId,
     organization._id,
@@ -124,42 +133,31 @@ async function handleMembershipCreated(data) {
 
   if (existingMember) {
     // Update role if needed
-    await updateTeamMember(existingMember._id, {
-      role: mapClerkRoleToAppRole(clerkRole),
-      updatedAt: new Date().toISOString(),
-    });
+    await updateTeamMemberRole(
+      organization._id,
+      existingMember._key,
+      mapClerkRoleToAppRole(clerkRole),
+    );
 
     return {
       message: "Team member already exists, role updated",
-      id: existingMember._id,
+      key: existingMember._key,
     };
   }
 
-  // Create new team member linked to the organization
-  const userData = data.public_user_data;
-  const teamMember = await createTeamMember({
-    _type: "teamMember",
-    clerkId: clerkUserId,
-    name:
-      [userData?.first_name, userData?.last_name].filter(Boolean).join(" ") ||
-      "",
-    email: userData?.identifier || "",
-    avatar: userData?.image_url || undefined,
-    organization: {
-      _type: "reference",
-      _ref: organization._id,
-    },
-    role: mapClerkRoleToAppRole(clerkRole),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
+  // Add new member to the organization's embedded teamMembers array
+  await addTeamMemberToOrg(
+    organization._id,
+    userDoc._id,
+    mapClerkRoleToAppRole(clerkRole),
+  );
 
-  return { message: "Team member created", id: teamMember._id };
+  return { message: "Team member added to organization", orgId: organization._id };
 }
 
 /**
  * Handle organizationMembership.updated event.
- * Updates the teamMember role.
+ * Updates the team member's role in the organization's embedded teamMembers array.
  */
 async function handleMembershipUpdated(data) {
   const clerkUserId = data.public_user_data?.user_id;
@@ -185,17 +183,18 @@ async function handleMembershipUpdated(data) {
     return { message: "Team member not found" };
   }
 
-  await updateTeamMember(member._id, {
-    role: mapClerkRoleToAppRole(clerkRole),
-    updatedAt: new Date().toISOString(),
-  });
+  await updateTeamMemberRole(
+    organization._id,
+    member._key,
+    mapClerkRoleToAppRole(clerkRole),
+  );
 
-  return { message: "Team member role updated", id: member._id };
+  return { message: "Team member role updated", key: member._key };
 }
 
 /**
  * Handle organizationMembership.deleted event.
- * Removes the organization link from the teamMember.
+ * Removes the team member entry from the organization's embedded teamMembers array.
  */
 async function handleMembershipDeleted(data) {
   const clerkUserId = data.public_user_data?.user_id;
@@ -211,22 +210,17 @@ async function handleMembershipDeleted(data) {
     return { message: "Organization not found" };
   }
 
-  const member = await getTeamMemberByClerkAndOrg(
-    clerkUserId,
-    organization._id,
-  );
+  // Find the user document to get their _id for removal
+  const userDoc = await getUserByClerkId(clerkUserId);
 
-  if (!member) {
-    return { message: "Team member not found" };
+  if (!userDoc) {
+    return { message: "User not found in Sanity" };
   }
 
-  await client
-    .patch(member._id)
-    .unset(["organization", "role"])
-    .set({ updatedAt: new Date().toISOString() })
-    .commit();
+  // Remove the team member entry from the embedded array
+  await removeTeamMemberFromOrg(organization._id, userDoc._id);
 
-  return { message: "Team member org link removed", id: member._id };
+  return { message: "Team member removed from organization", orgId: organization._id };
 }
 
 export async function POST(req) {

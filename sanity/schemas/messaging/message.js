@@ -13,14 +13,14 @@ export default {
       name: "sender",
       title: "Sender",
       type: "reference",
-      to: [{ type: "teamMember" }, { type: "user" }],
+      to: [{ type: "user" }],
       validation: (Rule) => Rule.required(),
     },
     {
       name: "recipient",
       title: "Recipient",
       type: "reference",
-      to: [{ type: "teamMember" }, { type: "user" }],
+      to: [{ type: "user" }],
       validation: (Rule) => Rule.required(),
     },
     {

@@ -4,14 +4,14 @@ import { useState, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ImageIcon, Upload, X } from "lucide-react";
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 
 /**
  * Organization logo upload with preview.
  * Must be used within a react-hook-form FormProvider.
  */
 export function OrgLogoUpload() {
-    const { setValue, watch } = useFormContext();
+    const { setValue, watch, formState: { errors } } = useFormContext();
     const [preview, setPreview] = useState(null);
     const fileInputRef = useRef(null);
 
@@ -48,13 +48,14 @@ export function OrgLogoUpload() {
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <ImageIcon size={18} />
                     Organization Logo
+                    <span className="text-red-500">*</span>
                 </CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="flex items-center gap-6">
                     {preview ? (
                         <div className="relative">
-                            <Image
+                            <img
                                 src={preview}
                                 alt="Logo preview"
                                 className="w-20 h-20 rounded-lg object-cover border border-gray-200"
@@ -94,6 +95,11 @@ export function OrgLogoUpload() {
                         />
                     </div>
                 </div>
+                {errors.orgLogo && (
+                    <p className="text-sm text-red-500 mt-2">
+                        {errors.orgLogo.message}
+                    </p>
+                )}
             </CardContent>
         </Card>
     );

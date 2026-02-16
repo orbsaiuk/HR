@@ -72,9 +72,9 @@ export default {
             name: "evaluator",
             title: "Evaluator",
             type: "reference",
-            to: [{ type: "teamMember" }],
+            to: [{ type: "user" }],
             validation: (Rule) => Rule.required(),
-            description: "The team member who filled out this scorecard",
+            description: "The user who filled out this scorecard",
         },
         {
             name: "organization",

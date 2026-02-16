@@ -1,44 +1,55 @@
 import { client } from "@/sanity/client";
-import { teamMemberInviteQueries } from "@/sanity/queries";
+import { teamMemberInviteQueries, organizationQueries } from "@/sanity/queries";
 
 export async function getInvites(orgId) {
   return client.fetch(teamMemberInviteQueries.getAllInvites, { orgId });
 }
 
-export async function createInvite(email, invitedByTeamMemberId, orgId) {
+export async function createInvite(email, invitedByUserId, orgId) {
+  const normalizedEmail = email.toLowerCase().trim();
+
   // Check for existing invite with this email in this org
   const existing = await client.fetch(
     teamMemberInviteQueries.getInviteByEmail,
-    { email, orgId },
+    { email: normalizedEmail, orgId },
   );
   if (existing) {
     throw new Error("An invite for this email already exists");
   }
 
-  // Check if email is already a team member in this org
-  const existingTeamMember = await client.fetch(
-    `*[_type == "teamMember" && email == $email && organization._ref == $orgId][0]`,
-    { email, orgId },
+  // Check if email is already a team member in this org (by checking user emails)
+  const existingMember = await client.fetch(
+    organizationQueries.getTeamMemberByEmail,
+    { orgId, email: normalizedEmail },
   );
-  if (existingTeamMember) {
+  if (existingMember) {
     throw new Error("A team member with this email already exists");
   }
 
-  return client.create({
-    _type: "teamMemberInvite",
-    email: email.toLowerCase().trim(),
-    status: "pending",
-    organization: { _type: "reference", _ref: orgId },
-    invitedBy: {
-      _type: "reference",
-      _ref: invitedByTeamMemberId,
-    },
-    createdAt: new Date().toISOString(),
-  });
+  const timestamp = new Date().toISOString();
+
+  return client
+    .patch(orgId)
+    .append("invites", [
+      {
+        _key: `${normalizedEmail}-${Date.now()}`, // Unique key for the array item
+        email: normalizedEmail,
+        status: "pending",
+        invitedBy: {
+          _type: "reference",
+          _ref: invitedByUserId,
+        },
+        createdAt: timestamp,
+      },
+    ])
+    .commit();
 }
 
-export async function deleteInvite(id) {
-  return client.delete(id);
+export async function deleteInvite(inviteKey, orgId) {
+  return client
+    .patch(orgId)
+    .unset([`invites[_key == "${inviteKey}"]`])
+    .commit();
 }
 
 export async function getInviteByEmail(email, orgId) {
@@ -48,21 +59,23 @@ export async function getInviteByEmail(email, orgId) {
   });
 }
 
-export async function markInviteJoined(email, teamMemberId, orgId) {
+export async function markInviteJoined(email, userId, orgId) {
+  const normalizedEmail = email.toLowerCase().trim();
+
   const invite = await client.fetch(teamMemberInviteQueries.getInviteByEmail, {
-    email: email.toLowerCase().trim(),
+    email: normalizedEmail,
     orgId,
   });
 
   if (!invite) return null;
 
   return client
-    .patch(invite._id)
+    .patch(orgId)
     .set({
-      status: "joined",
-      teamMember: {
+      [`invites[_key == "${invite._key}"].status`]: "joined",
+      [`invites[_key == "${invite._key}"].joinedUser`]: {
         _type: "reference",
-        _ref: teamMemberId,
+        _ref: userId,
       },
     })
     .commit();
@@ -77,7 +90,7 @@ export async function isOwner(clerkId, orgId) {
     orgId,
   });
   if (!owner) return false;
-  return owner.clerkId === clerkId;
+  return owner.user.clerkId === clerkId;
 }
 
 export async function getAllTeamMembers(orgId) {
@@ -86,28 +99,11 @@ export async function getAllTeamMembers(orgId) {
   });
 }
 
-export async function removeTeamMember(id) {
-  // Delete associated invites for this team member
-  const teamMember = await client.fetch(
-    `*[_type == "teamMember" && _id == $id][0]{ _id, email }`,
-    { id },
-  );
-
-  if (teamMember) {
-    const invites = await client.fetch(
-      `*[_type == "teamMemberInvite" && email == $email]`,
-      { email: teamMember.email },
-    );
-
-    if (invites.length > 0) {
-      const transaction = client.transaction();
-      invites.forEach((invite) => transaction.delete(invite._id));
-      await transaction.commit();
-    }
-  }
-
-  // Delete the team member document
-  return client.delete(id);
+export async function removeTeamMember(userId, orgId) {
+  return client
+    .patch(orgId)
+    .unset([`teamMembers[user._ref == "${userId}"]`])
+    .commit();
 }
 
 export const teamMemberManagementService = {

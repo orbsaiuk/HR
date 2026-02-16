@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { getResponseById } from "@/features/responses/services/responseService";
-import { client } from "@/sanity/client";
+import {
+  getResponseById,
+  deleteResponse,
+} from "@/features/responses/services/responseService";
 
 export async function GET(request, { params }) {
   try {
@@ -31,7 +33,7 @@ export async function DELETE(request, { params }) {
   try {
     await resolveOrgContext();
     const { id } = await params;
-    await client.delete(id);
+    await deleteResponse(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting response:", error);

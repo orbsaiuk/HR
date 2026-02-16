@@ -77,30 +77,11 @@ export const structure = (S) =>
 
       S.divider(),
 
-      // Team & Users Group
+      // Users Group
       S.listItem()
-        .title("Team & Users")
-        .icon(() => "👥")
-        .child(
-          S.list()
-            .title("Team & Users")
-            .items([
-              S.listItem()
-                .title("Team Members")
-                .icon(() => "🧑‍💼")
-                .child(S.documentTypeList("teamMember").title("Team Members")),
-
-              S.listItem()
-                .title("Users")
-                .icon(() => "👤")
-                .child(S.documentTypeList("user").title("Users")),
-
-              S.listItem()
-                .title("Team Invites")
-                .icon(() => "✉️")
-                .child(S.documentTypeList("teamMemberInvite").title("Team Invites")),
-            ])
-        ),
+        .title("Users")
+        .icon(() => "👤")
+        .child(S.documentTypeList("user").title("Users")),
 
       // Forms Group
       S.listItem()

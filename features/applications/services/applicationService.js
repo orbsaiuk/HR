@@ -1,5 +1,5 @@
 import { client } from "@/sanity/client";
-import { applicationQueries } from "@/sanity/queries";
+import { applicationQueries, jobPositionQueries } from "@/sanity/queries";
 
 /**
  * Get all applications for the organization's positions
@@ -90,10 +90,9 @@ export async function createApplication(input) {
   }
 
   // Fetch the job position to get its organization reference (denormalized)
-  const jobPosition = await client.fetch(
-    `*[_type == "jobPosition" && _id == $id][0]{ organization }`,
-    { id: input.jobPositionId },
-  );
+  const jobPosition = await client.fetch(jobPositionQueries.getOrganizationRef, {
+    id: input.jobPositionId,
+  });
 
   const doc = {
     _type: "application",

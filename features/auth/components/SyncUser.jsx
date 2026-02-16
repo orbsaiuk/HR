@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useUser, useSession } from "@clerk/nextjs";
+import { AutoActivateOrg } from "./AutoActivateOrg";
 
 export function SyncUser({ children }) {
   const { user, isLoaded } = useUser();
@@ -45,5 +46,10 @@ export function SyncUser({ children }) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <AutoActivateOrg />
+      {children}
+    </>
+  );
 }

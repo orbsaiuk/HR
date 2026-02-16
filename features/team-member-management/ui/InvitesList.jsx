@@ -52,7 +52,7 @@ export function InvitesList({ invites, onDelete }) {
           <tbody className="divide-y divide-gray-100">
             {invites.map((invite) => (
               <tr
-                key={invite._id}
+                key={invite._key}
                 className="hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4">
@@ -83,7 +83,7 @@ export function InvitesList({ invites, onDelete }) {
                 <td className="px-6 py-4 text-right">
                   {invite.status === "pending" && (
                     <button
-                      onClick={() => onDelete(invite._id)}
+                      onClick={() => onDelete(invite._key)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="Revoke invite"
                     >

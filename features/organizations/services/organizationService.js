@@ -1,4 +1,4 @@
-import { client } from "@/sanity/client";
+import { client, clientRead } from "@/sanity/client";
 import { organizationQueries } from "@/sanity/queries/organizations";
 
 /**
@@ -60,6 +60,8 @@ export async function createOrganization(data) {
       brandColor: data.public_metadata?.brandColor || undefined,
       careerPageEnabled: true,
     },
+    teamMembers: [],
+    invites: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
@@ -74,6 +76,86 @@ export async function getTeamMemberByClerkAndOrg(clerkId, orgId) {
     orgId,
   });
 }
+export async function addTeamMemberToOrg(orgId, userId, role = "recruiter") {
+  const timestamp = new Date().toISOString();
+
+  return client
+    .patch(orgId)
+    .setIfMissing({ teamMembers: [] })
+    .append("teamMembers", [
+      {
+        _key: `${userId}-${Date.now()}`,
+        user: {
+          _type: "reference",
+          _ref: userId,
+        },
+        role,
+        joinedAt: timestamp,
+      },
+    ])
+    .commit();
+}
+export async function removeTeamMemberFromOrg(orgId, userId) {
+  return client
+    .patch(orgId)
+    .unset([`teamMembers[user._ref == "${userId}"]`])
+    .commit();
+}
+export async function updateTeamMemberRole(orgId, key, newRole) {
+  return client
+    .patch(orgId)
+    .set({
+      [`teamMembers[_key == "${key}"].role`]: newRole,
+    })
+    .commit();
+}
+export async function addInviteToOrg(orgId, email, invitedByUserId) {
+  const normalizedEmail = email.toLowerCase().trim();
+  const timestamp = new Date().toISOString();
+
+  return client
+    .patch(orgId)
+    .append("invites", [
+      {
+        _key: `${normalizedEmail}-${Date.now()}`,
+        email: normalizedEmail,
+        status: "pending",
+        invitedBy: {
+          _type: "reference",
+          _ref: invitedByUserId,
+        },
+        createdAt: timestamp,
+      },
+    ])
+    .commit();
+}
+export async function removeInviteFromOrg(orgId, inviteKey) {
+  return client
+    .patch(orgId)
+    .unset([`invites[_key == "${inviteKey}"]`])
+    .commit();
+}
+
+/**
+ * Get platform-wide stats (public, read-only)
+ */
+export async function getPlatformStats() {
+  return clientRead.fetch(organizationQueries.getPlatformStats);
+}
+
+/**
+ * Get featured positions for the landing page (public, read-only)
+ */
+export async function getFeaturedPositions() {
+  return clientRead.fetch(organizationQueries.getFeaturedPositions);
+}
+
+/**
+ * Get a public company profile by slug (public, read-only)
+ */
+export async function getPublicCompanyBySlug(slug) {
+  return clientRead.fetch(organizationQueries.getPublicCompanyBySlug, { slug });
+}
 
 export const organizationService = {
   getOrganizationById,
@@ -83,4 +165,12 @@ export const organizationService = {
   getOrganizationMembers,
   createOrganization,
   getTeamMemberByClerkAndOrg,
+  addTeamMemberToOrg,
+  removeTeamMemberFromOrg,
+  updateTeamMemberRole,
+  addInviteToOrg,
+  removeInviteFromOrg,
+  getPlatformStats,
+  getFeaturedPositions,
+  getPublicCompanyBySlug,
 };

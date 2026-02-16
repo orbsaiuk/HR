@@ -23,10 +23,10 @@ export const applicationQueries = {
     }`,
 
     /**
-     * Get all applications for positions owned by a specific recruiter within the org.
-     * Used for "my applications" attribution view.
+     * Get all applications for positions owned by a specific recruiter (user) within the org.
+     * Uses jobPosition->recruiter._ref instead of the old teamMember._ref.
      */
-    getByTeamMemberId: `*[_type == "application" && jobPosition->organization._ref == $orgId && jobPosition->teamMember._ref == $teamMemberId] | order(appliedAt desc) {
+    getByTeamMemberId: `*[_type == "application" && jobPosition->organization._ref == $orgId && jobPosition->recruiter._ref == $userId] | order(appliedAt desc) {
         _id,
         status,
         rating,

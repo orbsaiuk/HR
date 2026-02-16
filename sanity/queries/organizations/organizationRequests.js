@@ -40,5 +40,5 @@ export const orgRequestQueries = {
         createdAt
     }`,
 
-    checkDuplicate: `count(*[_type == "organizationRequest" && requestedBy._ref == $userId && status == "pending"])`,
+    checkDuplicate: `count(*[_type == "organizationRequest" && requestedBy._ref == $userId && status in ["pending", "approved"]])`,
 };

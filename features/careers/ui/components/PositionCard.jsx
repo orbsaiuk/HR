@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { urlFor } from "@/shared/lib/sanityImage";
 
 /** Strip HTML tags for plain-text preview */
 function stripHtml(html) {
@@ -27,6 +28,7 @@ import {
   Users,
   AlertCircle,
 } from "lucide-react";
+import Image from "next/image";
 
 const TYPE_LABELS = {
   "full-time": "Full-time",
@@ -65,11 +67,63 @@ export function PositionCard({ position }) {
 
   const isClosed = position.status === "closed";
 
+  const orgLogoUrl = position.organizationLogo
+    ? urlFor(position.organizationLogo).width(40).height(40).url()
+    : null;
+
   const cardContent = (
     <Card
       className={`h-full transition-all ${!isClosed ? "hover:shadow-lg hover:border-blue-300" : "opacity-75"}`}
     >
       <CardHeader>
+        {/* Organization branding */}
+        {(position.organizationName || orgLogoUrl) && (
+          <div className="flex items-center gap-2 mb-2">
+            {position.organizationSlug ? (
+              <Link
+                href={`/companies/${position.organizationSlug}`}
+                className="flex items-center gap-2 hover:text-blue-600 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {orgLogoUrl ? (
+                  <Image
+                    src={orgLogoUrl}
+                    alt=""
+                    className="w-8 h-8 rounded-md object-cover border border-gray-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center">
+                    <Building2 size={14} className="text-blue-600" />
+                  </div>
+                )}
+                {position.organizationName && (
+                  <span className="text-sm text-muted-foreground font-medium truncate hover:text-blue-600">
+                    {position.organizationName}
+                  </span>
+                )}
+              </Link>
+            ) : (
+              <>
+                {orgLogoUrl ? (
+                  <Image
+                    src={orgLogoUrl}
+                    alt=""
+                    className="w-8 h-8 rounded-md object-cover border border-gray-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center">
+                    <Building2 size={14} className="text-blue-600" />
+                  </div>
+                )}
+                {position.organizationName && (
+                  <span className="text-sm text-muted-foreground font-medium truncate">
+                    {position.organizationName}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+        )}
         <div className="flex items-start justify-between">
           <CardTitle
             className={`text-lg ${!isClosed ? "group-hover:text-blue-600" : ""} transition-colors`}

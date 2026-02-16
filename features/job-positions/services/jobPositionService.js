@@ -1,6 +1,7 @@
 import { client } from "@/sanity/client";
 import { currentUser } from "@clerk/nextjs/server";
 import { jobPositionQueries } from "@/sanity/queries";
+import { getUserByClerkId } from "@/features/auth/services/userService";
 
 export async function getJobPositions(orgId) {
   return client.fetch(jobPositionQueries.getAll, { orgId });
@@ -18,15 +19,12 @@ export async function createJobPosition(input, orgId) {
   const user = await currentUser();
   if (!user) throw new Error("Unauthorized");
 
-  const teamMember = await client.fetch(
-    `*[_type == "teamMember" && clerkId == $clerkId][0]`,
-    { clerkId: user.id },
-  );
-  if (!teamMember) throw new Error("Team member not found");
+  const userDoc = await getUserByClerkId(user.id);
+  if (!userDoc) throw new Error("User not found");
 
   const doc = {
     _type: "jobPosition",
-    teamMember: { _type: "reference", _ref: teamMember._id },
+    recruiter: { _type: "reference", _ref: userDoc._id },
     organization: { _type: "reference", _ref: orgId },
     title: input.title,
     department: input.department || "",

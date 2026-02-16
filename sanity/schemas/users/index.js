@@ -1,7 +1,5 @@
 import user from "./user";
-import teamMember from "./teamMember";
-import teamMemberInvite from "./teamMemberInvite";
 
-export { user, teamMember, teamMemberInvite };
+export { user };
 
-export default [user, teamMember, teamMemberInvite];
+export default [user];

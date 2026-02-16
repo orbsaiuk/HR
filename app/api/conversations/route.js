@@ -4,7 +4,6 @@ import { currentUser } from "@clerk/nextjs/server";
 import {
   findOrCreateConversation,
   getUserIdByClerkId,
-  getTeamMemberIdByClerkId,
   getConversations,
 } from "@/features/chat/services/chatService";
 

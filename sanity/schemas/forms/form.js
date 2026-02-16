@@ -19,10 +19,10 @@ export default {
     },
     fields: [
         {
-            name: "teamMember",
-            title: "Team Member",
+            name: "createdBy",
+            title: "Created By",
             type: "reference",
-            to: [{ type: "teamMember" }],
+            to: [{ type: "user" }],
             validation: (Rule) => Rule.required(),
         },
         {

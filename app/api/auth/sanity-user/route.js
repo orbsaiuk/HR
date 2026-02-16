@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import {
-  getTeamMemberIdByClerkId,
-  getUserIdByClerkId,
-} from "@/features/chat/services/chatService";
+import { getUserIdByClerkId } from "@/features/chat/services/chatService";
 
 export async function GET(request) {
   try {
@@ -15,14 +12,11 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const clerkId = searchParams.get("clerkId") || user.id;
-    const type =
-      searchParams.get("type") || user.publicMetadata?.role || "user";
 
-    // Get Sanity user ID based on type
-    const sanityUserId =
-      type === "teamMember"
-        ? await getTeamMemberIdByClerkId(clerkId)
-        : await getUserIdByClerkId(clerkId);
+    // Since team members are now embedded in organizations and both
+    // team members and regular users reference the same user document,
+    // we always look up the user document by clerkId.
+    const sanityUserId = await getUserIdByClerkId(clerkId);
 
     if (!sanityUserId) {
       return NextResponse.json(

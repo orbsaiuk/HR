@@ -6,8 +6,8 @@ export async function getForms(orgId) {
   return client.fetch(formsQueries.getAll, { orgId });
 }
 
-export async function getFormsByTeamMember(orgId, teamMemberId) {
-  return client.fetch(formsQueries.getByTeamMember, { orgId, teamMemberId });
+export async function getFormsByTeamMember(orgId, userId) {
+  return client.fetch(formsQueries.getByTeamMember, { orgId, userId });
 }
 
 export async function getFormById(id) {
@@ -18,16 +18,16 @@ export async function createForm(input, orgId) {
   const user = await currentUser();
   if (!user) throw new Error("Unauthorized");
 
-  // Get team member from Sanity
-  const teamMember = await client.fetch(formsQueries.getTeamMemberByClerkId, {
+  // Get the user document from Sanity by clerkId
+  const userDoc = await client.fetch(formsQueries.getUserByClerkId, {
     clerkId: user.id,
   });
 
-  if (!teamMember) throw new Error("Team member not found");
+  if (!userDoc) throw new Error("User not found");
 
   return client.create({
     _type: "form",
-    teamMember: { _type: "reference", _ref: teamMember._id },
+    createdBy: { _type: "reference", _ref: userDoc._id },
     organization: { _type: "reference", _ref: orgId },
     ...input,
     createdAt: new Date().toISOString(),
@@ -45,26 +45,19 @@ export async function updateForm(id, input) {
     .commit();
 }
 
+export async function getPublishedFormsByUser(userId) {
+  return client.fetch(formsQueries.getPublishedByUser, { userId });
+}
+
+/**
+ * @deprecated Use getPublishedFormsByUser instead
+ */
 export async function getPublishedFormsByTeamMember(teamMemberId) {
-  return client.fetch(
-    `*[_type == "form" && teamMember._ref == $teamMemberId && status == "published"] | order(updatedAt desc) {
-      _id,
-      title,
-      description,
-      status,
-      "responseCount": count(*[_type == "response" && form._ref == ^._id]),
-      "organizationName": organization->name,
-      createdAt,
-      updatedAt
-    }`,
-    { teamMemberId },
-  );
+  return getPublishedFormsByUser(teamMemberId);
 }
 
 export async function getFormFields(formId) {
-  return client.fetch(`*[_type == "form" && _id == $formId][0]{ fields }`, {
-    formId,
-  });
+  return client.fetch(formsQueries.getFormFields, { formId });
 }
 
 export async function getUserByClerkId(clerkId) {
@@ -77,10 +70,9 @@ export async function getExistingResponse(formId, userId) {
 
 export async function deleteForm(id) {
   // First, check if there are any responses associated with this form
-  const responses = await client.fetch(
-    `*[_type == "response" && form._ref == $formId]`,
-    { formId: id },
-  );
+  const responses = await client.fetch(formsQueries.getResponsesByFormId, {
+    formId: id,
+  });
 
   // Delete all responses first
   if (responses.length > 0) {
@@ -99,6 +91,7 @@ export const formService = {
   getForms,
   getFormsByTeamMember,
   getFormById,
+  getPublishedFormsByUser,
   getPublishedFormsByTeamMember,
   getUserByClerkId,
   getExistingResponse,

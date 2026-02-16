@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { getPublishedFormsByTeamMember } from "@/features/forms/services/formService";
+import { getPublishedFormsByUser } from "@/features/forms/services/formService";
 
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
 
-    // Get published forms for this team member (public-facing, no org auth needed)
-    // But include organization info for multi-tenant display
-    const forms = await getPublishedFormsByTeamMember(id);
+    // Get published forms created by this user (public-facing, no org auth needed)
+    // The id parameter is now the user's _id (not a standalone teamMember doc _id)
+    const forms = await getPublishedFormsByUser(id);
 
     return NextResponse.json(forms);
   } catch (error) {

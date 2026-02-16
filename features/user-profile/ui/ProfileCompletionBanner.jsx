@@ -2,16 +2,23 @@
 
 import Link from "next/link";
 import { useProfileCompletion } from "../model/useProfileCompletion";
+import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequest";
 import { AlertCircle } from "lucide-react";
 
 /**
  * Banner that shows profile completion percentage and prompts
  * the user to fill missing sections. Intended for the user layout.
+ * Hidden when profile is complete or user has an org request.
  */
 export function ProfileCompletionBanner() {
     const { percentage, missingSections, isComplete, loading } = useProfileCompletion();
+    const { requests, loading: orgLoading } = useOrgRequest();
 
-    if (loading || isComplete) return null;
+    const hasOrgRequest = requests.some(
+        (r) => r.status === "pending" || r.status === "approved"
+    );
+
+    if (loading || orgLoading || isComplete || hasOrgRequest) return null;
 
     return (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">

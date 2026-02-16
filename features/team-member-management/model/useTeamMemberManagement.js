@@ -43,10 +43,11 @@ export function useTeamMemberManagement() {
     }
   };
 
-  const deleteInvite = async (id) => {
+  const deleteInvite = async (key) => {
     try {
-      await teamMemberManagementApi.deleteInvite(id);
-      setInvites((prev) => prev.filter((invite) => invite._id !== id));
+      await teamMemberManagementApi.deleteInvite(key);
+      // Invites are embedded array items identified by _key
+      setInvites((prev) => prev.filter((invite) => invite._key !== key));
       return { success: true };
     } catch (err) {
       return {
@@ -56,11 +57,12 @@ export function useTeamMemberManagement() {
     }
   };
 
-  const removeTeamMember = async (id) => {
+  const removeTeamMember = async (userId) => {
     try {
-      await teamMemberManagementApi.removeTeamMember(id);
+      await teamMemberManagementApi.removeTeamMember(userId);
+      // Team members are embedded entries; filter by user._id
       setTeamMembers((prev) =>
-        prev.filter((teamMember) => teamMember._id !== id),
+        prev.filter((tm) => tm.user?._id !== userId),
       );
       return { success: true };
     } catch (err) {

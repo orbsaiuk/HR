@@ -32,9 +32,10 @@ export function CareersPage() {
       {/* Hero Section */}
       <div className="bg-linear-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Join Our Team</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Find Jobs</h1>
           <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
-            Explore open positions and find your next career opportunity.
+            Browse open positions from top companies and find your next career
+            opportunity.
           </p>
         </div>
       </div>

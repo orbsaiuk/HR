@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2 } from "lucide-react";
+import Link from "next/link";
+import { Building2, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 import { useOrgRequest } from "../model/useOrgRequest";
 import { OrgRegistrationForm } from "./components/registration-form/OrgRegistrationForm";
 
@@ -12,8 +15,42 @@ import { OrgRegistrationForm } from "./components/registration-form/OrgRegistrat
  */
 export function RegisterOrgPage() {
     const router = useRouter();
-    const { submitRequest, submitting, error } = useOrgRequest();
+    const { isSignedIn, isLoaded } = useUser();
+    const { requests, loading, submitRequest, submitting, error } = useOrgRequest();
     const [success, setSuccess] = useState(false);
+
+    // Find any existing request (pending or approved)
+    const existingRequest = requests.find(
+        (r) => r.status === "pending" || r.status === "approved"
+    );
+
+    if (!isLoaded || (isSignedIn && loading)) {
+        return (
+            <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+                <p className="text-muted-foreground">Loading...</p>
+            </div>
+        );
+    }
+
+    if (!isSignedIn) {
+        return (
+            <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-8">
+                    <Building2 size={48} className="mx-auto text-blue-500 mb-4" />
+                    <h2 className="text-xl font-semibold text-blue-800 mb-2">
+                        Sign In Required
+                    </h2>
+                    <p className="text-sm text-blue-700 mb-6">
+                        You need to sign in or create an account before registering
+                        your organization.
+                    </p>
+                    <SignInButton mode="modal" afterSignInUrl="/register-organization">
+                        <Button size="lg">Sign In to Continue</Button>
+                    </SignInButton>
+                </div>
+            </div>
+        );
+    }
 
     const handleSubmit = async (data) => {
         try {
@@ -27,6 +64,39 @@ export function RegisterOrgPage() {
             // Error is handled by the hook
         }
     };
+
+    // Block registration if user already has a pending or approved request
+    if (existingRequest) {
+        const isPending = existingRequest.status === "pending";
+        const StatusIcon = isPending ? Clock : CheckCircle2;
+        const bgColor = isPending ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200";
+        const textColor = isPending ? "text-yellow-800" : "text-green-800";
+        const subTextColor = isPending ? "text-yellow-700" : "text-green-700";
+        const iconColor = isPending ? "text-yellow-500" : "text-green-500";
+
+        return (
+            <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+                <div className={`${bgColor} border rounded-lg p-8`}>
+                    <StatusIcon size={48} className={`mx-auto ${iconColor} mb-4`} />
+                    <h2 className={`text-xl font-semibold ${textColor} mb-2`}>
+                        {isPending
+                            ? "Request Already Submitted"
+                            : "Organization Already Registered"}
+                    </h2>
+                    <p className={`text-sm ${subTextColor} mb-2`}>
+                        {isPending
+                            ? `Your organization "${existingRequest.orgName}" registration request is pending review by an administrator.`
+                            : `Your organization "${existingRequest.orgName}" has been approved.`}
+                    </p>
+                    <Button asChild variant="outline" className="mt-4">
+                        <Link href="/user/organization-requests">
+                            View Request Status
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     if (success) {
         return (

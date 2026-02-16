@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
-import { client } from "@/sanity/client";
 import { currentUser } from "@clerk/nextjs/server";
 import {
   getFormById,
   getUserByClerkId,
   getExistingResponse,
 } from "@/features/forms/services/formService";
+import {
+  createResponse,
+  processFormAnswers,
+} from "@/features/responses/services/responseService";
 
 export async function POST(request, { params }) {
   try {
@@ -44,77 +47,17 @@ export async function POST(request, { params }) {
     }
 
     // Process answers and upload files
-    const processedAnswers = await Promise.all(
-      Object.entries(answers).map(async ([key, value]) => {
-        const field = form.fields?.find((f) => f._key === key);
-        const fieldType = field?.type || "text";
-        const fieldLabel = field?.label || "Untitled Field";
-
-        // Handle file uploads
-        if (fieldType === "file") {
-          const file = formData.get(`file_${key}`);
-          if (file && file.size > 0) {
-            try {
-              // Upload file to Sanity
-              const asset = await client.assets.upload("file", file, {
-                filename: file.name,
-              });
-
-              return {
-                _key: key,
-                fieldId: key,
-                fieldType,
-                fieldLabel,
-                value: file.name,
-                fileAsset: {
-                  _type: "file",
-                  asset: {
-                    _type: "reference",
-                    _ref: asset._id,
-                  },
-                },
-              };
-            } catch (uploadError) {
-              console.error("File upload error:", uploadError);
-              return {
-                _key: key,
-                fieldId: key,
-                fieldType,
-                fieldLabel,
-                value: `Upload failed: ${file.name}`,
-              };
-            }
-          }
-        }
-
-        // Handle other field types
-        let processedValue = value;
-        if (typeof value === "object" && value !== null) {
-          processedValue = Array.isArray(value)
-            ? JSON.stringify(value)
-            : JSON.stringify(value);
-        } else {
-          processedValue = String(value ?? "");
-        }
-
-        return {
-          _key: key,
-          fieldId: key,
-          fieldType,
-          fieldLabel,
-          value: processedValue,
-        };
-      }),
+    const processedAnswers = await processFormAnswers(
+      answers,
+      form.fields,
+      formData,
     );
 
     // Create response
-    const response = await client.create({
-      _type: "response",
-      form: { _type: "reference", _ref: formId },
-      user: { _type: "reference", _ref: sanityUser._id },
+    const response = await createResponse({
+      formId,
+      userId: sanityUser._id,
       answers: processedAnswers,
-      submittedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     });
 
     return NextResponse.json(response, { status: 201 });

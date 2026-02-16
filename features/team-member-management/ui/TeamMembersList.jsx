@@ -40,31 +40,32 @@ export function TeamMembersList({ teamMembers, onRemove, ownerTeamMemberId }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {teamMembers.map((teamMember) => {
-              const isOwnerRow = teamMember._id === ownerTeamMemberId;
+            {teamMembers.map((entry) => {
+              const user = entry.user || {};
+              const isOwnerRow = user._id === ownerTeamMemberId;
               return (
                 <tr
-                  key={teamMember._id}
+                  key={entry._key}
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      {teamMember.avatar ? (
+                      {user.avatar ? (
                         <img
-                          src={teamMember.avatar}
-                          alt={teamMember.name}
+                          src={user.avatar}
+                          alt={user.name}
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                           <span className="text-sm font-medium text-blue-600">
-                            {teamMember.name?.charAt(0)?.toUpperCase() || "?"}
+                            {user.name?.charAt(0)?.toUpperCase() || "?"}
                           </span>
                         </div>
                       )}
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-gray-900">
-                          {teamMember.name}
+                          {user.name}
                         </span>
                         {isOwnerRow && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
@@ -77,19 +78,19 @@ export function TeamMembersList({ teamMembers, onRemove, ownerTeamMemberId }) {
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-gray-600">
-                      {teamMember.email}
+                      {user.email}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center gap-1.5 text-sm text-gray-600">
                       <FileText size={14} className="text-gray-400" />
-                      {teamMember.formCount || 0}
+                      {entry.formCount || 0}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-gray-500">
-                      {teamMember.createdAt
-                        ? new Date(teamMember.createdAt).toLocaleDateString()
+                      {entry.joinedAt
+                        ? new Date(entry.joinedAt).toLocaleDateString()
                         : "—"}
                     </span>
                   </td>
@@ -99,10 +100,10 @@ export function TeamMembersList({ teamMembers, onRemove, ownerTeamMemberId }) {
                         onClick={() => {
                           if (
                             confirm(
-                              `Remove ${teamMember.name} as a team member? This cannot be undone.`,
+                              `Remove ${user.name} as a team member? This cannot be undone.`,
                             )
                           ) {
-                            onRemove(teamMember._id);
+                            onRemove(user._id);
                           }
                         }}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"

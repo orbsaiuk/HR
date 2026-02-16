@@ -22,7 +22,9 @@ const orgRegistrationSchema = z.object({
     orgSize: z.string().optional(),
     contactEmail: z.string().email("Must be a valid email address"),
     contactPhone: z.string().optional(),
-    orgLogo: z.any().optional(),
+    orgLogo: z
+        .any()
+        .refine((val) => val instanceof File, { message: "Organization logo is required" }),
 });
 
 const defaultValues = {

@@ -5,6 +5,7 @@ import {
     createRequest,
     getRequestsByUser,
 } from "@/features/organization-requests/services/orgRequestService";
+import { uploadImageAsset } from "@/shared/services/assetService";
 
 /**
  * POST /api/organization-requests — Submit a new organization registration request
@@ -27,7 +28,35 @@ export async function POST(request) {
             );
         }
 
-        const data = await request.json();
+        const contentType = request.headers.get("content-type") || "";
+        let data = {};
+        let orgLogoAssetRef = undefined;
+
+        if (contentType.includes("multipart/form-data")) {
+            const formData = await request.formData();
+            data = Object.fromEntries(formData.entries());
+
+            const orgLogoFile = formData.get("orgLogo");
+            if (orgLogoFile && typeof orgLogoFile !== "string") {
+                const arrayBuffer = await orgLogoFile.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                const asset = await uploadImageAsset(buffer, {
+                    filename: orgLogoFile.name || "org-logo",
+                    contentType: orgLogoFile.type || undefined,
+                });
+                orgLogoAssetRef = asset?._id;
+            }
+
+            // Remove the file entry from data
+            delete data.orgLogo;
+
+            // Cast empty string values to undefined
+            Object.keys(data).forEach((key) => {
+                if (data[key] === "") data[key] = undefined;
+            });
+        } else {
+            data = await request.json();
+        }
 
         // Validate required fields
         if (!data.orgName || !data.contactEmail) {
@@ -37,7 +66,7 @@ export async function POST(request) {
             );
         }
 
-        const result = await createRequest(sanityUser._id, data);
+        const result = await createRequest(sanityUser._id, data, orgLogoAssetRef);
         return NextResponse.json(result, { status: 201 });
     } catch (error) {
         console.error("Error creating organization request:", error);

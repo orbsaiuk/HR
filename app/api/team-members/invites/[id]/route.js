@@ -4,7 +4,7 @@ import { deleteInvite } from "@/features/team-member-management/services/teamMem
 
 export async function DELETE(request, { params }) {
   try {
-    const { orgRole } = await resolveOrgContext();
+    const { orgId, orgRole } = await resolveOrgContext();
 
     // Only admins can delete invites
     if (orgRole !== "org:admin") {
@@ -12,7 +12,8 @@ export async function DELETE(request, { params }) {
     }
 
     const { id } = await params;
-    await deleteInvite(id);
+    // id is the _key of the invite entry in the embedded invites array
+    await deleteInvite(id, orgId);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting invite:", error);

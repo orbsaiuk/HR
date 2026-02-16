@@ -62,6 +62,12 @@ export const API_ENDPOINTS = {
   ORGANIZATION_BY_ID: (id) => `/api/organizations/${id}`,
   ORGANIZATION_MEMBERS: (id) => `/api/organizations/${id}/members`,
 
+  // Companies (public)
+  COMPANIES: "/api/companies",
+  COMPANY_BY_SLUG: (slug) => `/api/companies/${slug}`,
+  PLATFORM_STATS: "/api/platform/stats",
+  FEATURED_POSITIONS: "/api/platform/featured-positions",
+
   // Organization Requests
   ORG_REQUESTS: "/api/organization-requests",
   ORG_REQUEST_BY_ID: (id) => `/api/organization-requests/${id}`,

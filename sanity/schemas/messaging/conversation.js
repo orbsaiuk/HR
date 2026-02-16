@@ -7,7 +7,7 @@ export default {
             name: "teamMember",
             title: "Team Member",
             type: "reference",
-            to: [{ type: "teamMember" }],
+            to: [{ type: "user" }],
             validation: (Rule) => Rule.required(),
         },
         {

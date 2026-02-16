@@ -9,6 +9,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 import Link from "next/link";
 import { SignInButton } from "@clerk/nextjs";
+import Image from "next/image";
+import { urlFor } from "@/shared/lib/sanityImage";
 import {
   ArrowLeft,
   MapPin,
@@ -19,6 +21,7 @@ import {
   Users,
   ExternalLink,
   Lock,
+  ChevronRight,
 } from "lucide-react";
 
 const TYPE_LABELS = {
@@ -77,6 +80,25 @@ export function CareerDetailPage({ positionId }) {
                 {position.title}
               </h1>
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                {position.organizationName && (
+                  <Link
+                    href={position.organizationSlug ? `/companies/${position.organizationSlug}` : "#"}
+                    className="flex items-center gap-1.5 hover:text-blue-600 transition-colors"
+                  >
+                    {position.organizationLogo ? (
+                      <Image
+                        src={urlFor(position.organizationLogo).width(28).height(28).url()}
+                        alt=""
+                        width={28}
+                        height={28}
+                        className="w-5 h-5 rounded object-cover"
+                      />
+                    ) : (
+                      <Building2 size={14} />
+                    )}
+                    {position.organizationName}
+                  </Link>
+                )}
                 {position.department && (
                   <span className="flex items-center gap-1.5">
                     <Building2 size={14} />
@@ -238,6 +260,41 @@ export function CareerDetailPage({ positionId }) {
                 </dl>
               </CardContent>
             </Card>
+
+            {/* Company Info */}
+            {position.organizationName && position.organizationSlug && (
+              <Card>
+                <CardContent className="pt-6">
+                  <Link
+                    href={`/companies/${position.organizationSlug}`}
+                    className="flex items-center gap-3 group/company"
+                  >
+                    {position.organizationLogo ? (
+                      <Image
+                        src={urlFor(position.organizationLogo).width(80).height(80).url()}
+                        alt={position.organizationName}
+                        width={80}
+                        height={80}
+                        className="w-12 h-12 rounded-lg object-cover border border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <Building2 size={20} className="text-blue-600" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground group-hover/company:text-blue-600 transition-colors truncate">
+                        {position.organizationName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        View company profile
+                      </p>
+                    </div>
+                    <ChevronRight size={16} className="text-muted-foreground" />
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
 
             {/* CTA */}
             {isLoaded && !isSignedIn ? (

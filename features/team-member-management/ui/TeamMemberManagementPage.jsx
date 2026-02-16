@@ -28,8 +28,8 @@ export function TeamMemberManagementPage() {
 
   useEffect(() => {
     if (teamMembers.length > 0) {
-      // The first team member in the list (sorted by createdAt asc) is the owner
-      setOwnerTeamMemberId(teamMembers[0]?._id);
+      // The first team member in the list (sorted by joinedAt asc) is the owner
+      setOwnerTeamMemberId(teamMembers[0]?.user?._id);
     }
   }, [teamMembers]);
 

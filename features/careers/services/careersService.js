@@ -1,10 +1,8 @@
 import { client } from "@/sanity/client";
+import { careerQueries } from "@/sanity/queries/recruitment";
 
 export async function checkApplicationExists(positionId, userId) {
-  return client.fetch(
-    `count(*[_type == "application" && jobPosition._ref == $positionId && applicant._ref == $userId]) > 0`,
-    { positionId, userId },
-  );
+  return client.fetch(careerQueries.checkApplicationExists, { positionId, userId });
 }
 
 export const careersService = {
