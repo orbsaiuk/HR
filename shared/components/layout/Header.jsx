@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/hooks/useAuth.js";
-import { UserButton, SignUpButton } from "@clerk/nextjs";
+import { UserButton, SignUpButton, useOrganizationList, useOrganization } from "@clerk/nextjs";
 import { Building2, Clock, MessageSquare, User } from "lucide-react";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
 import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequest";
@@ -12,7 +13,12 @@ export function Header() {
   const { isSignedIn, isTeamMember, isUser, isUserLoaded } = useAuth();
   const { unreadCount } = useUnreadCount(isSignedIn && isUser);
   const showOrgLink = isSignedIn && isUserLoaded && isUser && !isTeamMember;
-  const { requests, loading: orgRequestLoading } = useOrgRequest();
+  const { requests, loading: orgRequestLoading } = useOrgRequest(isSignedIn && isUserLoaded && isUser);
+  const { organization } = useOrganization();
+  const { userMemberships, setActive, isLoaded: isOrgListLoaded } = useOrganizationList({
+    userMemberships: { infinite: true },
+  });
+  const router = useRouter();
   const hasOrgRequest = showOrgLink && requests.some(
     (r) => r.status === "pending" || r.status === "approved"
   );
@@ -62,12 +68,32 @@ export function Header() {
 
               {/* Team member links */}
               {isSignedIn && isUserLoaded && isTeamMember && (
-                <Link
+                <a
                   href="/dashboard"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    // If org is already active, navigate directly
+                    if (organization) {
+                      router.push("/dashboard");
+                      return;
+                    }
+                    // Try to activate the user's organization first
+                    if (isOrgListLoaded && setActive && userMemberships?.data?.length) {
+                      try {
+                        await setActive({ organization: userMemberships.data[0].organization.id });
+                        window.location.href = "/dashboard";
+                      } catch (err) {
+                        console.error("Failed to activate organization:", err);
+                        router.push("/dashboard");
+                      }
+                    } else {
+                      router.push("/dashboard");
+                    }
+                  }}
                 >
                   Dashboard
-                </Link>
+                </a>
               )}
 
               {/* Regular user links */}

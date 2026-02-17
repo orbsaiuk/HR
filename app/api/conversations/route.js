@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { resolveOrgContext, OrgContextError } from "@/shared/lib/orgContext";
 import { currentUser } from "@clerk/nextjs/server";
 import {
   findOrCreateConversation,
@@ -19,9 +19,17 @@ export async function GET(request) {
 
     // Team members use org context
     if (role === "teamMember") {
-      const { teamMember, orgId } = await resolveOrgContext();
-      const conversations = await getConversations(role, teamMember._id, orgId);
-      return NextResponse.json(conversations);
+      try {
+        const { teamMember, orgId } = await resolveOrgContext();
+        const conversations = await getConversations(role, teamMember._id, orgId);
+        return NextResponse.json(conversations);
+      } catch (error) {
+        // If no organization is selected yet, return empty conversations
+        if (error instanceof OrgContextError) {
+          return NextResponse.json([]);
+        }
+        throw error;
+      }
     }
 
     // Regular users don't need org context

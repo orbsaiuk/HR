@@ -6,13 +6,18 @@ import { orgRequestApi } from "../api/orgRequestApi";
 /**
  * Hook to submit organization registration requests and fetch the user's requests.
  */
-export function useOrgRequest() {
+export function useOrgRequest(enabled = true) {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
     const fetchRequests = useCallback(async () => {
+        if (!enabled) {
+            setRequests([]);
+            setLoading(false);
+            return;
+        }
         try {
             setLoading(true);
             setError(null);
@@ -23,7 +28,7 @@ export function useOrgRequest() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [enabled]);
 
     useEffect(() => {
         fetchRequests();
