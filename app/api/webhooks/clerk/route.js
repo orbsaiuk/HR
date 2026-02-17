@@ -13,6 +13,7 @@ import {
 import {
   getUserByClerkId,
   createUser,
+  updateUser,
 } from "@/features/auth/services/userService";
 
 
@@ -223,16 +224,71 @@ async function handleMembershipDeleted(data) {
   return { message: "Team member removed from organization", orgId: organization._id };
 }
 
+/**
+ * Handle user.created event.
+ * Creates a new user document in Sanity when a user signs up via Clerk.
+ */
+async function handleUserCreated(data) {
+  const clerkId = data.id;
+  const email = data.email_addresses?.[0]?.email_address || "";
+  const name = [data.first_name, data.last_name].filter(Boolean).join(" ") || "";
+  const avatar = data.image_url || undefined;
+
+  // Check if user already exists (idempotency)
+  const existing = await getUserByClerkId(clerkId);
+  if (existing) {
+    return { message: "User already exists in Sanity", id: existing._id };
+  }
+
+  const userDoc = await createUser({ clerkId, name, email, avatar });
+  return { message: "User created in Sanity", id: userDoc._id };
+}
+
+/**
+ * Handle user.updated event.
+ * Updates the existing user document in Sanity when user profile changes in Clerk.
+ */
+async function handleUserUpdated(data) {
+  const clerkId = data.id;
+  const email = data.email_addresses?.[0]?.email_address || "";
+  const name = [data.first_name, data.last_name].filter(Boolean).join(" ") || "";
+  const avatar = data.image_url || undefined;
+
+  let userDoc = await getUserByClerkId(clerkId);
+
+  if (!userDoc) {
+    // User doesn't exist yet — create it
+    userDoc = await createUser({ clerkId, name, email, avatar });
+    return { message: "User created in Sanity (via user.updated)", id: userDoc._id };
+  }
+
+  // Update fields that have changed
+  const updates = {};
+  if (name && userDoc.name !== name) updates.name = name;
+  if (email && userDoc.email !== email) updates.email = email;
+  if (avatar && userDoc.avatar !== avatar) updates.avatar = avatar;
+
+  if (Object.keys(updates).length > 0) {
+    await updateUser(userDoc._id, updates);
+  }
+
+  return { message: "User updated in Sanity", id: userDoc._id };
+}
+
 export async function POST(req) {
   try {
     const evt = await verifyWebhook(req);
     const { type, data } = evt;
 
-    console.log(`[Clerk Webhook] Received event: ${type}`, JSON.stringify(data, null, 2));
-
     let result;
 
     switch (type) {
+      case "user.created":
+        result = await handleUserCreated(data);
+        break;
+      case "user.updated":
+        result = await handleUserUpdated(data);
+        break;
       case "organization.created":
         result = await handleOrganizationCreated(data);
         break;
@@ -248,21 +304,10 @@ export async function POST(req) {
       case "organizationMembership.deleted":
         result = await handleMembershipDeleted(data);
         break;
-      case "user.created":
-      case "user.updated":
-        console.log(`[Clerk Webhook] >>> ${type} event received but NO HANDLER exists. User data:`, {
-          id: data.id,
-          email: data.email_addresses?.[0]?.email_address,
-          name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
-        });
-        result = { message: `DEBUG: ${type} received but not handled — this is the bug!` };
-        break;
       default:
-        console.log(`[Clerk Webhook] Unhandled event type: ${type}`);
         result = { message: `Unhandled event type: ${type}` };
     }
 
-    console.log(`[Clerk Webhook] Result for ${type}:`, result);
     return NextResponse.json({ success: true, ...result });
   } catch (error) {
     console.error("Clerk webhook error:", error);
