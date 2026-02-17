@@ -11,13 +11,9 @@ import { OrgRegistrationSubmitBar } from "./OrgRegistrationSubmitBar";
 
 const orgRegistrationSchema = z.object({
     orgName: z.string().min(2, "Organization name must be at least 2 characters"),
-    orgSlug: z
-        .string()
-        .regex(/^[a-z0-9-]*$/, "Slug must contain only lowercase letters, numbers, and hyphens")
-        .optional()
-        .or(z.literal("")),
     orgDescription: z.string().optional(),
     orgWebsite: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+    orgLocation: z.string().optional(),
     orgIndustry: z.string().optional(),
     orgSize: z.string().optional(),
     contactEmail: z.string().email("Must be a valid email address"),
@@ -29,9 +25,9 @@ const orgRegistrationSchema = z.object({
 
 const defaultValues = {
     orgName: "",
-    orgSlug: "",
     orgDescription: "",
     orgWebsite: "",
+    orgLocation: "",
     orgIndustry: "",
     orgSize: "",
     contactEmail: "",
@@ -48,8 +44,8 @@ export function OrgRegistrationForm({ onSubmit, submitting }) {
     const handleSubmit = methods.handleSubmit((data) => {
         // Clean up empty optional fields
         const cleaned = { ...data };
-        if (!cleaned.orgSlug) delete cleaned.orgSlug;
         if (!cleaned.orgWebsite) delete cleaned.orgWebsite;
+        if (!cleaned.orgLocation) delete cleaned.orgLocation;
         if (!cleaned.orgIndustry) delete cleaned.orgIndustry;
         if (!cleaned.orgSize) delete cleaned.orgSize;
         if (!cleaned.contactPhone) delete cleaned.contactPhone;

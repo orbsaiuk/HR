@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -12,18 +13,25 @@ import {
   X,
   Users,
   Briefcase,
+  Building2,
+  Home,
 } from "lucide-react";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
 import { useIsOwner } from "@/features/team-member-management";
+import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
+import { urlFor } from "@/shared/lib/sanityImage";
 import { Button } from "@/components/ui/button";
 
 export function DashboardHeader() {
   const { unreadCount } = useUnreadCount();
   const { isOwner } = useIsOwner();
+  const { org } = useCurrentOrg();
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const logoUrl = org?.logo ? urlFor(org.logo).width(64).height(64).url() : null;
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -45,12 +53,22 @@ export function DashboardHeader() {
       <div className="flex items-center justify-between h-14 px-4 lg:px-6">
         {/* Left: Logo + Nav */}
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <FileText className="text-white" size={18} />
-            </div>
+          <Link href="/dashboard" className="flex items-center gap-2 shrink-0">
+            {logoUrl ? (
+              <Image
+                src={logoUrl}
+                alt={org?.name || "Organization"}
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Building2 className="text-white" size={18} />
+              </div>
+            )}
             <span className="font-bold text-lg text-gray-900 hidden sm:block">
-              FormBuilder
+              {org?.name || "Dashboard"}
             </span>
           </Link>
 
@@ -85,8 +103,15 @@ export function DashboardHeader() {
           </nav>
         </div>
 
-        {/* Right: New Position + User */}
+        {/* Right: Home + New Position + User */}
         <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="text-gray-500 hover:text-gray-900 transition-colors p-2 rounded-md hover:bg-gray-100"
+            title="Go to Home"
+          >
+            <Home size={18} />
+          </Link>
           <Button size="sm" asChild className="hidden sm:inline-flex">
             <Link href="/dashboard/positions/create">
               <Plus size={16} className="mr-1.5" />

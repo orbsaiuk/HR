@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { ImageIcon, Upload, X } from "lucide-react";
 /* eslint-disable @next/next/no-img-element */
 
@@ -48,7 +50,7 @@ export function OrgLogoUpload() {
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <ImageIcon size={18} />
                     Organization Logo
-                    <span className="text-red-500">*</span>
+                    <span className="text-destructive">*</span>
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -58,32 +60,33 @@ export function OrgLogoUpload() {
                             <img
                                 src={preview}
                                 alt="Logo preview"
-                                className="w-20 h-20 rounded-lg object-cover border border-gray-200"
+                                className="w-20 h-20 rounded-lg object-contain border"
                             />
                             <button
                                 type="button"
                                 onClick={handleRemove}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"
+                                className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-0.5 hover:bg-destructive/90"
                             >
                                 <X size={14} />
                             </button>
                         </div>
                     ) : (
-                        <div className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">
+                        <div className="w-20 h-20 rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center text-muted-foreground">
                             <ImageIcon size={24} />
                         </div>
                     )}
 
-                    <div>
-                        <button
+                    <div className="space-y-1">
+                        <Button
                             type="button"
+                            variant="outline"
+                            size="sm"
                             onClick={() => fileInputRef.current?.click()}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                         >
-                            <Upload size={16} />
+                            <Upload size={16} className="mr-2" />
                             {preview ? "Change Logo" : "Upload Logo"}
-                        </button>
-                        <p className="text-xs text-gray-500 mt-1">
+                        </Button>
+                        <p className="text-xs text-muted-foreground">
                             PNG, JPG, or SVG. Max 2MB.
                         </p>
                         <input
@@ -96,7 +99,7 @@ export function OrgLogoUpload() {
                     </div>
                 </div>
                 {errors.orgLogo && (
-                    <p className="text-sm text-red-500 mt-2">
+                    <p className="text-sm text-destructive mt-2">
                         {errors.orgLogo.message}
                     </p>
                 )}

@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Building2, Plus } from "lucide-react";
+import { useOrganizationList } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
@@ -12,9 +15,36 @@ import { RequestStatusCard } from "./components/request-status/RequestStatusCard
 /**
  * Orchestrator page for viewing organization request status.
  * Shows the list of user's requests with their statuses.
+ * Auto-redirects to dashboard when the latest request is approved.
  */
 export function OrgRequestStatusPage() {
     const { requests, loading, error, refetch } = useOrgRequest();
+    const router = useRouter();
+    const { userMemberships, setActive, isLoaded: isOrgListLoaded } = useOrganizationList({
+        userMemberships: { infinite: true },
+    });
+
+    const hasApproved = !loading && requests.length > 0 && requests[0]?.status === "approved";
+
+    // Auto-redirect to dashboard when the latest request is approved
+    useEffect(() => {
+        if (!hasApproved || !isOrgListLoaded) return;
+
+        async function activateAndRedirect() {
+            try {
+                const membership = userMemberships?.data?.[0];
+                if (membership && setActive) {
+                    await setActive({ organization: membership.organization.id });
+                }
+                window.location.href = "/dashboard";
+            } catch (err) {
+                console.error("Failed to activate organization:", err);
+                window.location.href = "/dashboard";
+            }
+        }
+
+        activateAndRedirect();
+    }, [hasApproved, isOrgListLoaded, userMemberships, setActive]);
 
     if (loading) return <Loading fullPage />;
     if (error) return <Error message={error} onRetry={refetch} />;

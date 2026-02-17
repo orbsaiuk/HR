@@ -20,9 +20,13 @@ export function Header() {
     userMemberships: { infinite: true },
   });
   const router = useRouter();
-  const hasOrgRequest = showOrgLink && requests.some(
-    (r) => r.status === "pending" || r.status === "approved"
+  const hasPendingRequest = showOrgLink && requests.some(
+    (r) => r.status === "pending"
   );
+  const hasApprovedRequest = showOrgLink && requests.some(
+    (r) => r.status === "approved"
+  );
+  const hasOrgRequest = hasPendingRequest || hasApprovedRequest;
   // While org request data is loading for a signed-in user, hide conditional nav to prevent flash
   const isNavReady = !isSignedIn || !isUserLoaded || !isUser || !orgRequestLoading;
 
@@ -46,9 +50,30 @@ export function Header() {
               >
                 Browse Jobs
               </Link>
-              {/* Organization link — show request status or register option */}
+              {/* Organization link — show dashboard, request status, or register option */}
               {showOrgLink && (
-                hasOrgRequest ? (
+                hasApprovedRequest ? (
+                  <a
+                    href="/dashboard"
+                    className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1 cursor-pointer"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      if (isOrgListLoaded && setActive && userMemberships?.data?.length) {
+                        try {
+                          await setActive({ organization: userMemberships.data[0].organization.id });
+                          window.location.href = "/dashboard";
+                        } catch (err) {
+                          console.error("Failed to activate organization:", err);
+                          router.push("/dashboard");
+                        }
+                      } else {
+                        router.push("/dashboard");
+                      }
+                    }}
+                  >
+                    Dashboard
+                  </a>
+                ) : hasPendingRequest ? (
                   <Link
                     href="/user/organization-requests"
                     className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1"

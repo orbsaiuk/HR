@@ -26,10 +26,8 @@ export async function createRequest(userId, data, orgLogoAssetRef) {
     contactEmail: data.contactEmail,
     contactPhone: data.contactPhone || undefined,
     orgName: data.orgName,
-    orgSlug: data.orgSlug
-      ? { _type: "slug", current: data.orgSlug }
-      : undefined,
     orgDescription: data.orgDescription || undefined,
+    orgLocation: data.orgLocation || undefined,
     orgWebsite: data.orgWebsite || undefined,
     orgIndustry: data.orgIndustry || undefined,
     orgSize: data.orgSize || undefined,
@@ -50,7 +48,7 @@ export async function getRequestById(id) {
   return clientRead.fetch(orgRequestQueries.getById, { id });
 }
 
-export async function approveRequest(id, adminInfo) {
+export async function approveRequest(id, adminInfo, orgSlug) {
   const request = await clientRead.fetch(orgRequestQueries.getById, { id });
 
   if (!request) {
@@ -90,20 +88,26 @@ export async function approveRequest(id, adminInfo) {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
+  // Resolve the slug: prefer the one passed during approval, fall back to auto-generated
+  const resolvedSlug = orgSlug
+    ? { _type: "slug", current: orgSlug }
+    : {
+      _type: "slug",
+      current: request.orgName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, ""),
+    };
+
   if (!sanityOrg) {
     // Webhook hasn't fired yet — create the org ourselves
     sanityOrg = await client.create({
       _type: "organization",
       name: request.orgName,
-      slug: request.orgSlug || {
-        _type: "slug",
-        current: request.orgName
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)/g, ""),
-      },
+      slug: resolvedSlug,
       clerkOrgId: clerkOrg.id,
       description: request.orgDescription || "",
+      location: request.orgLocation || undefined,
       website: request.orgWebsite || undefined,
       industry: request.orgIndustry || undefined,
       size: request.orgSize || undefined,
@@ -125,8 +129,9 @@ export async function approveRequest(id, adminInfo) {
         invites: [],
       })
       .set({
-        slug: request.orgSlug || undefined,
+        slug: resolvedSlug,
         description: request.orgDescription || "",
+        location: request.orgLocation || undefined,
         website: request.orgWebsite || undefined,
         industry: request.orgIndustry || undefined,
         size: request.orgSize || undefined,

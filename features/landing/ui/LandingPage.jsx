@@ -11,6 +11,9 @@ import {
     CheckCircle,
     Building2,
     Users,
+    Briefcase,
+    BarChart3,
+    MessageSquare,
 } from "lucide-react";
 
 const CANDIDATE_STEPS = [
@@ -61,25 +64,66 @@ const EMPLOYER_STEPS = [
     },
 ];
 
-export function LandingPage() {
+const TEAM_MEMBER_STEPS = [
+    {
+        icon: Briefcase,
+        title: "Post Positions",
+        description:
+            "Create and publish job listings with custom application forms, requirements, and salary details.",
+        color: "bg-blue-50 text-blue-600",
+    },
+    {
+        icon: MessageSquare,
+        title: "Review & Communicate",
+        description:
+            "Evaluate candidates with scorecards, collaborate with your team, and message applicants directly.",
+        color: "bg-indigo-50 text-indigo-600",
+    },
+    {
+        icon: BarChart3,
+        title: "Track & Hire",
+        description:
+            "Monitor your hiring pipeline with analytics, manage application statuses, and make data-driven decisions.",
+        color: "bg-green-50 text-green-600",
+    },
+];
+
+export function LandingPage({ isTeamMember = false, isSignedIn = false }) {
     return (
         <>
             <HeroSection />
             <FeaturedJobs />
-            <HowItWorks title="How It Works" steps={CANDIDATE_STEPS} />
-            <ForEmployersSection />
-            <HowItWorks
-                title="Get Started in 3 Steps"
-                steps={EMPLOYER_STEPS}
-            />
+            {isTeamMember ? (
+                <HowItWorks title="Your Hiring Workflow" steps={TEAM_MEMBER_STEPS} />
+            ) : (
+                <>
+                    <HowItWorks title="How It Works" steps={CANDIDATE_STEPS} />
+                    <ForEmployersSection />
+                    <HowItWorks
+                        title="Get Started in 3 Steps"
+                        steps={EMPLOYER_STEPS}
+                    />
+                </>
+            )}
             <CTABanner
                 title="Ready to Get Started?"
-                description="Whether you're looking for your next role or hiring top talent, HireHub has you covered."
-                primaryAction={{ label: "Browse Jobs", href: "/careers" }}
-                secondaryAction={{
-                    label: "Register Your Company",
-                    href: "/register-organization",
-                }}
+                description={
+                    isTeamMember
+                        ? "Manage your team, post positions, and find the best talent for your organization."
+                        : "Whether you're looking for your next role or hiring top talent, HireHub has you covered."
+                }
+                primaryAction={
+                    isTeamMember
+                        ? { label: "Go to Dashboard", href: "/dashboard" }
+                        : { label: "Browse Jobs", href: "/careers" }
+                }
+                secondaryAction={
+                    isTeamMember
+                        ? { label: "Browse Jobs", href: "/careers" }
+                        : isSignedIn
+                            ? null
+                            : { label: "Register Your Company", href: "/register-organization" }
+                }
                 variant="blue"
             />
         </>

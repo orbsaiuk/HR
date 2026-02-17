@@ -49,6 +49,12 @@ export default {
             type: "text",
         },
         {
+            name: "orgLocation",
+            title: "Organization Location",
+            type: "string",
+            description: "Headquarters location",
+        },
+        {
             name: "orgWebsite",
             title: "Organization Website",
             type: "url",

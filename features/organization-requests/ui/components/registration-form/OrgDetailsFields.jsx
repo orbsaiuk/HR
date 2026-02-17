@@ -1,7 +1,16 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Settings } from "lucide-react";
 
 const INDUSTRY_OPTIONS = [
@@ -33,6 +42,7 @@ const SIZE_OPTIONS = [
 export function OrgDetailsFields() {
     const {
         register,
+        control,
         formState: { errors },
     } = useFormContext();
 
@@ -45,63 +55,100 @@ export function OrgDetailsFields() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Website
-                    </label>
-                    <input
+                <div className="space-y-2">
+                    <Label htmlFor="orgLocation">Location</Label>
+                    <Input
+                        id="orgLocation"
+                        {...register("orgLocation")}
+                        placeholder="e.g. New York, NY, USA"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                        Headquarters or primary office location.
+                    </p>
+                    {errors.orgLocation && (
+                        <p className="text-xs text-destructive">
+                            {errors.orgLocation.message}
+                        </p>
+                    )}
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="orgWebsite">Website</Label>
+                    <Input
+                        id="orgWebsite"
                         {...register("orgWebsite")}
                         type="url"
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                         placeholder="https://www.yourcompany.com"
                     />
                     {errors.orgWebsite && (
-                        <p className="text-xs text-red-600 mt-1">
+                        <p className="text-xs text-destructive">
                             {errors.orgWebsite.message}
                         </p>
                     )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Industry
-                        </label>
-                        <select
-                            {...register("orgIndustry")}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white"
-                        >
-                            <option value="">Select industry...</option>
-                            {INDUSTRY_OPTIONS.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="space-y-2">
+                        <Label>Industry</Label>
+                        <Controller
+                            name="orgIndustry"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select industry..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {INDUSTRY_OPTIONS.map((opt) => (
+                                            <SelectItem
+                                                key={opt.value}
+                                                value={opt.value}
+                                            >
+                                                {opt.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                         {errors.orgIndustry && (
-                            <p className="text-xs text-red-600 mt-1">
+                            <p className="text-xs text-destructive">
                                 {errors.orgIndustry.message}
                             </p>
                         )}
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Organization Size
-                        </label>
-                        <select
-                            {...register("orgSize")}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white"
-                        >
-                            <option value="">Select size...</option>
-                            {SIZE_OPTIONS.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="space-y-2">
+                        <Label>Organization Size</Label>
+                        <Controller
+                            name="orgSize"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select size..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {SIZE_OPTIONS.map((opt) => (
+                                            <SelectItem
+                                                key={opt.value}
+                                                value={opt.value}
+                                            >
+                                                {opt.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                         {errors.orgSize && (
-                            <p className="text-xs text-red-600 mt-1">
+                            <p className="text-xs text-destructive">
                                 {errors.orgSize.message}
                             </p>
                         )}

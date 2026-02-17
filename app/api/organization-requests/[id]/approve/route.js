@@ -15,7 +15,9 @@ export async function POST(request, { params }) {
             email: body.adminEmail || undefined,
         };
 
-        const result = await approveRequest(id, adminInfo);
+        const orgSlug = body.orgSlug || undefined;
+
+        const result = await approveRequest(id, adminInfo, orgSlug);
         return NextResponse.json(result);
     } catch (error) {
         console.error("Error approving organization request:", error);

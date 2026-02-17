@@ -2,6 +2,8 @@
 
 import { useFormContext } from "react-hook-form";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Mail } from "lucide-react";
 
 /**
@@ -24,35 +26,33 @@ export function OrgContactFields() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Contact Email <span className="text-red-500">*</span>
-                        </label>
-                        <input
+                    <div className="space-y-2">
+                        <Label htmlFor="contactEmail">
+                            Contact Email <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                            id="contactEmail"
                             {...register("contactEmail")}
                             type="email"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                             placeholder="admin@yourcompany.com"
                         />
                         {errors.contactEmail && (
-                            <p className="text-xs text-red-600 mt-1">
+                            <p className="text-xs text-destructive">
                                 {errors.contactEmail.message}
                             </p>
                         )}
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Contact Phone
-                        </label>
-                        <input
+                    <div className="space-y-2">
+                        <Label htmlFor="contactPhone">Contact Phone</Label>
+                        <Input
+                            id="contactPhone"
                             {...register("contactPhone")}
                             type="tel"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                             placeholder="+1 (555) 123-4567"
                         />
                         {errors.contactPhone && (
-                            <p className="text-xs text-red-600 mt-1">
+                            <p className="text-xs text-destructive">
                                 {errors.contactPhone.message}
                             </p>
                         )}
