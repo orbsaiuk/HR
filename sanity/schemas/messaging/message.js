@@ -2,6 +2,21 @@ export default {
   name: "message",
   title: "Message",
   type: "document",
+  preview: {
+    select: {
+      senderName: "sender.name",
+      recipientName: "recipient.name",
+      content: "content",
+      createdAt: "createdAt",
+    },
+    prepare({ senderName, recipientName, content, createdAt }) {
+      const truncatedContent = content ? content.substring(0, 50) + (content.length > 50 ? "..." : "") : "No content";
+      return {
+        title: `${senderName || "Unknown"} → ${recipientName || "Unknown"}`,
+        subtitle: `${truncatedContent} • ${createdAt ? new Date(createdAt).toLocaleDateString() : ""}`,
+      };
+    },
+  },
   fields: [
     {
       name: "conversationId",

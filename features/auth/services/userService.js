@@ -20,6 +20,19 @@ export async function createUser({ clerkId, name, email, avatar }) {
   });
 }
 
+/**
+ * Update an existing user document in Sanity
+ */
+export async function updateUser(userId, { name, email, avatar }) {
+  const patches = {};
+  if (name !== undefined) patches.name = name;
+  if (email !== undefined) patches.email = email;
+  if (avatar !== undefined) patches.avatar = avatar;
+  patches.updatedAt = new Date().toISOString();
+
+  return client.patch(userId).set(patches).commit();
+}
+
 export async function getUserApplications(userId) {
   return client.fetch(userProfileQueries.getUserApplications, { userId });
 }
@@ -38,6 +51,7 @@ export async function getLegacyTeacher(clerkId) {
 export const userService = {
   getUserByClerkId,
   createUser,
+  updateUser,
   getUserApplications,
   getUserApplication,
   getLegacyTeacher,

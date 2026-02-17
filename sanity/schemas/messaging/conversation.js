@@ -2,6 +2,21 @@ export default {
     name: "conversation",
     title: "Conversation",
     type: "document",
+    preview: {
+        select: {
+            teamMemberName: "teamMember.name",
+            userName: "user.name",
+            lastMessageAt: "lastMessageAt",
+        },
+        prepare({ teamMemberName, userName, lastMessageAt }) {
+            return {
+                title: `${teamMemberName || "Team Member"} ↔ ${userName || "User"}`,
+                subtitle: lastMessageAt
+                    ? `Last message: ${new Date(lastMessageAt).toLocaleDateString()}`
+                    : "No messages yet",
+            };
+        },
+    },
     fields: [
         {
             name: "teamMember",

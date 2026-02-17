@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import {
   getUserByClerkId,
   createUser,
+  updateUser,
 } from "@/features/auth/services/userService";
 import {
   getOrganizationByClerkOrgId,
@@ -39,7 +40,10 @@ async function getUserOrganization(clerkUserId) {
 export async function POST() {
   const user = await currentUser();
 
+  console.log("[Auth Sync] POST called, user:", user?.id, user?.emailAddresses?.[0]?.emailAddress);
+
   if (!user) {
+    console.log("[Auth Sync] No user found (unauthorized)");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -48,14 +52,37 @@ export async function POST() {
 
   // 1. Ensure user document exists in Sanity
   let sanityUser = await getUserByClerkId(user.id);
+  console.log("[Auth Sync] Existing sanity user:", sanityUser?._id, "for clerkId:", user.id);
 
   if (!sanityUser) {
-    sanityUser = await createUser({
-      clerkId: user.id,
-      name: user.fullName || "",
-      email: userEmail,
-      avatar: user.imageUrl,
-    });
+    console.log("[Auth Sync] Creating new user in Sanity:", { clerkId: user.id, name: user.fullName, email: userEmail });
+    try {
+      sanityUser = await createUser({
+        clerkId: user.id,
+        name: user.fullName || "",
+        email: userEmail,
+        avatar: user.imageUrl,
+      });
+      console.log("[Auth Sync] User created successfully:", sanityUser?._id);
+    } catch (err) {
+      console.error("[Auth Sync] FAILED to create user in Sanity:", err);
+      return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    }
+  } else {
+    // Update avatar and other fields if they've changed
+    const updates = {};
+    if (user.imageUrl && sanityUser.avatar !== user.imageUrl) {
+      updates.avatar = user.imageUrl;
+    }
+    if (user.fullName && sanityUser.name !== user.fullName) {
+      updates.name = user.fullName;
+    }
+    if (userEmail && sanityUser.email !== userEmail) {
+      updates.email = userEmail;
+    }
+    if (Object.keys(updates).length > 0) {
+      await updateUser(sanityUser._id, updates);
+    }
   }
 
   // 2. Get the user's organization from Clerk membership

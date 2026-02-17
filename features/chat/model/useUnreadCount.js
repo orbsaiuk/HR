@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { chatApi } from '../api/chatApi';
 
-export function useUnreadCount(enabled = true) {
+export function useUnreadCount(enabled = false) {
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(true);
 

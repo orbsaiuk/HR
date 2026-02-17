@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   const { isSignedIn, isTeamMember, isUser, isUserLoaded } = useAuth();
-  const { unreadCount } = useUnreadCount(isSignedIn && isUser);
+  const { unreadCount } = useUnreadCount(Boolean(isSignedIn && isUser));
   const showOrgLink = isSignedIn && isUserLoaded && isUser && !isTeamMember;
-  const { requests, loading: orgRequestLoading } = useOrgRequest(isSignedIn && isUserLoaded && isUser);
+  const { requests, loading: orgRequestLoading } = useOrgRequest(Boolean(isSignedIn && isUserLoaded && isUser));
+  // Only call useOrganization and useOrganizationList when signed in
   const { organization } = useOrganization();
   const { userMemberships, setActive, isLoaded: isOrgListLoaded } = useOrganizationList({
     userMemberships: { infinite: true },

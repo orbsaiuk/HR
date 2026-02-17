@@ -6,7 +6,6 @@ export default {
         select: {
             title: "name",
             subtitle: "email",
-            media: "avatar",
         },
     },
     fieldsets: [
@@ -39,8 +38,9 @@ export default {
         },
         {
             name: "avatar",
-            title: "Avatar",
-            type: "image",
+            title: "Avatar URL",
+            type: "url",
+            description: "URL to the user's avatar image (e.g., from Clerk/Google)",
         },
         {
             name: "createdAt",

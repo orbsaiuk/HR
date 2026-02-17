@@ -6,7 +6,7 @@ import { orgRequestApi } from "../api/orgRequestApi";
 /**
  * Hook to submit organization registration requests and fetch the user's requests.
  */
-export function useOrgRequest(enabled = true) {
+export function useOrgRequest(enabled = false) {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

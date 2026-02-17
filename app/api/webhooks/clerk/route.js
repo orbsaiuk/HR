@@ -228,6 +228,8 @@ export async function POST(req) {
     const evt = await verifyWebhook(req);
     const { type, data } = evt;
 
+    console.log(`[Clerk Webhook] Received event: ${type}`, JSON.stringify(data, null, 2));
+
     let result;
 
     switch (type) {
@@ -246,10 +248,21 @@ export async function POST(req) {
       case "organizationMembership.deleted":
         result = await handleMembershipDeleted(data);
         break;
+      case "user.created":
+      case "user.updated":
+        console.log(`[Clerk Webhook] >>> ${type} event received but NO HANDLER exists. User data:`, {
+          id: data.id,
+          email: data.email_addresses?.[0]?.email_address,
+          name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
+        });
+        result = { message: `DEBUG: ${type} received but not handled — this is the bug!` };
+        break;
       default:
+        console.log(`[Clerk Webhook] Unhandled event type: ${type}`);
         result = { message: `Unhandled event type: ${type}` };
     }
 
+    console.log(`[Clerk Webhook] Result for ${type}:`, result);
     return NextResponse.json({ success: true, ...result });
   } catch (error) {
     console.error("Clerk webhook error:", error);
