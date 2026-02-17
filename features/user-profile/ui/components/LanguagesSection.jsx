@@ -1,8 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Languages, Plus, Trash2 } from "lucide-react";
 
 const PROFICIENCY_OPTIONS = [
@@ -17,12 +28,11 @@ const PROFICIENCY_LABELS = Object.fromEntries(
 );
 
 const PROFICIENCY_COLORS = {
-    native: "bg-green-100 text-green-700",
-    fluent: "bg-blue-100 text-blue-700",
-    intermediate: "bg-yellow-100 text-yellow-700",
-    basic: "bg-gray-100 text-gray-700",
+    native: "bg-green-100 text-green-700 border-green-200",
+    fluent: "bg-blue-100 text-blue-700 border-blue-200",
+    intermediate: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    basic: "bg-gray-100 text-gray-700 border-gray-200",
 };
-
 
 export function LanguagesSection({ languages = [], editable = false, onChange }) {
     const [adding, setAdding] = useState(false);
@@ -41,10 +51,20 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
         setNewLang("");
         setNewProf("intermediate");
         setAdding(false);
+        toast.success(`Language "${trimmed}" added successfully`);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleAdd();
+        }
     };
 
     const handleRemove = (index) => {
+        const removed = languages[index];
         onChange?.(languages.filter((_, i) => i !== index));
+        toast.success(`Language "${removed?.language}" removed — save to commit`);
     };
 
     return (
@@ -55,7 +75,7 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
                     Languages
                 </CardTitle>
                 {editable && !adding && (
-                    <Button variant="outline" size="sm" onClick={() => setAdding(true)}>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setAdding(true)}>
                         <Plus size={14} className="mr-1" />
                         Add
                     </Button>
@@ -63,40 +83,37 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
             </CardHeader>
             <CardContent>
                 {adding && (
-                    <div className="flex flex-wrap gap-2 mb-3 items-end border border-gray-200 rounded-lg p-3 bg-gray-50">
-                        <div className="flex-1 min-w-[140px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Language
-                            </label>
-                            <input
-                                type="text"
+                    <div className="flex flex-wrap gap-3 mb-4 items-end rounded-lg border border-border bg-muted/40 p-4">
+                        <div className="flex-1 min-w-[160px] space-y-1.5">
+                            <Label htmlFor="newLang">Language</Label>
+                            <Input
+                                id="newLang"
                                 value={newLang}
                                 onChange={(e) => setNewLang(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+                                onKeyDown={handleKeyDown}
                                 placeholder="e.g. English"
                             />
                         </div>
-                        <div className="min-w-[140px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Proficiency
-                            </label>
-                            <select
-                                value={newProf}
-                                onChange={(e) => setNewProf(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                            >
-                                {PROFICIENCY_OPTIONS.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="min-w-[160px] space-y-1.5">
+                            <Label>Proficiency</Label>
+                            <Select value={newProf} onValueChange={setNewProf} >
+                                <SelectTrigger className="mb-0">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {PROFICIENCY_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="flex gap-2">
-                            <Button size="sm" onClick={handleAdd} disabled={!newLang.trim()}>
+                            <Button type="button" size="sm" onClick={handleAdd} disabled={!newLang.trim()}>
                                 Save
                             </Button>
-                            <Button variant="outline" size="sm" onClick={() => setAdding(false)}>
+                            <Button type="button" variant="outline" size="sm" onClick={() => setAdding(false)}>
                                 Cancel
                             </Button>
                         </div>
@@ -108,31 +125,35 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
                         {languages.map((lang, idx) => (
                             <div
                                 key={lang._key || idx}
-                                className="flex items-center justify-between py-1"
+                                className="flex items-center justify-between rounded-md border border-border px-3 py-2"
                             >
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm font-medium text-gray-900">
+                                    <span className="text-sm font-medium">
                                         {lang.language}
                                     </span>
-                                    <span
-                                        className={`text-xs px-2 py-0.5 rounded-full ${PROFICIENCY_COLORS[lang.proficiency] || PROFICIENCY_COLORS.basic}`}
+                                    <Badge
+                                        variant="outline"
+                                        className={`text-xs ${PROFICIENCY_COLORS[lang.proficiency] || PROFICIENCY_COLORS.basic}`}
                                     >
                                         {PROFICIENCY_LABELS[lang.proficiency] || lang.proficiency}
-                                    </span>
+                                    </Badge>
                                 </div>
                                 {editable && (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
                                         onClick={() => handleRemove(idx)}
-                                        className="p-1 text-gray-400 hover:text-red-600"
                                     >
                                         <Trash2 size={14} />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-gray-400">No languages added yet.</p>
+                    <p className="text-sm text-muted-foreground">No languages added yet.</p>
                 )}
             </CardContent>
         </Card>

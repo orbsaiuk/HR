@@ -21,7 +21,7 @@ export function ProfileCompletionBanner() {
     if (loading || orgLoading || isComplete || hasOrgRequest) return null;
 
     return (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3 mb-6">
             <AlertCircle size={20} className="text-blue-600 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-1">

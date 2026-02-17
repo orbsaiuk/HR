@@ -11,7 +11,7 @@ export const userProfileQueries = {
    */
   getFullProfile: `*[_type == "user" && clerkId == $clerkId][0] {
     ...,
-    "resumeUrl": resume.asset->url
+    "uploadedResumeUrl": resume.asset->url
   }`,
 
   /**
@@ -19,7 +19,7 @@ export const userProfileQueries = {
    */
   getProfileById: `*[_type == "user" && _id == $userId][0] {
     ...,
-    "resumeUrl": resume.asset->url
+    "uploadedResumeUrl": resume.asset->url
   }`,
 
   /**

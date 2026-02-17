@@ -69,6 +69,24 @@ export function useUserProfile() {
         }
     }, []);
 
+    /**
+     * Remove the uploaded resume file.
+     */
+    const removeResume = useCallback(async () => {
+        try {
+            setSaving(true);
+            setError(null);
+            const updated = await userProfileApi.removeResume();
+            setProfile(updated);
+            return updated;
+        } catch (err) {
+            setError(err.message || "Failed to remove resume");
+            throw err;
+        } finally {
+            setSaving(false);
+        }
+    }, []);
+
     return {
         profile,
         loading,
@@ -76,6 +94,7 @@ export function useUserProfile() {
         saving,
         updateProfile,
         uploadResume,
+        removeResume,
         refetch: fetchProfile,
     };
 }

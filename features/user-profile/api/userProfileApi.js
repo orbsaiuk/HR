@@ -38,6 +38,22 @@ export const userProfileApi = {
     },
 
     /**
+     * Remove the uploaded resume file.
+     */
+    async removeResume() {
+        const response = await fetch(API_ENDPOINTS.USER_PROFILE_RESUME, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.error || error.message || "Resume removal failed");
+        }
+
+        return response.json();
+    },
+
+    /**
      * Get profile completion status
      */
     async getCompleteness() {

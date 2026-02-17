@@ -15,7 +15,7 @@ function buildProfileSnapshot(profile) {
     bio: profile.bio || "",
     phone: profile.phone || "",
     location: profile.location || "",
-    resumeUrl: profile.resumeUrl || "",
+    resumeUrl: profile.uploadedResumeUrl || profile.resumeUrl || "",
     skills: profile.skills || [],
     linkedinUrl: profile.linkedinUrl || "",
     portfolioUrl: profile.portfolioUrl || "",

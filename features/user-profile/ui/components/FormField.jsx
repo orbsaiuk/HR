@@ -1,16 +1,20 @@
 "use client";
 
+import { Label } from "@/components/ui/label";
+
 /**
- * Reusable form field wrapper with label and error display.
+ * Reusable form field wrapper with shadcn Label and error display.
  */
-export function FormField({ label, error, children, required }) {
+export function FormField({ label, error, children, required, htmlFor }) {
     return (
-        <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-                {label} {required && <span className="text-red-500">*</span>}
-            </label>
+        <div className="space-y-1.5">
+            <Label htmlFor={htmlFor} className="text-sm font-medium">
+                {label} {required && <span className="text-destructive">*</span>}
+            </Label>
             {children}
-            {error && <p className="text-xs text-red-600 mt-1">{error.message}</p>}
+            {error && (
+                <p className="text-xs text-destructive mt-1">{error.message}</p>
+            )}
         </div>
     );
 }

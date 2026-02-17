@@ -74,3 +74,32 @@ export async function POST(request) {
         );
     }
 }
+
+/**
+ * DELETE /api/user/profile/resume — Remove the uploaded resume for the current user
+ */
+export async function DELETE() {
+    try {
+        const user = await currentUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const sanityUser = await getUserByClerkId(user.id);
+        if (!sanityUser) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 },
+            );
+        }
+
+        const updated = await userProfileService.removeResume(sanityUser._id);
+        return NextResponse.json(updated);
+    } catch (error) {
+        console.error("DELETE /api/user/profile/resume error:", error);
+        return NextResponse.json(
+            { error: "Failed to remove resume" },
+            { status: 500 },
+        );
+    }
+}

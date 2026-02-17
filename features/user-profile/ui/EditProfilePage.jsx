@@ -1,40 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useUserProfile } from "../model/useUserProfile";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { profileSchema, profileDefaults } from "./schemas/profileSchema";
-import { BasicInfoSection } from "./components/BasicInfoSection";
-import { SocialLinksSection } from "./components/SocialLinksSection";
-import { WorkExperienceSection } from "./components/WorkExperienceSection";
-import { EducationSection } from "./components/EducationSection";
-import { SkillsSection } from "./components/SkillsSection";
-import { LanguagesSection } from "./components/LanguagesSection";
-import { ResumeUploadSection } from "./components/ResumeUploadSection";
-import { ArrowLeft, Save } from "lucide-react";
+import { EditProfileHeader } from "./components/EditProfileHeader";
+import { EditProfileTabs } from "./components/EditProfileTabs";
+import { Save } from "lucide-react";
 
 /**
  * Multi-section edit profile form.
- * Thin orchestrator — delegates sections to sub-components.
+ *
+ * The CV/resume file is **staged locally** and only uploaded when the user
+ * clicks "Save Changes". Toast notifications are used for feedback — no
+ * page reloads occur.
  */
 export function EditProfilePage() {
-    const { profile, loading, error: profileError, saving, updateProfile, uploadResume } =
-        useUserProfile();
+    const router = useRouter();
+    const {
+        profile,
+        loading,
+        error: profileError,
+        saving,
+        updateProfile,
+        uploadResume,
+        removeResume,
+    } = useUserProfile();
 
-    const [resumeUploading, setResumeUploading] = useState(false);
-    const [saveSuccess, setSaveSuccess] = useState(false);
+    const [stagedResumeFile, setStagedResumeFile] = useState(null);
+    const [pendingResumeRemoval, setPendingResumeRemoval] = useState(false);
 
     const methods = useForm({
         resolver: zodResolver(profileSchema),
         defaultValues: profileDefaults,
     });
 
-    const { reset, handleSubmit, setValue, watch } = methods;
+    const { reset, handleSubmit, setValue, watch, formState } = methods;
 
     // Populate form when profile loads
     useEffect(() => {
@@ -63,111 +72,78 @@ export function EditProfilePage() {
     const education = watch("education");
     const skills = watch("skills");
     const languages = watch("languages");
-    const resumeUrl = watch("resumeUrl");
+    const externalResumeUrl = watch("resumeUrl");
 
-    const onSubmit = async (data) => {
-        try {
-            setSaveSuccess(false);
-            await updateProfile(data);
-            setSaveSuccess(true);
-        } catch {
-            // error is set by the hook
-        }
-    };
+    /**
+     * Submit handler — saves profile data first, then uploads the staged
+     * resume file (if any). Uses toast for feedback, no page reload.
+     */
+    const onSubmit = useCallback(
+        async (data) => {
+            try {
+                // 1. Save profile fields
+                await updateProfile(data);
 
-    const handleResumeUpload = async (file) => {
-        try {
-            setResumeUploading(true);
-            await uploadResume(file);
-        } catch {
-            // error is set by the hook
-        } finally {
-            setResumeUploading(false);
-        }
-    };
+                // 2. Remove resume if user requested removal
+                if (pendingResumeRemoval && !stagedResumeFile) {
+                    await removeResume();
+                    setPendingResumeRemoval(false);
+                }
+
+                // 3. Upload staged resume file (if user selected one)
+                if (stagedResumeFile) {
+                    await uploadResume(stagedResumeFile);
+                    setStagedResumeFile(null);
+                    setPendingResumeRemoval(false);
+                }
+
+                toast.success("Profile updated successfully");
+                router.push("/user/profile");
+            } catch (err) {
+                toast.error(err.message || "Failed to save profile");
+            }
+        },
+        [updateProfile, uploadResume, removeResume, stagedResumeFile, pendingResumeRemoval]
+    );
 
     if (loading) return <Loading fullPage />;
     if (profileError && !profile) return <Error message={profileError} />;
 
+    const isDirty = formState.isDirty || !!stagedResumeFile || pendingResumeRemoval;
+
     return (
         <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl mx-auto space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Link href="/user/profile">
-                            <Button type="button" variant="ghost" size="sm">
-                                <ArrowLeft size={16} />
-                            </Button>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Edit Profile</h1>
-                    </div>
-                    <Button type="submit" disabled={saving}>
-                        <Save size={14} className="mr-1" />
-                        {saving ? "Saving..." : "Save Changes"}
-                    </Button>
-                </div>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="max-w-4xl mx-auto space-y-6"
+            >
+                <EditProfileHeader saving={saving} isDirty={isDirty} />
 
-                {saveSuccess && (
-                    <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg p-3">
-                        Profile saved successfully.
-                    </div>
-                )}
-
-                {profileError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3">
-                        {profileError}
-                    </div>
-                )}
-
-                {/* Basic Info */}
-                <BasicInfoSection />
-
-                {/* Resume */}
-                <ResumeUploadSection
-                    resumeUrl={profile?.resumeUrl}
-                    externalResumeUrl={resumeUrl}
-                    editable
-                    onUpload={handleResumeUpload}
-                    onExternalUrlChange={(url) => setValue("resumeUrl", url, { shouldValidate: true })}
-                    uploading={resumeUploading}
-                />
-
-                {/* Work Experience */}
-                <WorkExperienceSection
-                    entries={workExperience}
-                    editable
-                    onChange={(entries) => setValue("workExperience", entries)}
-                />
-
-                {/* Education */}
-                <EducationSection
-                    entries={education}
-                    editable
-                    onChange={(entries) => setValue("education", entries)}
-                />
-
-                {/* Skills */}
-                <SkillsSection
+                {/* Tabbed sections */}
+                <EditProfileTabs
+                    profile={profile}
+                    workExperience={workExperience}
+                    education={education}
                     skills={skills}
-                    editable
-                    onChange={(updated) => setValue("skills", updated)}
-                />
-
-                {/* Languages */}
-                <LanguagesSection
                     languages={languages}
-                    editable
-                    onChange={(updated) => setValue("languages", updated)}
+                    externalResumeUrl={externalResumeUrl}
+                    stagedResumeFile={stagedResumeFile}
+                    setValue={setValue}
+                    onFileStaged={(file) => setStagedResumeFile(file)}
+                    onResumeRemove={() => setPendingResumeRemoval(true)}
                 />
 
-                {/* Social Links */}
-                <SocialLinksSection />
+                <Separator />
 
-                {/* Bottom save button */}
-                <div className="flex justify-end pb-8">
-                    <Button type="submit" disabled={saving}>
-                        <Save size={14} className="mr-1" />
+                {/* Bottom actions */}
+                <div className="flex items-center justify-between pb-8">
+                    <Link href="/user/profile">
+                        <Button type="button" variant="outline">
+                            Cancel
+                        </Button>
+                    </Link>
+                    <Button type="submit" disabled={saving} className="gap-1.5">
+                        <Save size={14} />
                         {saving ? "Saving..." : "Save Changes"}
                     </Button>
                 </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Plus, Pencil, Trash2 } from "lucide-react";
@@ -14,7 +15,6 @@ function formatDate(dateStr) {
     });
 }
 
-
 export function WorkExperienceSection({ entries = [], editable = false, onChange }) {
     const [editingIndex, setEditingIndex] = useState(null);
     const [adding, setAdding] = useState(false);
@@ -23,6 +23,7 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
         const newEntry = { ...data, _key: crypto.randomUUID() };
         onChange?.([...entries, newEntry]);
         setAdding(false);
+        toast.success("Work experience added successfully");
     };
 
     const handleSaveEdit = (data) => {
@@ -31,10 +32,12 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
         );
         onChange?.(updated);
         setEditingIndex(null);
+        toast.success("Work entry updated — save to commit");
     };
 
     const handleRemove = (index) => {
         onChange?.(entries.filter((_, i) => i !== index));
+        toast.success("Work entry removed — save to commit");
     };
 
     return (
@@ -45,7 +48,7 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
                     Work Experience
                 </CardTitle>
                 {editable && !adding && editingIndex === null && (
-                    <Button variant="outline" size="sm" onClick={() => setAdding(true)}>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setAdding(true)}>
                         <Plus size={14} className="mr-1" />
                         Add
                     </Button>
@@ -69,35 +72,39 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
                         />
                     ) : (
                         <div key={entry._key || idx} className="flex items-start gap-2">
-                            <div className="flex-1 border-l-2 border-blue-200 pl-4">
-                                <h4 className="font-semibold text-gray-900">{entry.title}</h4>
-                                <p className="text-sm text-gray-600">{entry.company}</p>
-                                <p className="text-xs text-gray-400 mt-0.5">
+                            <div className="flex-1 border-l-2 border-primary/30 pl-4">
+                                <h4 className="font-semibold">{entry.title}</h4>
+                                <p className="text-sm text-muted-foreground">{entry.company}</p>
+                                <p className="text-xs text-muted-foreground/70 mt-0.5">
                                     {formatDate(entry.startDate)} –{" "}
                                     {entry.isCurrent ? "Present" : formatDate(entry.endDate)}
                                 </p>
                                 {entry.description && (
-                                    <p className="text-sm text-gray-600 mt-1 whitespace-pre-line">
+                                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">
                                         {entry.description}
                                     </p>
                                 )}
                             </div>
                             {editable && (
                                 <div className="flex gap-1 shrink-0">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7 text-muted-foreground hover:text-primary"
                                         onClick={() => setEditingIndex(idx)}
-                                        className="p-1 text-gray-400 hover:text-blue-600"
                                     >
                                         <Pencil size={14} />
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7 text-muted-foreground hover:text-destructive"
                                         onClick={() => handleRemove(idx)}
-                                        className="p-1 text-gray-400 hover:text-red-600"
                                     >
                                         <Trash2 size={14} />
-                                    </button>
+                                    </Button>
                                 </div>
                             )}
                         </div>
@@ -105,7 +112,7 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
                 )}
 
                 {!adding && !entries.length && (
-                    <p className="text-sm text-gray-400">No work experience added yet.</p>
+                    <p className="text-sm text-muted-foreground">No work experience added yet.</p>
                 )}
             </CardContent>
         </Card>

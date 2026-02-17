@@ -1,27 +1,17 @@
 import { client, clientRead } from "@/sanity/client";
 import { userProfileQueries } from "@/sanity/queries/users";
 
-/**
- * Get the full user profile by Clerk ID.
- * @param {string} clerkId
- */
+
 export async function getFullProfile(clerkId) {
     return clientRead.fetch(userProfileQueries.getFullProfile, { clerkId });
 }
 
-/**
- * Get a user profile by Sanity document ID.
- * @param {string} userId - Sanity _id
- */
+
 export async function getProfileById(userId) {
     return clientRead.fetch(userProfileQueries.getProfileById, { userId });
 }
 
-/**
- * Update profile fields for a user.
- * @param {string} userId - Sanity _id
- * @param {object} data   - Fields to update
- */
+
 export async function updateProfile(userId, data) {
     const allowedFields = [
         "name",
@@ -56,12 +46,7 @@ export async function updateProfile(userId, data) {
     return patch.set(setFields).commit();
 }
 
-/**
- * Upload a resume file for a user.
- * @param {string} userId - Sanity _id
- * @param {Buffer|ReadableStream|Blob} file - The file to upload
- * @param {string} filename - Original filename
- */
+
 export async function uploadResume(userId, file, filename) {
     const asset = await client.assets.upload("file", file, {
         filename,
@@ -79,10 +64,16 @@ export async function uploadResume(userId, file, filename) {
         .commit();
 }
 
-/**
- * Get profile completeness data for a user.
- * @param {string} clerkId
- */
+
+export async function removeResume(userId) {
+    return client
+        .patch(userId)
+        .unset(["resume"])
+        .set({ updatedAt: new Date().toISOString() })
+        .commit();
+}
+
+
 export async function getProfileCompleteness(clerkId) {
     return clientRead.fetch(userProfileQueries.getProfileCompleteness, {
         clerkId,
@@ -94,5 +85,6 @@ export const userProfileService = {
     getProfileById,
     updateProfile,
     uploadResume,
+    removeResume,
     getProfileCompleteness,
 };
