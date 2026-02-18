@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getMessages,
   sendMessage,
@@ -15,9 +17,10 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // If team member, validate org context
+    // If team member, validate org context and check permissions
     if (user.publicMetadata?.role === "teamMember") {
-      await resolveOrgContext();
+      const context = await resolveOrgContext();
+      requirePermission(context, PERMISSIONS.VIEW_MESSAGES);
     }
 
     const { id: conversationId } = await params;
@@ -42,9 +45,10 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // If team member, validate org context
+    // If team member, validate org context and check permissions
     if (user.publicMetadata?.role === "teamMember") {
-      await resolveOrgContext();
+      const context = await resolveOrgContext();
+      requirePermission(context, PERMISSIONS.MANAGE_MESSAGES);
     }
 
     const { id: conversationId } = await params;

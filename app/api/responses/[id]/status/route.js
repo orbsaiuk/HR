@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { updateResponseStatusWithDetails } from "@/features/responses/services/responseService";
 
 export async function PATCH(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_FORMS);
     const { id } = await params;
     const { status, statusNote, rejectionReason } = await request.json();
 

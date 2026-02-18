@@ -15,12 +15,14 @@ import {
   createUser,
   updateUser,
 } from "@/features/auth/services/userService";
+import { seedDefaultRoles } from "@/features/roles/services/rolesService";
+import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 
 
-function mapClerkRoleToAppRole(clerkRole) {
+function mapClerkRoleToRoleKey(clerkRole) {
   switch (clerkRole) {
     case "org:admin":
-      return "admin";
+      return ADMIN_ROLE_KEY; // "admin"
     case "org:member":
     default:
       return "recruiter";
@@ -66,6 +68,9 @@ async function handleOrganizationCreated(data) {
   }
 
   const org = await createOrganization(data);
+
+  // Seed default roles for the new organization
+  await seedDefaultRoles(org._id);
 
   return { message: "Organization created", id: org._id };
 }
@@ -137,7 +142,7 @@ async function handleMembershipCreated(data) {
     await updateTeamMemberRole(
       organization._id,
       existingMember._key,
-      mapClerkRoleToAppRole(clerkRole),
+      mapClerkRoleToRoleKey(clerkRole),
     );
 
     return {
@@ -150,7 +155,7 @@ async function handleMembershipCreated(data) {
   await addTeamMemberToOrg(
     organization._id,
     userDoc._id,
-    mapClerkRoleToAppRole(clerkRole),
+    mapClerkRoleToRoleKey(clerkRole),
   );
 
   return { message: "Team member added to organization", orgId: organization._id };
@@ -187,7 +192,7 @@ async function handleMembershipUpdated(data) {
   await updateTeamMemberRole(
     organization._id,
     member._key,
-    mapClerkRoleToAppRole(clerkRole),
+    mapClerkRoleToRoleKey(clerkRole),
   );
 
   return { message: "Team member role updated", key: member._key };

@@ -1,17 +1,15 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { getAllTeamMembers } from "@/features/team-member-management/services/teamMemberManagementService";
 
 export async function GET() {
   try {
-    const { orgId, orgRole } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_TEAM);
 
-    // Only admins can manage team members
-    if (orgRole !== "org:admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-
-    const teamMembers = await getAllTeamMembers(orgId);
+    const teamMembers = await getAllTeamMembers(context.orgId);
     return NextResponse.json(teamMembers);
   } catch (error) {
     console.error("Error fetching team members:", error);

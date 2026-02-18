@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getApplications,
   createApplication,
@@ -7,7 +9,8 @@ import {
 
 export async function GET(request) {
   try {
-    const { orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_APPLICATIONS);
     const { searchParams } = new URL(request.url);
     const positionId = searchParams.get("positionId");
 
@@ -19,7 +22,7 @@ export async function GET(request) {
       return NextResponse.json(apps);
     }
 
-    const apps = await getApplications(orgId);
+    const apps = await getApplications(context.orgId);
     return NextResponse.json(apps);
   } catch (error) {
     console.error("Error fetching applications:", error);

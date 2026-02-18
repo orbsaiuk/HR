@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { updateApplicationStatus } from "@/features/applications/services/applicationService";
 
 const VALID_STATUSES = [
@@ -13,7 +15,8 @@ const VALID_STATUSES = [
 
 export async function PATCH(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_APPLICATIONS);
     const { id } = await params;
 
     const body = await request.json();

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { getScorecardByEvaluatorAndApplication } from "@/features/scorecards/services/scorecardService";
 
 /**
@@ -7,7 +9,9 @@ import { getScorecardByEvaluatorAndApplication } from "@/features/scorecards/ser
  */
 export async function GET(request, { params }) {
   try {
-    const { teamMember } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_APPLICATIONS);
+    const { teamMember } = context;
     const { id } = await params;
     const scorecard = await getScorecardByEvaluatorAndApplication(
       teamMember._id,

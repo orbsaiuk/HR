@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getResponseById,
   deleteResponse,
@@ -7,7 +9,8 @@ import {
 
 export async function GET(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_FORMS);
     const { id } = await params;
     const response = await getResponseById(id);
 
@@ -31,7 +34,8 @@ export async function GET(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_FORMS);
     const { id } = await params;
     await deleteResponse(id);
     return NextResponse.json({ success: true });

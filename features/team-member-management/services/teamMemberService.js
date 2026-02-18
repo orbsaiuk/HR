@@ -18,7 +18,7 @@ export async function getTeamMemberByClerkId(clerkId) {
   return client.fetch(teamMembersQueries.getByClerkId, { clerkId });
 }
 
-export async function addTeamMemberToOrg(orgId, userId, role = "recruiter") {
+export async function addTeamMemberToOrg(orgId, userId, roleKey = "recruiter") {
   const timestamp = new Date().toISOString();
 
   return client
@@ -30,18 +30,18 @@ export async function addTeamMemberToOrg(orgId, userId, role = "recruiter") {
           _type: "reference",
           _ref: userId,
         },
-        role,
+        roleKey,
         joinedAt: timestamp,
       },
     ])
     .commit();
 }
 
-export async function updateTeamMemberRole(orgId, key, newRole) {
+export async function updateTeamMemberRole(orgId, key, newRoleKey) {
   return client
     .patch(orgId)
     .set({
-      [`teamMembers[_key == "${key}"].role`]: newRole,
+      [`teamMembers[_key == "${key}"].roleKey`]: newRoleKey,
     })
     .commit();
 }
@@ -54,42 +54,10 @@ export async function removeTeamMemberFromOrg(orgId, userId) {
     .commit();
 }
 
-/**
- * Legacy exports for backward compatibility
- */
-export async function createTeamMember(data) {
-  // This function is deprecated. Use addTeamMemberToOrg instead.
-  console.warn(
-    "createTeamMember is deprecated. Use addTeamMemberToOrg instead.",
-  );
-  return client.create(data);
-}
-
-export async function updateTeamMember(id, updates) {
-  // This function is deprecated. Use updateTeamMemberRole instead.
-  console.warn(
-    "updateTeamMember is deprecated. Use updateTeamMemberRole instead.",
-  );
-  return client.patch(id).set(updates).commit();
-}
-
-export async function deleteTeamMember(id) {
-  // This function is deprecated. Use removeTeamMemberFromOrg instead.
-  console.warn(
-    "deleteTeamMember is deprecated. Use removeTeamMemberFromOrg instead.",
-  );
-  return client.delete(id);
-}
-
 export const teamMemberService = {
   getTeamMemberById,
   getTeamMemberByClerkId,
-  // New embedded array functions
   addTeamMemberToOrg,
   updateTeamMemberRole,
   removeTeamMemberFromOrg,
-  // Legacy exports (deprecated)
-  createTeamMember,
-  updateTeamMember,
-  deleteTeamMember,
 };

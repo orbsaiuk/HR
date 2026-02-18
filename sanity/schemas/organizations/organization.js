@@ -103,6 +103,62 @@ export default {
             ],
         },
         {
+            name: "roles",
+            title: "Roles",
+            type: "array",
+            description: "Custom roles with permissions for this organization",
+            of: [
+                {
+                    type: "object",
+                    fields: [
+                        {
+                            name: "name",
+                            title: "Role Name",
+                            type: "string",
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "description",
+                            title: "Description",
+                            type: "string",
+                        },
+                        {
+                            name: "permissions",
+                            title: "Permissions",
+                            type: "array",
+                            of: [{ type: "string" }],
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "isSystem",
+                            title: "System Role",
+                            type: "boolean",
+                            description: "System roles cannot be deleted",
+                            initialValue: false,
+                        },
+                        {
+                            name: "createdAt",
+                            title: "Created At",
+                            type: "datetime",
+                            initialValue: () => new Date().toISOString(),
+                        },
+                    ],
+                    preview: {
+                        select: {
+                            name: "name",
+                            isSystem: "isSystem",
+                        },
+                        prepare({ name, isSystem }) {
+                            return {
+                                title: name || "Unnamed Role",
+                                subtitle: isSystem ? "System Role" : "Custom Role",
+                            };
+                        },
+                    },
+                },
+            ],
+        },
+        {
             name: "teamMembers",
             title: "Team Members",
             type: "array",
@@ -118,18 +174,11 @@ export default {
                             validation: (Rule) => Rule.required(),
                         },
                         {
-                            name: "role",
-                            title: "Role",
+                            name: "roleKey",
+                            title: "Role Key",
                             type: "string",
-                            options: {
-                                list: [
-                                    { title: "Admin", value: "admin" },
-                                    { title: "Recruiter", value: "recruiter" },
-                                    { title: "Hiring Manager", value: "hiring_manager" },
-                                    { title: "Viewer", value: "viewer" },
-                                ],
-                            },
-                            initialValue: "recruiter",
+                            description: "References the _key of a role in the organization's roles array",
+                            validation: (Rule) => Rule.required(),
                         },
                         {
                             name: "joinedAt",
@@ -142,12 +191,12 @@ export default {
                         select: {
                             userName: "user.name",
                             userEmail: "user.email",
-                            role: "role",
+                            roleKey: "roleKey",
                         },
-                        prepare({ userName, userEmail, role }) {
+                        prepare({ userName, userEmail, roleKey }) {
                             return {
                                 title: userName || userEmail || "Unknown User",
-                                subtitle: role ? role.charAt(0).toUpperCase() + role.slice(1).replace("_", " ") : "No role",
+                                subtitle: roleKey ? roleKey.charAt(0).toUpperCase() + roleKey.slice(1).replace("_", " ") : "No role",
                             };
                         },
                     },
@@ -179,6 +228,12 @@ export default {
                                 ],
                             },
                             initialValue: "pending",
+                        },
+                        {
+                            name: "roleKey",
+                            title: "Role Key",
+                            type: "string",
+                            description: "The role to assign when the invite is accepted",
                         },
                         {
                             name: "invitedBy",

@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { getResponsesByFormId } from "@/features/responses/services/responseService";
 
 export async function GET(request) {
   try {
-    const { orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_FORMS);
     const { searchParams } = new URL(request.url);
     const formId = searchParams.get("formId");
 

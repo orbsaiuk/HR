@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getApplicationById,
   updateApplication,
@@ -8,7 +10,8 @@ import {
 
 export async function GET(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_APPLICATIONS);
     const { id } = await params;
 
     const application = await getApplicationById(id);
@@ -32,7 +35,8 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_APPLICATIONS);
     const { id } = await params;
     const input = await request.json();
     const application = await updateApplication(id, input);
@@ -49,7 +53,8 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_APPLICATIONS);
     const { id } = await params;
     await deleteApplication(id);
     return NextResponse.json({ success: true });

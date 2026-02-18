@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getOrganizationById,
   updateOrganization,
@@ -37,17 +39,13 @@ export async function GET(request, { params }) {
  */
 export async function PUT(request, { params }) {
   try {
-    const { orgRole, orgId } = await resolveOrgContext();
-
-    // Only admins can update organization settings
-    if (orgRole !== "org:admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_SETTINGS);
 
     const { id } = await params;
 
     // Ensure the user can only update their own organization
-    if (id !== orgId) {
+    if (id !== context.orgId) {
       return NextResponse.json(
         { error: "Cannot update another organization" },
         { status: 403 },

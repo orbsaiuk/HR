@@ -5,7 +5,7 @@ export async function getInvites(orgId) {
   return client.fetch(teamMemberInviteQueries.getAllInvites, { orgId });
 }
 
-export async function createInvite(email, invitedByUserId, orgId) {
+export async function createInvite(email, invitedByUserId, orgId, roleKey = "viewer") {
   const normalizedEmail = email.toLowerCase().trim();
 
   // Check for existing invite with this email in this org
@@ -35,6 +35,7 @@ export async function createInvite(email, invitedByUserId, orgId) {
         _key: `${normalizedEmail}-${Date.now()}`, // Unique key for the array item
         email: normalizedEmail,
         status: "pending",
+        roleKey,
         invitedBy: {
           _type: "reference",
           _ref: invitedByUserId,

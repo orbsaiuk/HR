@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { updateJobPositionStatus } from "@/features/job-positions/services/jobPositionService";
 
 export async function PATCH(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_POSITIONS);
     const { id } = await params;
 
     const { status } = await request.json();

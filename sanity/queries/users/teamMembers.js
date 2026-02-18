@@ -5,7 +5,7 @@ export const teamMembersQueries = {
      */
     getAll: `*[_type == "organization" && _id == $orgId][0].teamMembers[] | order(joinedAt asc) {
         _key,
-        role,
+        roleKey,
         joinedAt,
         "user": user-> {
             _id,
@@ -25,7 +25,7 @@ export const teamMembersQueries = {
     getByKey: `*[_type == "organization" && _id == $orgId][0] {
         "teamMember": teamMembers[_key == $key][0] {
             _key,
-            role,
+            roleKey,
             joinedAt,
             "user": user-> {
                 _id,
@@ -52,7 +52,7 @@ export const teamMembersQueries = {
         clerkOrgId,
         "teamMember": teamMembers[user->clerkId == $clerkId][0] {
             _key,
-            role,
+            roleKey,
             joinedAt,
             "user": user-> {
                 _id,
@@ -71,7 +71,7 @@ export const teamMembersQueries = {
     getByUserId: `*[_type == "organization" && _id == $orgId][0] {
         "teamMember": teamMembers[user._ref == $userId][0] {
             _key,
-            role,
+            roleKey,
             joinedAt,
             "user": user-> {
                 _id,
@@ -91,7 +91,7 @@ export const teamMembersQueries = {
     getByClerkIdAndOrg: `*[_type == "organization" && _id == $orgId][0] {
         "teamMember": teamMembers[user->clerkId == $clerkId][0] {
             _key,
-            role,
+            roleKey,
             joinedAt,
             "user": user-> {
                 _id,

@@ -6,6 +6,7 @@ export const teamMemberInviteQueries = {
         _key,
         email,
         status,
+        roleKey,
         createdAt,
         "invitedBy": invitedBy-> {
             _id,
@@ -27,6 +28,7 @@ export const teamMemberInviteQueries = {
             _key,
             email,
             status,
+            roleKey,
             createdAt,
             "invitedBy": invitedBy-> {
                 _id,
@@ -44,6 +46,7 @@ export const teamMemberInviteQueries = {
             _key,
             email,
             status,
+            roleKey,
             createdAt,
             "invitedBy": invitedBy-> {
                 _id,
@@ -65,7 +68,7 @@ export const teamMemberInviteQueries = {
     getOwnerTeamMember: `*[_type == "organization" && _id == $orgId][0] {
         "teamMember": teamMembers | order(joinedAt asc) [0] {
             _key,
-            role,
+            roleKey,
             joinedAt,
             "user": user-> {
                 _id,
@@ -83,7 +86,7 @@ export const teamMemberInviteQueries = {
      */
     getAllTeamMembersManaged: `*[_type == "organization" && _id == $orgId][0].teamMembers[] | order(joinedAt asc) {
         _key,
-        role,
+        roleKey,
         joinedAt,
         "user": user-> {
             _id,
@@ -107,6 +110,7 @@ export const teamMemberInviteQueries = {
             _key,
             email,
             status,
+            roleKey,
             createdAt,
             "invitedBy": invitedBy-> {
                 _id,

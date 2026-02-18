@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getJobPositionById,
   updateJobPosition,
@@ -8,7 +10,8 @@ import {
 
 export async function GET(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_POSITIONS);
     const { id } = await params;
 
     const position = await getJobPositionById(id);
@@ -32,7 +35,8 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_POSITIONS);
     const { id } = await params;
     const input = await request.json();
     const position = await updateJobPosition(id, input);
@@ -49,7 +53,8 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_POSITIONS);
     const { id } = await params;
     await deleteJobPosition(id);
     return NextResponse.json({ success: true });

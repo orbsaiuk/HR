@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getScorecardsByApplication,
   upsertScorecard,
@@ -10,9 +12,10 @@ import {
  */
 export async function GET(request, { params }) {
   try {
-    const { orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_APPLICATIONS);
     const { id } = await params;
-    const scorecards = await getScorecardsByApplication(id, orgId);
+    const scorecards = await getScorecardsByApplication(id, context.orgId);
     return NextResponse.json(scorecards);
   } catch (error) {
     console.error("Error fetching scorecards:", error);
@@ -29,7 +32,9 @@ export async function GET(request, { params }) {
  */
 export async function POST(request, { params }) {
   try {
-    const { teamMember, orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_APPLICATIONS);
+    const { teamMember, orgId } = context;
     const { id } = await params;
     const body = await request.json();
 

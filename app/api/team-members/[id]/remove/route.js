@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getOwnerTeamMember,
   removeTeamMember,
@@ -7,17 +9,13 @@ import {
 
 export async function DELETE(request, { params }) {
   try {
-    const { orgId, orgRole } = await resolveOrgContext();
-
-    // Only admins can remove team members
-    if (orgRole !== "org:admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_TEAM);
 
     const { id } = await params;
 
     // Prevent removing the org owner (first/earliest joined team member)
-    const owner = await getOwnerTeamMember(orgId);
+    const owner = await getOwnerTeamMember(context.orgId);
     if (owner && owner.user._id === id) {
       return NextResponse.json(
         { error: "Cannot remove the account owner" },
@@ -25,7 +23,7 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    await removeTeamMember(id, orgId);
+    await removeTeamMember(id, context.orgId);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error removing team member:", error);

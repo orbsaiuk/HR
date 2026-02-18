@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { getForms, createForm } from "@/features/forms/services/formService";
 
 export async function GET() {
   try {
-    const { orgId } = await resolveOrgContext();
-    const forms = await getForms(orgId);
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.VIEW_FORMS);
+    const forms = await getForms(context.orgId);
     return NextResponse.json(forms);
   } catch (error) {
     console.error("Error fetching forms:", error);
@@ -16,9 +19,10 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_FORMS);
     const input = await request.json();
-    const form = await createForm(input, orgId);
+    const form = await createForm(input, context.orgId);
     return NextResponse.json(form, { status: 201 });
   } catch (error) {
     console.error("Error creating form:", error);

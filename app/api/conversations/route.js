@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext, OrgContextError } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { currentUser } from "@clerk/nextjs/server";
 import {
   findOrCreateConversation,
@@ -17,11 +19,12 @@ export async function GET(request) {
 
     const role = user.publicMetadata?.role || "user";
 
-    // Team members use org context
+    // Team members use org context with permission check
     if (role === "teamMember") {
       try {
-        const { teamMember, orgId } = await resolveOrgContext();
-        const conversations = await getConversations(role, teamMember._id, orgId);
+        const context = await resolveOrgContext();
+        requirePermission(context, PERMISSIONS.VIEW_MESSAGES);
+        const conversations = await getConversations(role, context.teamMember._id, context.orgId);
         return NextResponse.json(conversations);
       } catch (error) {
         // If no organization is selected yet, return empty conversations
@@ -55,7 +58,8 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { teamMember, orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_MESSAGES);
 
     const body = await request.json();
     const { userId, formId } = body;
@@ -69,10 +73,10 @@ export async function POST(request) {
 
     // Find or create conversation with org context
     const conversation = await findOrCreateConversation(
-      teamMember._id,
+      context.teamMember._id,
       userId,
       formId,
-      orgId,
+      context.orgId,
     );
 
     return NextResponse.json(conversation);
