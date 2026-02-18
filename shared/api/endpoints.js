@@ -29,7 +29,12 @@ export const API_ENDPOINTS = {
   TEAM_MEMBER_INVITE_BY_ID: (id) => `/api/team-members/invites/${id}`,
   TEAM_MEMBERS_MANAGED: "/api/team-members/managed",
   TEAM_MEMBER_REMOVE: (id) => `/api/team-members/${id}/remove`,
+  TEAM_MEMBER_CHANGE_ROLE: (id) => `/api/team-members/${id}/role`,
+  TEAM_MEMBER_MY_PERMISSIONS: "/api/team-members/my-permissions",
   TEAM_MEMBER_IS_OWNER: "/api/team-members/is-owner",
+
+  // Roles
+  ROLES: "/api/roles",
 
   // Job Positions
   JOB_POSITIONS: "/api/job-positions",

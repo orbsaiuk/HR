@@ -1,14 +1,6 @@
 import { ADMIN_ROLE_KEY, ALL_PERMISSIONS } from "@/shared/lib/permissions";
 
-/**
- * Check if the current user has a specific permission based on their role in the org context.
- *
- * @param {Object} context - The resolved org context from resolveOrgContext()
- * @param {string} context.teamMember - The team member entry (must include roleKey)
- * @param {Object} context.organization - The organization (must include roles[])
- * @param {string} permission - The permission key to check (from PERMISSIONS constant)
- * @returns {boolean}
- */
+
 export function hasPermission(context, permission) {
     const { teamMember, organization } = context;
 

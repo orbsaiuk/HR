@@ -1,102 +1,73 @@
 "use client";
 
-import { Trash2, Clock, CheckCircle, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
+import { InviteRow } from "./InviteRow";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-export function InvitesList({ invites, onDelete }) {
+export function InvitesList({ invites, roles = [], onDelete }) {
   const pendingInvites = invites.filter((i) => i.status === "pending");
   const joinedInvites = invites.filter((i) => i.status === "joined");
 
   if (invites.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-        <Mail className="mx-auto text-gray-300 mb-3" size={40} />
-        <h3 className="text-base font-semibold text-gray-700 mb-1">
-          No invites yet
-        </h3>
-        <p className="text-sm text-gray-500">
-          Invite team members by entering their email above.
-        </p>
-      </div>
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          <Mail className="h-10 w-10 text-muted-foreground/50 mb-3" />
+          <h3 className="text-base font-semibold mb-1">No invites yet</h3>
+          <p className="text-sm text-muted-foreground">
+            Invite team members by entering their email above.
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">
+    <Card>
+      <CardHeader>
+        <CardTitle>
           Invites
-          <span className="ml-2 text-sm font-normal text-gray-500">
+          <span className="ml-2 text-sm font-normal text-muted-foreground">
             ({pendingInvites.length} pending, {joinedInvites.length} joined)
           </span>
-        </h2>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Invited
-              </th>
-              <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="px-6">Email</TableHead>
+              <TableHead className="px-6">Role</TableHead>
+              <TableHead className="px-6">Status</TableHead>
+              <TableHead className="px-6">Invited</TableHead>
+              <TableHead className="px-6 text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {invites.map((invite) => (
-              <tr
+              <InviteRow
                 key={invite._key}
-                className="hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-6 py-4">
-                  <span className="text-sm font-medium text-gray-900">
-                    {invite.email}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  {invite.status === "pending" ? (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">
-                      <Clock size={12} />
-                      Pending
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
-                      <CheckCircle size={12} />
-                      Joined
-                    </span>
-                  )}
-                </td>
-                <td className="px-6 py-4">
-                  <span className="text-sm text-gray-500">
-                    {invite.createdAt
-                      ? new Date(invite.createdAt).toLocaleDateString()
-                      : "—"}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  {invite.status === "pending" && (
-                    <button
-                      onClick={() => onDelete(invite._key)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Revoke invite"
-                    >
-                      <Trash2 size={14} />
-                      Revoke
-                    </button>
-                  )}
-                </td>
-              </tr>
+                invite={invite}
+                roles={roles}
+                onDelete={onDelete}
+              />
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

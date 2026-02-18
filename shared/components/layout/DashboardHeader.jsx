@@ -19,14 +19,15 @@ import {
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
-import { useIsOwner } from "@/features/team-member-management";
+import { usePermissions } from "@/features/team-member-management";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
 import { urlFor } from "@/shared/lib/sanityImage";
 import { Button } from "@/components/ui/button";
 
 export function DashboardHeader() {
   const { unreadCount } = useUnreadCount();
-  const { isOwner } = useIsOwner();
+  const { hasPermission } = usePermissions();
   const { org } = useCurrentOrg();
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -37,7 +38,7 @@ export function DashboardHeader() {
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Positions", href: "/dashboard/positions", icon: Briefcase },
     { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-    ...(isOwner
+    ...(hasPermission(PERMISSIONS.MANAGE_TEAM)
       ? [{ name: "Team Members", href: "/dashboard/team-members", icon: Users }]
       : []),
     { name: "Settings", href: "/dashboard/settings", icon: Settings },

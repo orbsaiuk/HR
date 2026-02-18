@@ -76,7 +76,7 @@ export async function getTeamMemberByClerkAndOrg(clerkId, orgId) {
     orgId,
   });
 }
-export async function addTeamMemberToOrg(orgId, userId, role = "recruiter") {
+export async function addTeamMemberToOrg(orgId, userId, roleKey = "recruiter") {
   const timestamp = new Date().toISOString();
 
   return client
@@ -89,7 +89,7 @@ export async function addTeamMemberToOrg(orgId, userId, role = "recruiter") {
           _type: "reference",
           _ref: userId,
         },
-        role,
+        roleKey,
         joinedAt: timestamp,
       },
     ])
@@ -101,15 +101,15 @@ export async function removeTeamMemberFromOrg(orgId, userId) {
     .unset([`teamMembers[user._ref == "${userId}"]`])
     .commit();
 }
-export async function updateTeamMemberRole(orgId, key, newRole) {
+export async function updateTeamMemberRole(orgId, key, newRoleKey) {
   return client
     .patch(orgId)
     .set({
-      [`teamMembers[_key == "${key}"].role`]: newRole,
+      [`teamMembers[_key == "${key}"].roleKey`]: newRoleKey,
     })
     .commit();
 }
-export async function addInviteToOrg(orgId, email, invitedByUserId) {
+export async function addInviteToOrg(orgId, email, invitedByUserId, roleKey = "viewer") {
   const normalizedEmail = email.toLowerCase().trim();
   const timestamp = new Date().toISOString();
 
@@ -120,6 +120,7 @@ export async function addInviteToOrg(orgId, email, invitedByUserId) {
         _key: `${normalizedEmail}-${Date.now()}`,
         email: normalizedEmail,
         status: "pending",
+        roleKey,
         invitedBy: {
           _type: "reference",
           _ref: invitedByUserId,

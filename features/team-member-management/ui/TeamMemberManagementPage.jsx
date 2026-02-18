@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 import { useTeamMemberManagement } from "../model/useTeamMemberManagement";
-import { OwnerGuard } from "./OwnerGuard";
+import { PermissionGuard } from "./PermissionGuard";
 import { InviteTeamMemberForm } from "./InviteTeamMemberForm";
 import { InvitesList } from "./InvitesList";
 import { TeamMembersList } from "./TeamMembersList";
@@ -16,11 +16,13 @@ export function TeamMemberManagementPage() {
   const {
     invites,
     teamMembers,
+    roles,
     loading,
     error,
     createInvite,
     deleteInvite,
     removeTeamMember,
+    changeRole,
     refetch,
   } = useTeamMemberManagement();
   const { toast, showToast, hideToast } = useToast();
@@ -33,8 +35,8 @@ export function TeamMemberManagementPage() {
     }
   }, [teamMembers]);
 
-  const handleInvite = async (email) => {
-    const result = await createInvite(email);
+  const handleInvite = async (email, roleKey) => {
+    const result = await createInvite(email, roleKey);
     if (result.success) {
       showToast(`Invite sent to ${email}`, "success");
     } else {
@@ -61,8 +63,18 @@ export function TeamMemberManagementPage() {
     }
   };
 
+  const handleChangeRole = async (teamMemberKey, roleKey) => {
+    const result = await changeRole(teamMemberKey, roleKey);
+    if (result.success) {
+      showToast("Role updated successfully", "success");
+    } else {
+      showToast(result.error, "error");
+    }
+    return result;
+  };
+
   return (
-    <OwnerGuard>
+    <PermissionGuard>
       <div className="space-y-6">
         {/* Page Header */}
         <div>
@@ -79,7 +91,7 @@ export function TeamMemberManagementPage() {
         </div>
 
         {/* Invite Form */}
-        <InviteTeamMemberForm onInvite={handleInvite} />
+        <InviteTeamMemberForm onInvite={handleInvite} roles={roles} />
 
         {/* Content */}
         {loading ? (
@@ -90,10 +102,16 @@ export function TeamMemberManagementPage() {
           <>
             <TeamMembersList
               teamMembers={teamMembers}
+              roles={roles}
               onRemove={handleRemoveTeamMember}
+              onChangeRole={handleChangeRole}
               ownerTeamMemberId={ownerTeamMemberId}
             />
-            <InvitesList invites={invites} onDelete={handleDeleteInvite} />
+            <InvitesList
+              invites={invites}
+              roles={roles}
+              onDelete={handleDeleteInvite}
+            />
           </>
         )}
 
@@ -106,6 +124,6 @@ export function TeamMemberManagementPage() {
           />
         )}
       </div>
-    </OwnerGuard>
+    </PermissionGuard>
   );
 }

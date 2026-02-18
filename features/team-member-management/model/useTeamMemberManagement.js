@@ -6,6 +6,7 @@ import { teamMemberManagementApi } from "../api/teamMemberManagementApi";
 export function useTeamMemberManagement() {
   const [invites, setInvites] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,12 +14,14 @@ export function useTeamMemberManagement() {
     try {
       setLoading(true);
       setError(null);
-      const [invitesData, teamMembersData] = await Promise.all([
+      const [invitesData, teamMembersData, rolesData] = await Promise.all([
         teamMemberManagementApi.getInvites(),
         teamMemberManagementApi.getTeamMembers(),
+        teamMemberManagementApi.getRoles(),
       ]);
       setInvites(invitesData);
       setTeamMembers(teamMembersData);
+      setRoles(rolesData);
     } catch (err) {
       setError(err.message || "Failed to fetch team member management data");
     } finally {
@@ -30,9 +33,12 @@ export function useTeamMemberManagement() {
     fetchData();
   }, []);
 
-  const createInvite = async (email) => {
+  const createInvite = async (email, roleKey) => {
     try {
-      const newInvite = await teamMemberManagementApi.createInvite(email);
+      const newInvite = await teamMemberManagementApi.createInvite(
+        email,
+        roleKey,
+      );
       await fetchData();
       return { success: true, data: newInvite };
     } catch (err) {
@@ -73,14 +79,34 @@ export function useTeamMemberManagement() {
     }
   };
 
+  const changeRole = async (teamMemberKey, roleKey) => {
+    try {
+      await teamMemberManagementApi.changeRole(teamMemberKey, roleKey);
+      // Update the local state optimistically
+      setTeamMembers((prev) =>
+        prev.map((tm) =>
+          tm._key === teamMemberKey ? { ...tm, roleKey } : tm,
+        ),
+      );
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err.message || "Failed to change role",
+      };
+    }
+  };
+
   return {
     invites,
     teamMembers,
+    roles,
     loading,
     error,
     createInvite,
     deleteInvite,
     removeTeamMember,
+    changeRole,
     refetch: fetchData,
   };
 }

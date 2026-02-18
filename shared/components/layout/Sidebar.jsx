@@ -15,11 +15,12 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
-import { useIsOwner } from "@/features/team-member-management";
+import { usePermissions } from "@/features/team-member-management";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function Sidebar({ stats }) {
   const { unreadCount } = useUnreadCount();
-  const { isOwner } = useIsOwner();
+  const { hasPermission } = usePermissions();
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -40,14 +41,14 @@ export function Sidebar({ stats }) {
       href: "/dashboard/messages",
       icon: MessageSquare,
     },
-    ...(isOwner
+    ...(hasPermission(PERMISSIONS.MANAGE_TEAM)
       ? [
-          {
-            name: "Team Members",
-            href: "/dashboard/team-members",
-            icon: Users,
-          },
-        ]
+        {
+          name: "Team Members",
+          href: "/dashboard/team-members",
+          icon: Users,
+        },
+      ]
       : []),
     {
       name: "Settings",
@@ -148,11 +149,10 @@ export function Sidebar({ stats }) {
                       className={`
                                                 flex items-center gap-3 px-3 py-2.5 rounded-lg
                                                 transition-colors duration-200 relative
-                                                ${
-                                                  isActive(item.href)
-                                                    ? "bg-blue-50 text-blue-600"
-                                                    : "text-gray-700 hover:bg-gray-100"
-                                                }
+                                                ${isActive(item.href)
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-700 hover:bg-gray-100"
+                        }
                                             `}
                       onClick={() => setIsMobileOpen(false)}
                     >
@@ -218,3 +218,4 @@ export function Sidebar({ stats }) {
     </>
   );
 }
+

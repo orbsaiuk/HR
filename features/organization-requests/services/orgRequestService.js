@@ -3,6 +3,8 @@ import { orgRequestQueries } from "@/sanity/queries/organizations";
 import { clerkClient } from "@clerk/nextjs/server";
 import { getOrganizationByClerkOrgId } from "@/features/organizations/services/organizationService";
 import { getUserByClerkId } from "@/features/auth/services/userService";
+import { seedDefaultRoles } from "@/features/roles/services/rolesService";
+import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 
 export async function createRequest(userId, data, orgLogoAssetRef) {
   // Check for existing pending request
@@ -141,7 +143,13 @@ export async function approveRequest(id, adminInfo, orgSlug) {
       .commit();
   }
 
-  // 3. Add the requesting user to the org's embedded teamMembers array as admin.
+  // 3. Seed default roles for the organization (if not already seeded by webhook)
+  const orgAfterPatch = await getOrganizationByClerkOrgId(clerkOrg.id);
+  if (!orgAfterPatch?.roles || orgAfterPatch.roles.length === 0) {
+    await seedDefaultRoles(sanityOrg._id);
+  }
+
+  // 4. Add the requesting user to the org's embedded teamMembers array as admin.
   //    The webhook (organizationMembership.created) may also do this, but
   //    we handle it here to avoid race conditions.
   if (request.requestedBy?.clerkId) {
@@ -154,7 +162,7 @@ export async function approveRequest(id, adminInfo, orgSlug) {
       );
 
       if (!isAlreadyMember) {
-        // Add as admin (first member)
+        // Add as admin (first member) using roleKey
         await client
           .patch(sanityOrg._id)
           .setIfMissing({ teamMembers: [] })
@@ -165,7 +173,7 @@ export async function approveRequest(id, adminInfo, orgSlug) {
                 _type: "reference",
                 _ref: userDoc._id,
               },
-              role: "admin",
+              roleKey: ADMIN_ROLE_KEY,
               joinedAt: now,
             },
           ])
@@ -174,14 +182,14 @@ export async function approveRequest(id, adminInfo, orgSlug) {
     }
   }
 
-  // 4. Set the user's role to teamMember so the UI updates
+  // 5. Set the user's role to teamMember so the UI updates
   if (request.requestedBy?.clerkId) {
     await clerk.users.updateUserMetadata(request.requestedBy.clerkId, {
       publicMetadata: { role: "teamMember" },
     });
   }
 
-  // 5. Update request status to approved and link the organization
+  // 6. Update request status to approved and link the organization
   const updated = await client
     .patch(id)
     .set({
