@@ -53,15 +53,17 @@ export async function createInvite(
     ])
     .commit();
 
-  // Send invitation email (fire-and-forget — never blocks invite creation)
-  sendInvitationEmail({
-    recipientEmail: normalizedEmail,
-    organizationName: organizationName || "the team",
-    inviterName: inviterName || "A team admin",
-    roleName: roleName || roleKey,
-  }).catch((err) => {
+  // Send invitation email — awaited to prevent serverless early termination
+  try {
+    await sendInvitationEmail({
+      recipientEmail: normalizedEmail,
+      organizationName: organizationName || "the team",
+      inviterName: inviterName || "A team admin",
+      roleName: roleName || roleKey,
+    });
+  } catch (err) {
     console.error("[createInvite] Failed to send invitation email:", err.message);
-  });
+  }
 
   return result;
 }

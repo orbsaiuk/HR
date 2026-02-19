@@ -44,16 +44,18 @@ export async function createRequest(userId, data, orgLogoAssetRef, requesterInfo
     updatedAt: now,
   });
 
-  // Send submission confirmation email (fire-and-forget)
+  // Send submission confirmation email — awaited to prevent serverless early termination
   const recipientEmail = requesterInfo?.email;
   if (recipientEmail) {
-    sendOrgRequestSubmittedEmail({
-      recipientEmail,
-      requesterName: requesterInfo?.name || "there",
-      organizationName: data.orgName,
-    }).catch((err) =>
-      console.error("[OrgRequest] Failed to send submission confirmation email:", err.message),
-    );
+    try {
+      await sendOrgRequestSubmittedEmail({
+        recipientEmail,
+        requesterName: requesterInfo?.name || "there",
+        organizationName: data.orgName,
+      });
+    } catch (err) {
+      console.error("[OrgRequest] Failed to send submission confirmation email:", err.message);
+    }
   }
 
   return result;
@@ -83,17 +85,19 @@ export async function rejectRequest(id, reason, adminInfo) {
   const reviewedBy = adminInfo?.email || adminInfo?.name || "admin";
   const updated = await markRequestRejected(id, reason, reviewedBy);
 
-  // Send rejection notification email (fire-and-forget)
+  // Send rejection notification email — awaited to prevent serverless early termination
   const recipientEmail = request.requestedBy?.email;
   if (recipientEmail) {
-    sendOrgRequestRejectedEmail({
-      recipientEmail,
-      requesterName: request.requestedBy?.name || "there",
-      organizationName: request.orgName,
-      reason,
-    }).catch((err) =>
-      console.error("[OrgRequest] Failed to send rejection email:", err.message),
-    );
+    try {
+      await sendOrgRequestRejectedEmail({
+        recipientEmail,
+        requesterName: request.requestedBy?.name || "there",
+        organizationName: request.orgName,
+        reason,
+      });
+    } catch (err) {
+      console.error("[OrgRequest] Failed to send rejection email:", err.message);
+    }
   }
 
   return updated;

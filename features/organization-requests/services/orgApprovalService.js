@@ -170,16 +170,18 @@ export async function approveRequest(id, adminInfo, orgSlug) {
         reviewedBy,
     });
 
-    // 8. Send approval notification email (fire-and-forget)
+    // 8. Send approval notification email — awaited to prevent serverless early termination
     const recipientEmail = request.requestedBy?.email;
     if (recipientEmail) {
-        sendOrgRequestApprovedEmail({
-            recipientEmail,
-            requesterName: request.requestedBy?.name || "there",
-            organizationName: request.orgName,
-        }).catch((err) =>
-            console.error("[OrgApproval] Failed to send approval email:", err.message),
-        );
+        try {
+            await sendOrgRequestApprovedEmail({
+                recipientEmail,
+                requesterName: request.requestedBy?.name || "there",
+                organizationName: request.orgName,
+            });
+        } catch (err) {
+            console.error("[OrgApproval] Failed to send approval email:", err.message);
+        }
     }
 
     return updated;
