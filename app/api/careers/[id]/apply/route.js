@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { getUserByClerkId } from "@/features/auth/services/userService";
 import { careerService } from "@/features/careers/services/careerService";
 import { userProfileService } from "@/features/user-profile/services/userProfileService";
+import { notifyNewApplication } from "@/features/applications/services/applicationNotificationService";
 
 /**
  * Build a profileSnapshot object from a full user profile.
@@ -140,6 +141,19 @@ export async function POST(request, { params }) {
       answers: processedAnswers,
       profileSnapshot,
     });
+
+    // Fire-and-forget: notify team members about the new application
+    if (position.organizationId) {
+      notifyNewApplication({
+        orgId: position.organizationId,
+        applicantName: sanityUser.name || user.fullName || "A candidate",
+        positionTitle: position.title,
+        organizationName: position.organizationName || "your organization",
+        applicationId: application._id,
+      }).catch((err) => {
+        console.error("[apply] Failed to send new application notification:", err.message);
+      });
+    }
 
     return NextResponse.json(application, { status: 201 });
   } catch (error) {

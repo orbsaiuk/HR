@@ -7,11 +7,13 @@ import {
 } from "@/features/auth/services/userService";
 import {
   getOrganizationByClerkOrgId,
+  getOrganizationByIdWithMembers,
   addTeamMemberToOrg,
 } from "@/features/organizations/services/organizationService";
 import {
   getInviteByEmail,
   markInviteJoined,
+  findPendingInviteByEmail,
 } from "@/features/team-member-management/services/teamMemberManagementService";
 
 /**
@@ -35,6 +37,19 @@ async function getUserOrganization(clerkUserId) {
     console.error("Failed to resolve org for user:", err);
   }
   return undefined;
+}
+
+/**
+ * Add a user to a Clerk organization.
+ * This triggers the organizationMembership.created webhook which handles Sanity.
+ */
+async function addUserToClerkOrg(clerkUserId, clerkOrgId) {
+  const clerk = await clerkClient();
+  await clerk.organizations.createOrganizationMembership({
+    organizationId: clerkOrgId,
+    userId: clerkUserId,
+    role: "org:member",
+  });
 }
 
 export async function POST() {
@@ -79,18 +94,50 @@ export async function POST() {
     }
   }
 
-  // 2. Get the user's organization from Clerk membership
-  const org = await getUserOrganization(user.id);
+  // 2. Check if user is already a member of a Clerk organization
+  let org = await getUserOrganization(user.id);
+
+  // 3. If not in any org, check for pending invites and auto-add to Clerk org
+  if (!org && userEmail) {
+    const pendingInvite = await findPendingInviteByEmail(userEmail);
+
+    if (pendingInvite) {
+      const { orgId: sanityOrgId, orgName, invite } = pendingInvite;
+
+      // Fetch the full org document to get clerkOrgId
+      const orgWithClerkId = await getOrganizationByIdWithMembers(sanityOrgId);
+
+      if (orgWithClerkId?.clerkOrgId) {
+        try {
+          // Add user to Clerk organization
+          await addUserToClerkOrg(user.id, orgWithClerkId.clerkOrgId);
+
+          // Now get the Sanity org via Clerk ID
+          org = await getOrganizationByClerkOrgId(orgWithClerkId.clerkOrgId);
+
+          console.log(
+            `[auth/sync] Added user ${userEmail} to Clerk org "${orgName}" via pending invite`,
+          );
+        } catch (err) {
+          // User might already be a member, or org doesn't exist in Clerk
+          console.error(
+            "[auth/sync] Failed to add user to Clerk org:",
+            err.message,
+          );
+        }
+      }
+    }
+  }
 
   if (!org) {
-    // User is not a member of any organization yet
+    // User is not a member of any organization yet and has no pending invites
     return NextResponse.json({ success: true });
   }
 
-  // 3. Check for pending invite in this organization
+  // 4. Check for pending invite in this organization
   const invite = userEmail ? await getInviteByEmail(userEmail, org._id) : null;
 
-  // 4. Determine if this user should be added as a team member
+  // 5. Determine if this user should be added as a team member
   const shouldAddTeamMember =
     role === "teamMember" ||
     role === "teacher" ||
@@ -103,8 +150,10 @@ export async function POST() {
     );
 
     if (!isAlreadyMember) {
+      // Use the role from the invite if available, otherwise default to "viewer"
+      const memberRoleKey = invite?.roleKey || "viewer";
       // Add user as a team member to the org's embedded array
-      await addTeamMemberToOrg(org._id, sanityUser._id, "recruiter");
+      await addTeamMemberToOrg(org._id, sanityUser._id, memberRoleKey);
 
       // Update user role in Clerk if needed
       if (role !== "teamMember") {

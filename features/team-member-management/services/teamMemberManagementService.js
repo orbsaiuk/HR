@@ -1,11 +1,19 @@
 import { client } from "@/sanity/client";
 import { teamMemberInviteQueries, organizationQueries } from "@/sanity/queries";
+import { sendInvitationEmail } from "@/shared/services/emailService";
 
 export async function getInvites(orgId) {
   return client.fetch(teamMemberInviteQueries.getAllInvites, { orgId });
 }
 
-export async function createInvite(email, invitedByUserId, orgId, roleKey = "viewer") {
+
+export async function createInvite(
+  email,
+  invitedByUserId,
+  orgId,
+  roleKey = "viewer",
+  { organizationName, inviterName, roleName } = {},
+) {
   const normalizedEmail = email.toLowerCase().trim();
 
   // Check for existing invite with this email in this org
@@ -28,7 +36,7 @@ export async function createInvite(email, invitedByUserId, orgId, roleKey = "vie
 
   const timestamp = new Date().toISOString();
 
-  return client
+  const result = await client
     .patch(orgId)
     .append("invites", [
       {
@@ -44,6 +52,18 @@ export async function createInvite(email, invitedByUserId, orgId, roleKey = "vie
       },
     ])
     .commit();
+
+  // Send invitation email (fire-and-forget — never blocks invite creation)
+  sendInvitationEmail({
+    recipientEmail: normalizedEmail,
+    organizationName: organizationName || "the team",
+    inviterName: inviterName || "A team admin",
+    roleName: roleName || roleKey,
+  }).catch((err) => {
+    console.error("[createInvite] Failed to send invitation email:", err.message);
+  });
+
+  return result;
 }
 
 export async function deleteInvite(inviteKey, orgId) {
@@ -58,6 +78,26 @@ export async function getInviteByEmail(email, orgId) {
     email: email.toLowerCase().trim(),
     orgId,
   });
+}
+
+
+export async function findPendingInviteByEmail(email) {
+  const normalizedEmail = email.toLowerCase().trim();
+  const results = await client.fetch(teamMemberInviteQueries.findPendingInviteByEmail, {
+    email: normalizedEmail,
+  });
+
+  // Return the first pending invite found (there should typically only be one)
+  if (results && results.length > 0) {
+    const { _id: orgId, name: orgName, invite } = results[0];
+    return {
+      orgId,
+      orgName,
+      invite,
+    };
+  }
+
+  return null;
 }
 
 export async function markInviteJoined(email, userId, orgId) {
@@ -112,6 +152,7 @@ export const teamMemberManagementService = {
   createInvite,
   deleteInvite,
   getInviteByEmail,
+  findPendingInviteByEmail,
   markInviteJoined,
   getOwnerTeamMember,
   isOwner,

@@ -6,18 +6,27 @@ export async function getUserByClerkId(clerkId) {
 }
 
 /**
- * Create a new user document in Sanity
+ * Create a new user document in Sanity.
+ * Uses createIfNotExists with a deterministic _id to prevent duplicate
+ * documents when the webhook and sync route race on sign-up.
  */
 export async function createUser({ clerkId, name, email, avatar }) {
-  return client.create({
+  const deterministicId = `user-${clerkId}`;
+  const now = new Date().toISOString();
+
+  await client.createIfNotExists({
+    _id: deterministicId,
     _type: "user",
     clerkId,
     name: name || "",
     email: email || "",
     avatar: avatar || undefined,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
   });
+
+  // Return the document (may have been created by a concurrent call)
+  return client.fetch(userProfileQueries.getByClerkId, { clerkId });
 }
 
 /**

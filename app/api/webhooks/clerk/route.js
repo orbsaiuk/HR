@@ -17,6 +17,9 @@ import {
 } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
+import {
+  getInviteByEmail,
+} from "@/features/team-member-management/services/teamMemberManagementService";
 
 
 function mapClerkRoleToRoleKey(clerkRole) {
@@ -25,7 +28,7 @@ function mapClerkRoleToRoleKey(clerkRole) {
       return ADMIN_ROLE_KEY; // "admin"
     case "org:member":
     default:
-      return "recruiter";
+      return "viewer";
   }
 }
 
@@ -131,6 +134,17 @@ async function handleMembershipCreated(data) {
     });
   }
 
+  // Determine the role: check for a pending invite first, then fall back to Clerk role mapping
+  const userEmail = data.public_user_data?.identifier || userDoc?.email;
+  let roleKey = mapClerkRoleToRoleKey(clerkRole);
+
+  if (userEmail && clerkRole !== "org:admin") {
+    const invite = await getInviteByEmail(userEmail, organization._id);
+    if (invite && invite.roleKey) {
+      roleKey = invite.roleKey;
+    }
+  }
+
   // Check if user is already a team member in this org's embedded array
   const existingMember = await getTeamMemberByClerkAndOrg(
     clerkUserId,
@@ -142,7 +156,7 @@ async function handleMembershipCreated(data) {
     await updateTeamMemberRole(
       organization._id,
       existingMember._key,
-      mapClerkRoleToRoleKey(clerkRole),
+      roleKey,
     );
 
     return {
@@ -155,7 +169,7 @@ async function handleMembershipCreated(data) {
   await addTeamMemberToOrg(
     organization._id,
     userDoc._id,
-    mapClerkRoleToRoleKey(clerkRole),
+    roleKey,
   );
 
   return { message: "Team member added to organization", orgId: organization._id };

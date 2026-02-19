@@ -34,6 +34,20 @@ export const organizationQueries = {
         createdAt,
         updatedAt
     }`,
+    /**
+     * Get organization by ID with teamMembers included.
+     * Used by auth sync to check membership and clerkOrgId.
+     */
+    getByIdWithMembers: `*[_type == "organization" && _id == $id][0] {
+        _id,
+        name,
+        clerkOrgId,
+        "teamMembers": teamMembers[] {
+            _key,
+            roleKey,
+            "user": user-> { _id, clerkId, name, email }
+        }
+    }`,
     getAll: `*[_type == "organization"] | order(name asc)`,
 
     /**

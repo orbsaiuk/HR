@@ -3,6 +3,7 @@ import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { updateApplicationStatus } from "@/features/applications/services/applicationService";
+import { notifyApplicationStatusChange } from "@/features/applications/services/applicationNotificationService";
 
 const VALID_STATUSES = [
   "new",
@@ -36,6 +37,16 @@ export async function PATCH(request, { params }) {
       rejectionReason,
       rating,
     });
+
+    // Fire-and-forget: notify the applicant about the status change
+    notifyApplicationStatusChange({
+      applicationId: id,
+      newStatus: status,
+      rejectionReason,
+    }).catch((err) => {
+      console.error("[status] Failed to send status change notification:", err.message);
+    });
+
     return NextResponse.json(application);
   } catch (error) {
     console.error("Error updating application status:", error);

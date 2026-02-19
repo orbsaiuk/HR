@@ -9,6 +9,14 @@ export async function getOrganizationById(id) {
 }
 
 /**
+ * Get an organization by ID with teamMembers included.
+ * Used by auth sync to check membership and clerkOrgId.
+ */
+export async function getOrganizationByIdWithMembers(id) {
+  return client.fetch(organizationQueries.getByIdWithMembers, { id });
+}
+
+/**
  * Get an organization by its Clerk org ID
  */
 export async function getOrganizationByClerkOrgId(clerkOrgId) {
@@ -160,6 +168,7 @@ export async function getPublicCompanyBySlug(slug) {
 
 export const organizationService = {
   getOrganizationById,
+  getOrganizationByIdWithMembers,
   getOrganizationByClerkOrgId,
   getOrganizationBySlug,
   updateOrganization,

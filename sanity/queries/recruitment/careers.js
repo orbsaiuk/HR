@@ -53,6 +53,7 @@ export const careerQueries = {
       email,
       avatar
     },
+    "organizationId": organization->_id,
     "organizationName": organization->name,
     "organizationLogo": organization->logo,
     "organizationSlug": organization->slug.current,

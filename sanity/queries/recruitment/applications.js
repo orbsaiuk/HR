@@ -92,7 +92,8 @@ export const applicationQueries = {
             description,
             status,
             type,
-            location
+            location,
+            "organizationName": organization->name
         },
         "form": form->{
             _id,

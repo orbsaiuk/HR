@@ -34,7 +34,25 @@ export async function POST(request) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    const invite = await createInvite(email, context.teamMember._id, context.orgId, roleKey || "viewer");
+    const effectiveRoleKey = roleKey || "viewer";
+
+    // Resolve the role display name from the organization's roles array
+    const role = context.organization.roles?.find(
+      (r) => r._key === effectiveRoleKey,
+    );
+    const roleName = role?.name || effectiveRoleKey;
+
+    const invite = await createInvite(
+      email,
+      context.teamMember._id,
+      context.orgId,
+      effectiveRoleKey,
+      {
+        organizationName: context.organization.name,
+        inviterName: context.teamMember.user?.name || context.teamMember.name,
+        roleName,
+      },
+    );
     return NextResponse.json(invite, { status: 201 });
   } catch (error) {
     console.error("Error creating invite:", error);

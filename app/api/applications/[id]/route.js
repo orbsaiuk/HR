@@ -7,6 +7,7 @@ import {
   updateApplication,
   deleteApplication,
 } from "@/features/applications/services/applicationService";
+import { notifyApplicationStatusChange } from "@/features/applications/services/applicationNotificationService";
 
 export async function GET(request, { params }) {
   try {
@@ -40,6 +41,18 @@ export async function PUT(request, { params }) {
     const { id } = await params;
     const input = await request.json();
     const application = await updateApplication(id, input);
+
+    // Fire-and-forget: notify the applicant if status changed
+    if (input.status) {
+      notifyApplicationStatusChange({
+        applicationId: id,
+        newStatus: input.status,
+        rejectionReason: input.rejectionReason,
+      }).catch((err) => {
+        console.error("[PUT application] Failed to send status notification:", err.message);
+      });
+    }
+
     return NextResponse.json(application);
   } catch (error) {
     console.error("Error updating application:", error);
