@@ -66,7 +66,11 @@ export async function POST(request) {
             );
         }
 
-        const result = await createRequest(sanityUser._id, data, orgLogoAssetRef);
+        const requesterInfo = {
+            name: sanityUser.name,
+            email: sanityUser.email,
+        };
+        const result = await createRequest(sanityUser._id, data, orgLogoAssetRef, requesterInfo);
         return NextResponse.json(result, { status: 201 });
     } catch (error) {
         console.error("Error creating organization request:", error);

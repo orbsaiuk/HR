@@ -6,9 +6,13 @@ import {
   fetchPendingRequests,
   markRequestRejected,
 } from "../repositories/orgRequestRepository";
+import {
+  sendOrgRequestSubmittedEmail,
+  sendOrgRequestRejectedEmail,
+} from "@/shared/services/email/orgRequestEmailService";
 import { approveRequest } from "./orgApprovalService";
 
-export async function createRequest(userId, data, orgLogoAssetRef) {
+export async function createRequest(userId, data, orgLogoAssetRef, requesterInfo) {
   // Check for existing pending/approved request
   const pendingCount = await countActiveRequestsByUser(userId);
 
@@ -21,7 +25,7 @@ export async function createRequest(userId, data, orgLogoAssetRef) {
 
   const now = new Date().toISOString();
 
-  return createOrgRequest({
+  const result = await createOrgRequest({
     _type: "organizationRequest",
     requestedBy: { _type: "reference", _ref: userId },
     contactEmail: data.contactEmail,
@@ -39,6 +43,20 @@ export async function createRequest(userId, data, orgLogoAssetRef) {
     createdAt: now,
     updatedAt: now,
   });
+
+  // Send submission confirmation email (fire-and-forget)
+  const recipientEmail = requesterInfo?.email;
+  if (recipientEmail) {
+    sendOrgRequestSubmittedEmail({
+      recipientEmail,
+      requesterName: requesterInfo?.name || "there",
+      organizationName: data.orgName,
+    }).catch((err) =>
+      console.error("[OrgRequest] Failed to send submission confirmation email:", err.message),
+    );
+  }
+
+  return result;
 }
 
 export async function getRequestsByUser(userId) {
@@ -63,7 +81,22 @@ export async function rejectRequest(id, reason, adminInfo) {
   }
 
   const reviewedBy = adminInfo?.email || adminInfo?.name || "admin";
-  return markRequestRejected(id, reason, reviewedBy);
+  const updated = await markRequestRejected(id, reason, reviewedBy);
+
+  // Send rejection notification email (fire-and-forget)
+  const recipientEmail = request.requestedBy?.email;
+  if (recipientEmail) {
+    sendOrgRequestRejectedEmail({
+      recipientEmail,
+      requesterName: request.requestedBy?.name || "there",
+      organizationName: request.orgName,
+      reason,
+    }).catch((err) =>
+      console.error("[OrgRequest] Failed to send rejection email:", err.message),
+    );
+  }
+
+  return updated;
 }
 
 export async function getPendingRequests() {
@@ -78,3 +111,4 @@ export const orgRequestService = {
   rejectRequest,
   getPendingRequests,
 };
+

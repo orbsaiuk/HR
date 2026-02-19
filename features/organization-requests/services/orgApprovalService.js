@@ -4,6 +4,7 @@ import { getOrganizationByClerkOrgId } from "@/features/organizations/services/o
 import { getUserByClerkId } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
+import { sendOrgRequestApprovedEmail } from "@/shared/services/email/orgRequestEmailService";
 import {
     fetchRequestById,
     markRequestApproved,
@@ -163,9 +164,23 @@ export async function approveRequest(id, adminInfo, orgSlug) {
 
     // 7. Mark request as approved
     const reviewedBy = adminInfo?.email || adminInfo?.name || "admin";
-    return markRequestApproved(id, {
+    const updated = await markRequestApproved(id, {
         clerkOrgId: clerkOrg.id,
         sanityOrgId: sanityOrg._id,
         reviewedBy,
     });
+
+    // 8. Send approval notification email (fire-and-forget)
+    const recipientEmail = request.requestedBy?.email;
+    if (recipientEmail) {
+        sendOrgRequestApprovedEmail({
+            recipientEmail,
+            requesterName: request.requestedBy?.name || "there",
+            organizationName: request.orgName,
+        }).catch((err) =>
+            console.error("[OrgApproval] Failed to send approval email:", err.message),
+        );
+    }
+
+    return updated;
 }
