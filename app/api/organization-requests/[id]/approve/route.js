@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { approveRequest } from "@/features/organization-requests/services/orgRequestService";
+import { approveRequest } from "@/features/organization-requests/services/orgApprovalService";
 
 /**
  * POST /api/organization-requests/[id]/approve — Approve an organization request
