@@ -71,6 +71,28 @@ export function RegisterOrgPage() {
         }
     };
 
+    // Show success message immediately after submission (before existingRequest check)
+    if (success) {
+        return (
+            <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+                <Card>
+                    <CardContent className="pt-8 pb-8 flex flex-col items-center gap-4">
+                        <Building2 size={48} className="text-green-500" />
+                        <div className="space-y-2">
+                            <h2 className="text-xl font-semibold">
+                                Request Submitted Successfully!
+                            </h2>
+                            <p className="text-sm text-muted-foreground">
+                                Your organization registration request has been submitted.
+                                A platform administrator will review it shortly. Redirecting...
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
     // Block registration if user already has a pending or approved request
     if (existingRequest) {
         const isPending = existingRequest.status === "pending";
@@ -101,27 +123,6 @@ export function RegisterOrgPage() {
                                 View Request Status
                             </Link>
                         </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    }
-
-    if (success) {
-        return (
-            <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-                <Card>
-                    <CardContent className="pt-8 pb-8 flex flex-col items-center gap-4">
-                        <Building2 size={48} className="text-green-500" />
-                        <div className="space-y-2">
-                            <h2 className="text-xl font-semibold">
-                                Request Submitted Successfully!
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                                Your organization registration request has been submitted.
-                                A platform administrator will review it shortly. Redirecting...
-                            </p>
-                        </div>
                     </CardContent>
                 </Card>
             </div>

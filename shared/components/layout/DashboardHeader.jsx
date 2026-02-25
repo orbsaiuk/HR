@@ -24,6 +24,7 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
 import { urlFor } from "@/shared/lib/sanityImage";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const allNavItems = [
   {
@@ -58,6 +59,12 @@ const allNavItems = [
   },
 ];
 
+function NavSkeleton({ count, className = "h-8 w-20" }) {
+  return Array.from({ length: count }, (_, i) => (
+    <Skeleton key={i} className={className} />
+  ));
+}
+
 export function DashboardHeader() {
   const { unreadCount } = useUnreadCount();
   const { hasPermission, loading: permissionsLoading } = usePermissions();
@@ -67,16 +74,16 @@ export function DashboardHeader() {
 
   const logoUrl = org?.logo ? urlFor(org.logo).width(64).height(64).url() : null;
 
-  // While permissions are loading, show all items to avoid layout shift.
-  // Once loaded, filter based on actual permissions.
+  // Only show items the user actually has access to.
+  // While loading, all slots render as skeletons.
   const navItems = permissionsLoading
-    ? allNavItems
+    ? []
     : allNavItems.filter(
-      (item) => !item.permission || hasPermission(item.permission),
-    );
+        (item) => !item.permission || hasPermission(item.permission),
+      );
 
   const canCreatePosition =
-    permissionsLoading || hasPermission(PERMISSIONS.MANAGE_POSITIONS);
+    !permissionsLoading && hasPermission(PERMISSIONS.MANAGE_POSITIONS);
 
   const isActive = (href) => {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -109,32 +116,36 @@ export function DashboardHeader() {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              const showBadge = item.name === "Messages" && unreadCount > 0;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`
-                    relative flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors
-                    ${active
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                    }
-                  `}
-                >
-                  <Icon size={16} />
-                  <span>{item.name}</span>
-                  {showBadge && (
-                    <span className="ml-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full min-w-4.5 h-4.5 flex items-center justify-center px-1">
-                      {unreadCount > 99 ? "99+" : unreadCount}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+            {permissionsLoading ? (
+              <NavSkeleton count={allNavItems.length} />
+            ) : (
+              navItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                const showBadge = item.name === "Messages" && unreadCount > 0;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`
+                      relative flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors
+                      ${active
+                        ? "bg-blue-50 text-blue-700"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      }
+                    `}
+                  >
+                    <Icon size={16} />
+                    <span>{item.name}</span>
+                    {showBadge && (
+                      <span className="ml-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full min-w-4.5 h-4.5 flex items-center justify-center px-1">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })
+            )}
           </nav>
         </div>
 
@@ -147,7 +158,9 @@ export function DashboardHeader() {
           >
             <Home size={18} />
           </Link>
-          {canCreatePosition && (
+          {permissionsLoading ? (
+            <Skeleton className="h-8 w-28 hidden sm:block" />
+          ) : canCreatePosition ? (
             <>
               <Button size="sm" asChild className="hidden sm:inline-flex">
                 <Link href="/dashboard/positions/create">
@@ -161,7 +174,7 @@ export function DashboardHeader() {
                 </Link>
               </Button>
             </>
-          )}
+          ) : null}
           <UserButton />
 
           {/* Mobile menu toggle */}
@@ -177,33 +190,37 @@ export function DashboardHeader() {
       {/* Mobile nav dropdown */}
       {isMobileOpen && (
         <nav className="lg:hidden border-t border-gray-100 bg-white px-4 pb-3 pt-2 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.href);
-            const showBadge = item.name === "Messages" && unreadCount > 0;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsMobileOpen(false)}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  ${active
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
-                  }
-                `}
-              >
-                <Icon size={18} />
-                <span>{item.name}</span>
-                {showBadge && (
-                  <span className="ml-auto bg-blue-600 text-white text-xs font-bold rounded-full min-w-5 h-5 flex items-center justify-center px-1.5">
-                    {unreadCount > 99 ? "99+" : unreadCount}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+          {permissionsLoading ? (
+            <NavSkeleton count={allNavItems.length} className="h-10 w-full" />
+          ) : (
+            navItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
+              const showBadge = item.name === "Messages" && unreadCount > 0;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMobileOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                    ${active
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-600 hover:bg-gray-100"
+                    }
+                  `}
+                >
+                  <Icon size={18} />
+                  <span>{item.name}</span>
+                  {showBadge && (
+                    <span className="ml-auto bg-blue-600 text-white text-xs font-bold rounded-full min-w-5 h-5 flex items-center justify-center px-1.5">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </Link>
+              );
+            })
+          )}
         </nav>
       )}
     </header>
