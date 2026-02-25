@@ -27,20 +27,22 @@ export function QuickActions() {
                 </Link>
             </PermissionGate>
 
-            <Link
-                href="/dashboard/forms"
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-all"
-            >
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">View All Forms</h3>
-                        <p className="text-gray-600">
-                            Manage and edit your existing forms
-                        </p>
+            <PermissionGate permission={PERMISSIONS.VIEW_FORMS}>
+                <Link
+                    href="/dashboard/forms"
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-all"
+                >
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">View All Forms</h3>
+                            <p className="text-gray-600">
+                                Manage and edit your existing forms
+                            </p>
+                        </div>
+                        <ArrowRight className="text-gray-400" size={32} />
                     </div>
-                    <ArrowRight className="text-gray-400" size={32} />
-                </div>
-            </Link>
+                </Link>
+            </PermissionGate>
         </div>
     );
 }

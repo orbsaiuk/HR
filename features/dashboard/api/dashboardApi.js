@@ -12,7 +12,19 @@ export const dashboardApi = {
      * @returns {Promise<Object>} Dashboard stats including forms count, responses, etc.
      */
     async getStats() {
-        const forms = await apiClient.get(API_ENDPOINTS.FORMS);
+        let forms = [];
+
+        try {
+            forms = await apiClient.get(API_ENDPOINTS.FORMS);
+        } catch (error) {
+            // If the user lacks VIEW_FORMS permission (403), degrade gracefully
+            // instead of breaking the entire dashboard
+            if (error.status === 403) {
+                forms = [];
+            } else {
+                throw error;
+            }
+        }
 
         // Calculate stats from forms data
         const totalForms = forms.length;

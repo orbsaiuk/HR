@@ -32,13 +32,15 @@ export function GettingStarted() {
                                 Create Your First Form
                             </Link>
                         </PermissionGate>
-                        <Link
-                            href="/dashboard/settings"
-                            className="inline-flex items-center gap-2 bg-white text-gray-700 px-6 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
-                        >
-                            <Settings size={20} />
-                            Configure Settings
-                        </Link>
+                        <PermissionGate permission={PERMISSIONS.MANAGE_SETTINGS}>
+                            <Link
+                                href="/dashboard/settings"
+                                className="inline-flex items-center gap-2 bg-white text-gray-700 px-6 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                            >
+                                <Settings size={20} />
+                                Configure Settings
+                            </Link>
+                        </PermissionGate>
                     </div>
                 </div>
             </div>

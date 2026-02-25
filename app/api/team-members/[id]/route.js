@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { requirePermission } from "@/shared/lib/permissionChecker";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 import { client } from "@/sanity/client";
 import { teamMembersQueries } from "@/sanity/queries";
 
 export async function GET(request, { params }) {
   try {
-    const { orgId } = await resolveOrgContext();
+    const context = await resolveOrgContext();
+    requirePermission(context, PERMISSIONS.MANAGE_TEAM);
     const { id } = await params;
 
     // Find team member by user ID within the organization's embedded array
     const teamMember = await client.fetch(teamMembersQueries.getByUserId, {
-      orgId,
+      orgId: context.orgId,
       userId: id,
     });
 

@@ -55,7 +55,7 @@ const allNavItems = [
     name: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
-    permission: null,
+    permission: PERMISSIONS.MANAGE_SETTINGS,
   },
 ];
 
@@ -79,8 +79,8 @@ export function DashboardHeader() {
   const navItems = permissionsLoading
     ? []
     : allNavItems.filter(
-        (item) => !item.permission || hasPermission(item.permission),
-      );
+      (item) => !item.permission || hasPermission(item.permission),
+    );
 
   const canCreatePosition =
     !permissionsLoading && hasPermission(PERMISSIONS.MANAGE_POSITIONS);
@@ -226,3 +226,4 @@ export function DashboardHeader() {
     </header>
   );
 }
+

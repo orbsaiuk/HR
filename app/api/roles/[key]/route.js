@@ -17,6 +17,7 @@ import { incrementPermissionsVersion } from "@/features/organizations/services/o
 export async function GET(request, { params }) {
     try {
         const context = await resolveOrgContext();
+        requirePermission(context, PERMISSIONS.MANAGE_ROLES);
         const { key } = await params;
 
         const role = await getRoleByKey(context.orgId, key);
