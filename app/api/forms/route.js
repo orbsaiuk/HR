@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { requirePermission } from "@/shared/lib/permissionChecker";
+import { requirePermission, hasPermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getForms, createForm } from "@/features/forms/services/formService";
+import { getForms, getFormsAssignedToUser, createForm } from "@/features/forms/services/formService";
 import { logAuditEvent } from "@/features/audit/services/auditService";
 
 export async function GET() {
   try {
     const context = await resolveOrgContext();
     requirePermission(context, PERMISSIONS.VIEW_FORMS);
-    const forms = await getForms(context.orgId);
+
+    // Resource-level permissions:
+    // - manage_forms → see ALL forms in the org
+    // - view_forms only → see only forms where user is creator or in assignedTo
+    const canManage = hasPermission(context, PERMISSIONS.MANAGE_FORMS);
+    const forms = canManage
+      ? await getForms(context.orgId)
+      : await getFormsAssignedToUser(context.orgId, context.teamMember._id);
+
     return NextResponse.json(forms);
   } catch (error) {
     console.error("Error fetching forms:", error);

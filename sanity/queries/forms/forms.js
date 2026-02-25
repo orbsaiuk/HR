@@ -1,6 +1,12 @@
 export const formsQueries = {
     getAll: `*[_type == "form" && organization._ref == $orgId] {
             ...,
+            "assignedTo": assignedTo[]->{
+                _id,
+                name,
+                email,
+                avatar
+            },
             "responseCount": count(*[_type == "response" && form._ref == ^._id])
         } | order(updatedAt desc)`,
 
@@ -13,8 +19,30 @@ export const formsQueries = {
             "responseCount": count(*[_type == "response" && form._ref == ^._id])
         } | order(updatedAt desc)`,
 
+    /**
+     * Get forms assigned to a user — either as creator or in assignedTo array.
+     * Used for resource-level permissions: users with view_forms but not manage_forms
+     * can only see forms they are assigned to.
+     */
+    getAssignedToUser: `*[_type == "form" && organization._ref == $orgId && (createdBy._ref == $userId || $userId in assignedTo[]._ref)] {
+            ...,
+            "assignedTo": assignedTo[]->{
+                _id,
+                name,
+                email,
+                avatar
+            },
+            "responseCount": count(*[_type == "response" && form._ref == ^._id])
+        } | order(updatedAt desc)`,
+
     getById: `*[_type == "form" && _id == $id][0] {
         ...,
+        "assignedTo": assignedTo[]->{
+            _id,
+            name,
+            email,
+            avatar
+        },
         "responseCount": count(*[_type == "response" && form._ref == ^._id])
     }`,
 

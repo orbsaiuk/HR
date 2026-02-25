@@ -4,6 +4,39 @@ import { Children, cloneElement, isValidElement } from "react";
 import { usePermissions } from "@/features/team-member-management/model/usePermissions";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { AccessDenied } from "./AccessDenied";
+import { PERMISSION_METADATA } from "@/shared/lib/permissions";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+/**
+ * Resolve a human-readable description of the required permission(s)
+ * for use in tooltips and disabled state messages.
+ */
+function getRequiredPermissionLabel(permission, anyOf, allOf) {
+    if (permission) {
+        const meta = PERMISSION_METADATA[permission];
+        return meta ? meta.label : permission.replace(/_/g, " ");
+    }
+    if (anyOf && anyOf.length > 0) {
+        const labels = anyOf.map((p) => {
+            const meta = PERMISSION_METADATA[p];
+            return meta ? meta.label : p.replace(/_/g, " ");
+        });
+        return labels.join(" or ");
+    }
+    if (allOf && allOf.length > 0) {
+        const labels = allOf.map((p) => {
+            const meta = PERMISSION_METADATA[p];
+            return meta ? meta.label : p.replace(/_/g, " ");
+        });
+        return labels.join(" and ");
+    }
+    return null;
+}
 
 export function PermissionGate({
     permission,
@@ -14,7 +47,7 @@ export function PermissionGate({
     message,
     children,
 }) {
-    const { hasPermission, loading } = usePermissions();
+    const { hasPermission, loading, roleName } = usePermissions();
 
     // Show loading state
     if (loading) {
@@ -35,19 +68,46 @@ export function PermissionGate({
     // User is denied — handle based on behavior
     switch (behavior) {
         case "block":
-            return fallback || <AccessDenied message={message} />;
+            return fallback || (
+                <AccessDenied
+                    message={message}
+                    requiredPermission={permission}
+                    requiredAnyOf={anyOf}
+                    requiredAllOf={allOf}
+                    roleName={roleName}
+                />
+            );
 
-        case "disable":
+        case "disable": {
+            const tooltipLabel = getRequiredPermissionLabel(permission, anyOf, allOf);
+            const tooltipMessage = tooltipLabel
+                ? `Requires the "${tooltipLabel}" permission`
+                : "You don't have permission for this action";
+
             return (
-                <>
+                <TooltipProvider delayDuration={200}>
                     {Children.map(children, (child) => {
                         if (isValidElement(child)) {
-                            return cloneElement(child, { disabled: true });
+                            const disabledChild = cloneElement(child, { disabled: true });
+                            return (
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        {/* Wrap in span so tooltip works on disabled elements */}
+                                        <span className="inline-block" tabIndex={0}>
+                                            {disabledChild}
+                                        </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{tooltipMessage}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            );
                         }
                         return child;
                     })}
-                </>
+                </TooltipProvider>
             );
+        }
 
         case "hide":
         default:

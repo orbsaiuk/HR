@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Pencil, Trash2, Users } from "lucide-react";
+import { Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,16 +11,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import { PermissionsGrid } from "./PermissionsGrid";
+import { EditRoleDialog } from "./EditRoleDialog";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 
 export function RoleCard({
@@ -31,31 +21,9 @@ export function RoleCard({
     isEditing = false,
     editDisabled = false,
 }) {
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [editName, setEditName] = useState(role.name);
-    const [editDescription, setEditDescription] = useState(role.description || "");
-    const [editPermissions, setEditPermissions] = useState(role.permissions || []);
-    const [saving, setSaving] = useState(false);
-
     const isAdmin = role._key === ADMIN_ROLE_KEY;
     const canEdit = !editDisabled;
     const canDelete = !isAdmin && !role.isSystem;
-
-    const handleSave = async () => {
-        setSaving(true);
-        try {
-            await onEdit(role._key, {
-                name: editName,
-                description: editDescription,
-                permissions: editPermissions,
-            });
-            setEditDialogOpen(false);
-        } catch (err) {
-            console.error("Failed to save:", err);
-        } finally {
-            setSaving(false);
-        }
-    };
 
     const handleDelete = async () => {
         if (confirm(`Are you sure you want to delete the "${role.name}" role?`)) {
@@ -96,57 +64,11 @@ export function RoleCard({
                 </div>
             </CardContent>
             <CardFooter className="gap-2">
-                <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" size="sm" disabled={!canEdit}>
-                            <Pencil className="h-4 w-4 mr-1" />
-                            Edit
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                            <DialogTitle>Edit Role: {role.name}</DialogTitle>
-                            <DialogDescription>
-                                Update the role name, description, and permissions.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Name</label>
-                                <input
-                                    type="text"
-                                    value={editName}
-                                    onChange={(e) => setEditName(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded-md"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Description</label>
-                                <textarea
-                                    value={editDescription}
-                                    onChange={(e) => setEditDescription(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded-md"
-                                    rows={2}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Permissions</label>
-                                <PermissionsGrid
-                                    selected={editPermissions}
-                                    onChange={setEditPermissions}
-                                />
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
-                                Cancel
-                            </Button>
-                            <Button onClick={handleSave} disabled={saving}>
-                                {saving ? "Saving..." : "Save Changes"}
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                <EditRoleDialog
+                    role={role}
+                    onSave={onEdit}
+                    disabled={!canEdit}
+                />
 
                 {canDelete && (
                     <Button

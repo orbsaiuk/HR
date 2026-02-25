@@ -1,32 +1,70 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
+import { PermissionsContext } from "@/shared/providers/PermissionsProvider";
 import { teamMemberManagementApi } from "../api/teamMemberManagementApi";
 
 export function usePermissions() {
-    const [permissions, setPermissions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const context = useContext(PermissionsContext);
+    const hasProvider = context !== null;
+
+    // Local state — only used when no provider is present
+    const [localPermissions, setLocalPermissions] = useState([]);
+    const [localRoleKey, setLocalRoleKey] = useState(null);
+    const [localRoleName, setLocalRoleName] = useState(null);
+    const [localLoading, setLocalLoading] = useState(true);
 
     useEffect(() => {
+        // Skip fetch if a provider is supplying permissions
+        if (hasProvider) return;
+
+        let cancelled = false;
+
         async function fetchPermissions() {
             try {
-                setLoading(true);
+                setLocalLoading(true);
                 const data = await teamMemberManagementApi.getMyPermissions();
-                setPermissions(data.permissions || []);
+                if (!cancelled) {
+                    setLocalPermissions(data.permissions || []);
+                    setLocalRoleKey(data.roleKey || null);
+                    setLocalRoleName(data.roleName || null);
+                }
             } catch {
-                setPermissions([]);
+                if (!cancelled) {
+                    setLocalPermissions([]);
+                    setLocalRoleKey(null);
+                    setLocalRoleName(null);
+                }
             } finally {
-                setLoading(false);
+                if (!cancelled) {
+                    setLocalLoading(false);
+                }
             }
         }
 
         fetchPermissions();
-    }, []);
 
-    const hasPermission = useCallback(
-        (key) => permissions.includes(key),
-        [permissions],
+        return () => {
+            cancelled = true;
+        };
+    }, [hasProvider]);
+
+    const localHasPermission = useCallback(
+        (key) => localPermissions.includes(key),
+        [localPermissions],
     );
 
-    return { permissions, hasPermission, loading };
+    // If a PermissionsProvider is wrapping this component, use its shared state
+    if (hasProvider) {
+        return context;
+    }
+
+    // Fallback: no provider present — use local state
+    return {
+        permissions: localPermissions,
+        hasPermission: localHasPermission,
+        loading: localLoading,
+        roleKey: localRoleKey,
+        roleName: localRoleName,
+    };
 }

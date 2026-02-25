@@ -177,6 +177,21 @@ export async function getPublicCompanyBySlug(slug) {
   return clientRead.fetch(organizationQueries.getPublicCompanyBySlug, { slug });
 }
 
+/**
+ * Increment the permissionsVersion counter on an organization.
+ * Called after any role or team member change so the frontend can detect
+ * stale permissions and re-fetch.
+ */
+export async function incrementPermissionsVersion(orgId) {
+  try {
+    return await client.patch(orgId).inc({ permissionsVersion: 1 }).commit();
+  } catch (error) {
+    // Version increment should never break the main operation
+    console.error("[organizationService] Failed to increment permissionsVersion:", error.message);
+    return null;
+  }
+}
+
 export const organizationService = {
   getOrganizationById,
   getOrganizationByIdWithMembers,
@@ -194,4 +209,5 @@ export const organizationService = {
   getPlatformStats,
   getFeaturedPositions,
   getPublicCompanyBySlug,
+  incrementPermissionsVersion,
 };

@@ -33,6 +33,19 @@ export default {
             description: "The recruiter who created this position",
         },
         {
+            name: "assignedTo",
+            title: "Assigned To",
+            type: "array",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "user" }],
+                },
+            ],
+            description:
+                "Team members assigned to this position. Users with view-only permissions can see positions they are assigned to.",
+        },
+        {
             name: "organization",
             title: "Organization",
             type: "reference",

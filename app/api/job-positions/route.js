@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { requirePermission } from "@/shared/lib/permissionChecker";
+import { requirePermission, hasPermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getJobPositions,
+  getJobPositionsAssignedToUser,
   createJobPosition,
 } from "@/features/job-positions/services/jobPositionService";
 import { logAuditEvent } from "@/features/audit/services/auditService";
@@ -12,7 +13,15 @@ export async function GET() {
   try {
     const context = await resolveOrgContext();
     requirePermission(context, PERMISSIONS.VIEW_POSITIONS);
-    const positions = await getJobPositions(context.orgId);
+
+    // Resource-level permissions:
+    // - manage_positions → see ALL positions in the org
+    // - view_positions only → see only positions where user is recruiter or in assignedTo
+    const canManage = hasPermission(context, PERMISSIONS.MANAGE_POSITIONS);
+    const positions = canManage
+      ? await getJobPositions(context.orgId)
+      : await getJobPositionsAssignedToUser(context.orgId, context.teamMember._id);
+
     return NextResponse.json(positions);
   } catch (error) {
     console.error("Error fetching positions:", error);

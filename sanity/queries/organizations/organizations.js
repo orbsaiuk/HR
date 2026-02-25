@@ -8,6 +8,15 @@ export const organizationQueries = {
             permissions,
             isSystem,
             createdAt
+        },
+        "temporaryGrants": temporaryGrants[] {
+            _key,
+            "user": user-> { _id },
+            permissions,
+            "grantedBy": grantedBy-> { _id, name },
+            expiresAt,
+            reason,
+            grantedAt
         }
     }`,
     getBySlug: `*[_type == "organization" && slug.current == $slug][0]`,
@@ -132,10 +141,46 @@ export const organizationQueries = {
     }.teamMember`,
 
     /**
+     * Get only the permissionsVersion field for lightweight version checks.
+     * Used by the frontend to detect stale permissions without fetching the full org.
+     */
+    getPermissionsVersion: `*[_type == "organization" && _id == $orgId][0].permissionsVersion`,
+
+    /**
      * Check if an email already belongs to a team member in an organization.
      * Used to prevent duplicate invites for existing members.
      */
     getTeamMemberByEmail: `*[_type == "organization" && _id == $orgId][0].teamMembers[user->email == $email][0]`,
+
+    /**
+     * Get all temporary grants for an organization.
+     * Used by the temporary grants management UI.
+     */
+    getTemporaryGrants: `*[_type == "organization" && _id == $orgId][0] {
+        "temporaryGrants": temporaryGrants[] {
+            _key,
+            "user": user-> { _id, name, email, avatar },
+            permissions,
+            "grantedBy": grantedBy-> { _id, name, email },
+            expiresAt,
+            reason,
+            grantedAt
+        }
+    }.temporaryGrants`,
+
+    /**
+     * Get active (non-expired) temporary grants for a specific user in an organization.
+     */
+    getActiveTemporaryGrantsForUser: `*[_type == "organization" && _id == $orgId][0] {
+        "grants": temporaryGrants[user._ref == $userId && dateTime(expiresAt) > dateTime(now())] {
+            _key,
+            permissions,
+            "grantedBy": grantedBy-> { _id, name },
+            expiresAt,
+            reason,
+            grantedAt
+        }
+    }.grants`,
 
     /**
      * Get all user _ref values from the teamMembers array.

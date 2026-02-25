@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { client } from "@/sanity/client";
 import { userProfileQueries } from "@/sanity/queries";
-import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
@@ -10,6 +10,7 @@ import {
   removeTeamMember,
 } from "@/features/team-member-management/services/teamMemberManagementService";
 import { logAuditEvent } from "@/features/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
 
 export async function DELETE(request, { params }) {
   try {
@@ -68,18 +69,24 @@ export async function DELETE(request, { params }) {
     // 4. Remove the team member from the Sanity organization document
     await removeTeamMember(id, context.orgId);
 
-    await logAuditEvent({
-      action: "member.removed",
-      category: "team",
-      description: `Removed team member "${userDoc.name || userDoc.email || id}"`,
-      actorId: context.teamMember._id,
-      orgId: context.orgId,
-      targetType: "teamMember",
-      targetId: id,
-      metadata: {
-        before: JSON.stringify({ userId: id, name: userDoc.name, email: userDoc.email }),
-      },
-    });
+    // Invalidate cached org context so membership changes take effect immediately
+    invalidateOrgContextCache(context.organization.clerkOrgId);
+
+    await Promise.all([
+      logAuditEvent({
+        action: "member.removed",
+        category: "team",
+        description: `Removed team member "${userDoc.name || userDoc.email || id}"`,
+        actorId: context.teamMember._id,
+        orgId: context.orgId,
+        targetType: "teamMember",
+        targetId: id,
+        metadata: {
+          before: JSON.stringify({ userId: id, name: userDoc.name, email: userDoc.email }),
+        },
+      }),
+      incrementPermissionsVersion(context.orgId),
+    ]);
 
     return NextResponse.json({ success: true });
   } catch (error) {

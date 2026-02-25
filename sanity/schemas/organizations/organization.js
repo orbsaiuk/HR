@@ -272,6 +272,84 @@ export default {
             ],
         },
         {
+            name: "temporaryGrants",
+            title: "Temporary Permission Grants",
+            type: "array",
+            description: "Time-boxed permission elevations granted to team members. Automatically expire after the specified date.",
+            of: [
+                {
+                    type: "object",
+                    fields: [
+                        {
+                            name: "user",
+                            title: "User",
+                            type: "reference",
+                            to: [{ type: "user" }],
+                            description: "The team member receiving elevated permissions",
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "permissions",
+                            title: "Permissions",
+                            type: "array",
+                            of: [{ type: "string" }],
+                            description: "The additional permissions granted temporarily",
+                            validation: (Rule) => Rule.required().min(1),
+                        },
+                        {
+                            name: "grantedBy",
+                            title: "Granted By",
+                            type: "reference",
+                            to: [{ type: "user" }],
+                            description: "The admin who granted this elevation",
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "expiresAt",
+                            title: "Expires At",
+                            type: "datetime",
+                            description: "When this temporary grant expires",
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "reason",
+                            title: "Reason",
+                            type: "string",
+                            description: "Why this temporary elevation was granted",
+                        },
+                        {
+                            name: "grantedAt",
+                            title: "Granted At",
+                            type: "datetime",
+                            initialValue: () => new Date().toISOString(),
+                        },
+                    ],
+                    preview: {
+                        select: {
+                            userName: "user.name",
+                            userEmail: "user.email",
+                            expiresAt: "expiresAt",
+                            reason: "reason",
+                        },
+                        prepare({ userName, userEmail, expiresAt, reason }) {
+                            const expiry = expiresAt ? new Date(expiresAt).toLocaleDateString() : "No expiry";
+                            return {
+                                title: userName || userEmail || "Unknown User",
+                                subtitle: `Expires: ${expiry}${reason ? ` — ${reason}` : ""}`,
+                            };
+                        },
+                    },
+                },
+            ],
+        },
+        {
+            name: "permissionsVersion",
+            title: "Permissions Version",
+            type: "number",
+            description: "Incremented whenever roles or team member assignments change. Used by the frontend to detect stale permissions and re-fetch.",
+            initialValue: 1,
+        },
+        {
             name: "createdAt",
             title: "Created At",
             type: "datetime",

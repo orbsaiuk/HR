@@ -6,6 +6,14 @@ export async function getForms(orgId) {
   return client.fetch(formsQueries.getAll, { orgId });
 }
 
+/**
+ * Get forms assigned to a specific user (as creator or in assignedTo).
+ * Used for resource-level permissions: users with view_forms but not manage_forms.
+ */
+export async function getFormsAssignedToUser(orgId, userId) {
+  return client.fetch(formsQueries.getAssignedToUser, { orgId, userId });
+}
+
 export async function getFormsByTeamMember(orgId, userId) {
   return client.fetch(formsQueries.getByTeamMember, { orgId, userId });
 }
@@ -36,13 +44,18 @@ export async function createForm(input, orgId) {
 }
 
 export async function updateForm(id, input) {
-  return client
-    .patch(id)
-    .set({
-      ...input,
-      updatedAt: new Date().toISOString(),
-    })
-    .commit();
+  const updates = { ...input, updatedAt: new Date().toISOString() };
+
+  // Handle assignedTo — convert user IDs to Sanity references
+  if (input.assignedTo !== undefined) {
+    updates.assignedTo = (input.assignedTo || []).map((userId) => ({
+      _type: "reference",
+      _ref: userId,
+      _key: userId,
+    }));
+  }
+
+  return client.patch(id).set(updates).commit();
 }
 
 export async function getPublishedFormsByUser(userId) {
@@ -90,6 +103,7 @@ export async function deleteForm(id) {
 export const formService = {
   getForms,
   getFormsByTeamMember,
+  getFormsAssignedToUser,
   getFormById,
   getPublishedFormsByUser,
   getPublishedFormsByTeamMember,

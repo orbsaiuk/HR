@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
@@ -55,6 +55,9 @@ export async function PUT(request, { params }) {
 
     const input = await request.json();
     const organization = await updateOrganization(id, input);
+
+    // Invalidate cached org context so settings changes take effect immediately
+    invalidateOrgContextCache(context.organization.clerkOrgId);
 
     await logAuditEvent({
       action: "settings.updated",

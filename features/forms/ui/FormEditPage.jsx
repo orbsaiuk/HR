@@ -9,6 +9,7 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useFormEdit } from "../model/useFormEdit";
 import { FormBuilder } from "../components/FormBuilder/FormBuilder";
 import { Loading } from "@/shared/components/feedback/Loading";
+import { AssignedTeamMembersField } from "@/shared/components/forms/AssignedTeamMembersField";
 
 export function FormEditPage({ formId }) {
   const router = useRouter();
@@ -19,6 +20,8 @@ export function FormEditPage({ formId }) {
     setDescription,
     fields,
     setFields,
+    assignedTo,
+    setAssignedTo,
     loading,
     savingDraft,
     error,
@@ -82,6 +85,12 @@ export function FormEditPage({ formId }) {
           onFieldsChange={setFields}
         />
       </div>
+
+      {/* Assigned Team Members */}
+      <AssignedTeamMembersField
+        value={assignedTo}
+        onChange={setAssignedTo}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ export function useFormEdit(formId) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [fields, setFields] = useState([]);
+    const [assignedTo, setAssignedTo] = useState([]);
     const [loading, setLoading] = useState(true);
     const [savingDraft, setSavingDraft] = useState(false);
     const [savingPublish, setSavingPublish] = useState(false);
@@ -22,6 +23,7 @@ export function useFormEdit(formId) {
             setTitle(data.title);
             setDescription(data.description || '');
             setFields(data.fields || []);
+            setAssignedTo(data.assignedTo?.map((u) => u._id) || []);
         } catch (err) {
             setError(err.message || 'Failed to fetch form');
         } finally {
@@ -47,6 +49,7 @@ export function useFormEdit(formId) {
                 title,
                 description,
                 fields,
+                assignedTo,
                 status: publish ? 'published' : 'draft',
             };
 
@@ -74,6 +77,8 @@ export function useFormEdit(formId) {
         setDescription,
         fields,
         setFields,
+        assignedTo,
+        setAssignedTo,
         loading,
         savingDraft,
         savingPublish,

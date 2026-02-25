@@ -17,6 +17,9 @@ import recruitmentSchemas from "./recruitment";
 // Audit schemas
 import auditSchemas from "./audit";
 
+// API Key schemas
+import { apiKey } from "./api-keys";
+
 // Combine all schemas
 export const schemaTypes = [
   ...organizationSchemas,
@@ -25,6 +28,7 @@ export const schemaTypes = [
   ...messagingSchemas,
   ...recruitmentSchemas,
   ...auditSchemas,
+  apiKey,
 ];
 
 export const schema = {

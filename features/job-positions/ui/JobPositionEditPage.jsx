@@ -19,6 +19,7 @@ import {
   ApplicationMethodSelector,
 } from "./components";
 import { ApplicationFormSection } from "./ApplicationFormSection";
+import { AssignedTeamMembersField } from "@/shared/components/forms/AssignedTeamMembersField";
 
 export function JobPositionEditPage({ positionId }) {
   const router = useRouter();
@@ -58,6 +59,7 @@ export function JobPositionEditPage({ positionId }) {
     deadline: "",
     formId: "",
     applicationMethod: "form",
+    assignedTo: [],
   });
 
   // Populate form data once position is loaded
@@ -77,6 +79,7 @@ export function JobPositionEditPage({ positionId }) {
         deadline: position.deadline ? position.deadline.slice(0, 16) : "",
         formId: position.form?._id || "",
         applicationMethod: position.applicationMethod || "form",
+        assignedTo: position.assignedTo?.map((u) => u._id) || [],
       });
       setInitialized(true);
     }
@@ -161,7 +164,15 @@ export function JobPositionEditPage({ positionId }) {
 
       <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
         {currentStep === 0 && (
-          <PositionBasicInfoCard formData={formData} onChange={setFormData} />
+          <div className="space-y-6">
+            <PositionBasicInfoCard formData={formData} onChange={setFormData} />
+            <AssignedTeamMembersField
+              value={formData.assignedTo}
+              onChange={(assignedTo) =>
+                setFormData((prev) => ({ ...prev, assignedTo }))
+              }
+            />
+          </div>
         )}
 
         {currentStep === 1 && (

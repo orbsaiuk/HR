@@ -7,6 +7,14 @@ export async function getJobPositions(orgId) {
   return client.fetch(jobPositionQueries.getAll, { orgId });
 }
 
+/**
+ * Get job positions assigned to a specific user (as recruiter or in assignedTo).
+ * Used for resource-level permissions: users with view_positions but not manage_positions.
+ */
+export async function getJobPositionsAssignedToUser(orgId, userId) {
+  return client.fetch(jobPositionQueries.getAssignedToUser, { orgId, userId });
+}
+
 export async function getJobPositionById(id) {
   return client.fetch(jobPositionQueries.getById, { id });
 }
@@ -63,6 +71,15 @@ export async function updateJobPosition(id, input) {
     delete updates.formId;
   }
 
+  // Handle assignedTo — convert user IDs to Sanity references
+  if (input.assignedTo !== undefined) {
+    updates.assignedTo = (input.assignedTo || []).map((userId) => ({
+      _type: "reference",
+      _ref: userId,
+      _key: userId,
+    }));
+  }
+
   return client.patch(id).set(updates).commit();
 }
 
@@ -79,6 +96,7 @@ export async function updateJobPositionStatus(id, status) {
 
 export const jobPositionService = {
   getJobPositions,
+  getJobPositionsAssignedToUser,
   getJobPositionById,
   getJobPositionStats,
   createJobPosition,

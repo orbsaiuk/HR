@@ -15,3 +15,6 @@ export * from "./recruitment";
 
 // Audit queries
 export * from "./audit";
+
+// API Key queries
+export * from "./api-keys";

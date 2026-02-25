@@ -26,6 +26,19 @@ export default {
             validation: (Rule) => Rule.required(),
         },
         {
+            name: "assignedTo",
+            title: "Assigned To",
+            type: "array",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "user" }],
+                },
+            ],
+            description:
+                "Team members assigned to this form. Users with view-only permissions can see forms they are assigned to.",
+        },
+        {
             name: "organization",
             title: "Organization",
             type: "reference",

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
@@ -7,6 +7,7 @@ import {
     createRole,
 } from "@/features/roles/services/rolesService";
 import { logAuditEvent } from "@/features/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
 
 /**
  * GET /api/roles — List all roles for the organization
@@ -58,18 +59,24 @@ export async function POST(request) {
             permissions,
         });
 
-        await logAuditEvent({
-            action: "role.created",
-            category: "roles",
-            description: `Created role "${name.trim()}"`,
-            actorId: context.teamMember._id,
-            orgId: context.orgId,
-            targetType: "role",
-            targetId: result._key,
-            metadata: {
-                after: JSON.stringify({ name: name.trim(), permissions }),
-            },
-        });
+        // Invalidate cached org context so permission changes take effect immediately
+        invalidateOrgContextCache(context.organization.clerkOrgId);
+
+        await Promise.all([
+            logAuditEvent({
+                action: "role.created",
+                category: "roles",
+                description: `Created role "${name.trim()}"`,
+                actorId: context.teamMember._id,
+                orgId: context.orgId,
+                targetType: "role",
+                targetId: result._key,
+                metadata: {
+                    after: JSON.stringify({ name: name.trim(), permissions }),
+                },
+            }),
+            incrementPermissionsVersion(context.orgId),
+        ]);
 
         return NextResponse.json(result, { status: 201 });
     } catch (error) {

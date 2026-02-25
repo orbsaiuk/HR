@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveOrgContext } from "@/shared/lib/orgContext";
+import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS, ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 import {
@@ -9,6 +9,7 @@ import {
     getRoleMemberCount,
 } from "@/features/roles/services/rolesService";
 import { logAuditEvent } from "@/features/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
 
 /**
  * GET /api/roles/[key] — Get a single role by key
@@ -56,19 +57,25 @@ export async function PUT(request, { params }) {
 
         const result = await updateRole(context.orgId, key, updates);
 
-        await logAuditEvent({
-            action: "role.updated",
-            category: "roles",
-            description: `Updated role "${role.name}"`,
-            actorId: context.teamMember._id,
-            orgId: context.orgId,
-            targetType: "role",
-            targetId: key,
-            metadata: {
-                before: JSON.stringify({ name: role.name, permissions: role.permissions }),
-                after: JSON.stringify(updates),
-            },
-        });
+        // Invalidate cached org context so permission changes take effect immediately
+        invalidateOrgContextCache(context.organization.clerkOrgId);
+
+        await Promise.all([
+            logAuditEvent({
+                action: "role.updated",
+                category: "roles",
+                description: `Updated role "${role.name}"`,
+                actorId: context.teamMember._id,
+                orgId: context.orgId,
+                targetType: "role",
+                targetId: key,
+                metadata: {
+                    before: JSON.stringify({ name: role.name, permissions: role.permissions }),
+                    after: JSON.stringify(updates),
+                },
+            }),
+            incrementPermissionsVersion(context.orgId),
+        ]);
 
         return NextResponse.json(result);
     } catch (error) {
@@ -104,18 +111,24 @@ export async function DELETE(request, { params }) {
 
         const result = await deleteRole(context.orgId, key);
 
-        await logAuditEvent({
-            action: "role.deleted",
-            category: "roles",
-            description: `Deleted role "${roleToDelete?.name || key}"`,
-            actorId: context.teamMember._id,
-            orgId: context.orgId,
-            targetType: "role",
-            targetId: key,
-            metadata: {
-                before: JSON.stringify(roleToDelete),
-            },
-        });
+        // Invalidate cached org context so permission changes take effect immediately
+        invalidateOrgContextCache(context.organization.clerkOrgId);
+
+        await Promise.all([
+            logAuditEvent({
+                action: "role.deleted",
+                category: "roles",
+                description: `Deleted role "${roleToDelete?.name || key}"`,
+                actorId: context.teamMember._id,
+                orgId: context.orgId,
+                targetType: "role",
+                targetId: key,
+                metadata: {
+                    before: JSON.stringify(roleToDelete),
+                },
+            }),
+            incrementPermissionsVersion(context.orgId),
+        ]);
 
         return NextResponse.json({ success: true });
     } catch (error) {

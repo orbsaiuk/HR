@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
     Dialog,
     DialogContent,
@@ -13,6 +16,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { PermissionsGrid } from "./PermissionsGrid";
+import { PresetSelector } from "./PresetSelector";
+import { PermissionPreview } from "./PermissionPreview";
 
 export function CreateRoleDialog({ onCreate, disabled = false }) {
     const [open, setOpen] = useState(false);
@@ -56,46 +61,56 @@ export function CreateRoleDialog({ onCreate, disabled = false }) {
                     Create Role
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create New Role</DialogTitle>
                     <DialogDescription>
                         Define a new role with custom permissions for your organization.
+                        Use a preset to get started quickly, or select permissions manually.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
+                <div className="space-y-6 py-4">
                     {error && (
                         <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                             {error}
                         </div>
                     )}
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Name *</label>
-                        <input
-                            type="text"
+                        <Label htmlFor="create-role-name">Name *</Label>
+                        <Input
+                            id="create-role-name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="e.g., Content Editor"
-                            className="w-full px-3 py-2 border rounded-md"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Description</label>
-                        <textarea
+                        <Label htmlFor="create-role-desc">Description</Label>
+                        <Textarea
+                            id="create-role-desc"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Describe what this role can do..."
-                            className="w-full px-3 py-2 border rounded-md"
                             rows={2}
                         />
                     </div>
+
+                    {/* Preset selector */}
+                    <PresetSelector
+                        onApply={setPermissions}
+                        currentPermissions={permissions}
+                    />
+
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Permissions</label>
+                        <Label>Permissions</Label>
                         <PermissionsGrid
                             selected={permissions}
                             onChange={setPermissions}
                         />
                     </div>
+
+                    {/* Permission preview */}
+                    <PermissionPreview selected={permissions} />
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => setOpen(false)}>

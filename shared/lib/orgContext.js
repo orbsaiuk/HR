@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { client } from "@/sanity/client";
 import { organizationQueries } from "@/sanity/queries";
+import { resolveApiKeyContext } from "@/shared/lib/apiKeyContext";
+import { createCache, invalidateWhere } from "@/shared/lib/cache";
 
 /**
  * Custom error class for organization context resolution failures.
@@ -11,6 +13,17 @@ export class OrgContextError extends Error {
     this.name = "OrgContextError";
     this.status = status;
   }
+}
+
+const orgContextCache = createCache({ max: 500, ttl: 60_000 });
+
+export async function resolveContext(request) {
+  // Try API key first (API keys are not cached — they're already validated once)
+  const apiKeyCtx = await resolveApiKeyContext(request);
+  if (apiKeyCtx) return apiKeyCtx;
+
+  // Fall back to Clerk session (with caching)
+  return resolveOrgContext();
 }
 
 export async function resolveOrgContext() {
@@ -24,7 +37,14 @@ export async function resolveOrgContext() {
     throw new OrgContextError("No organization selected", 403);
   }
 
-  // Fetch the organization by Clerk org ID
+  // Check cache first
+  const cacheKey = `${userId}:${orgId}`;
+  const cached = orgContextCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  // Cache miss — fetch from Sanity
   const organization = await client.fetch(organizationQueries.getByClerkOrgId, {
     clerkOrgId: orgId,
   });
@@ -33,7 +53,6 @@ export async function resolveOrgContext() {
     throw new OrgContextError("Organization not found", 404);
   }
 
-  // Fetch the team member for this user within this organization's embedded teamMembers array
   const teamMemberEntry = await client.fetch(
     organizationQueries.getTeamMemberByClerkAndOrg,
     { clerkId: userId, orgId: organization._id },
@@ -49,10 +68,27 @@ export async function resolveOrgContext() {
     _id: teamMemberEntry.user._id,
   };
 
-  return {
+  const context = {
     organization,
     teamMember,
     orgRole,
     orgId: organization._id,
   };
+
+  // Store in cache
+  orgContextCache.set(cacheKey, context);
+
+  return context;
+}
+
+export function invalidateOrgContextCache(clerkOrgId) {
+  if (clerkOrgId) {
+    invalidateWhere(orgContextCache, (key) => key.endsWith(`:${clerkOrgId}`));
+  } else {
+    orgContextCache.clear();
+  }
+}
+
+export function invalidateUserOrgCache(userId, clerkOrgId) {
+  orgContextCache.delete(`${userId}:${clerkOrgId}`);
 }

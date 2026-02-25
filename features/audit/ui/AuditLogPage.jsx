@@ -4,33 +4,43 @@ import { useAuditLogs } from "../model/useAuditLogs";
 import { AuditLogTable } from "./AuditLogTable";
 import { AuditLogFilters } from "./AuditLogFilters";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Loader2, ScrollText } from "lucide-react";
 
 /**
  * Main audit log page component.
- * Renders filters, the log table, and handles loading / error states.
+ * Renders filters, the log table with pagination, and handles loading / error states.
  */
 export function AuditLogPage() {
-    const { logs, total, loading, error, filters, updateFilters } =
-        useAuditLogs();
+    const {
+        logs,
+        total,
+        totalPages,
+        loading,
+        error,
+        filters,
+        updateFilters,
+        goToPage,
+        getExportUrl,
+    } = useAuditLogs();
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">
-                        Activity Log
-                    </h2>
-                    <p className="text-gray-500">
-                        Track all actions performed in your organization.
-                    </p>
-                </div>
+            <div>
+                <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+                    <ScrollText className="h-6 w-6" />
+                    Activity Log
+                </h2>
+                <p className="text-muted-foreground mt-1">
+                    Track all actions performed in your organization.
+                </p>
             </div>
 
-            {/* Filters */}
+            {/* Filters + Export */}
             <AuditLogFilters
                 filters={filters}
                 onFilterChange={updateFilters}
+                getExportUrl={getExportUrl}
             />
 
             {/* Error state */}
@@ -44,12 +54,21 @@ export function AuditLogPage() {
             {/* Loading state */}
             {loading ? (
                 <div className="flex items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
             ) : (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <AuditLogTable logs={logs} total={total} />
-                </div>
+                <Card>
+                    <CardContent className="p-0">
+                        <AuditLogTable
+                            logs={logs}
+                            total={total}
+                            page={filters.page}
+                            totalPages={totalPages}
+                            pageSize={filters.pageSize}
+                            onPageChange={goToPage}
+                        />
+                    </CardContent>
+                </Card>
             )}
         </div>
     );
