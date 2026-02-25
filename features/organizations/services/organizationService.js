@@ -85,6 +85,17 @@ export async function getTeamMemberByClerkAndOrg(clerkId, orgId) {
   });
 }
 export async function addTeamMemberToOrg(orgId, userId, roleKey = "recruiter") {
+  // Check if user is already a member to prevent duplicates from race conditions
+  const existingRefs = await client.fetch(
+    organizationQueries.getTeamMemberUserRefs,
+    { orgId },
+  );
+  const isAlreadyMember = existingRefs?.includes(userId);
+
+  if (isAlreadyMember) {
+    return null;
+  }
+
   const timestamp = new Date().toISOString();
 
   return client

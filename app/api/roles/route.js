@@ -6,6 +6,7 @@ import {
     getOrganizationRoles,
     createRole,
 } from "@/features/roles/services/rolesService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 /**
  * GET /api/roles — List all roles for the organization
@@ -55,6 +56,19 @@ export async function POST(request) {
             name: name.trim(),
             description: description?.trim() || "",
             permissions,
+        });
+
+        await logAuditEvent({
+            action: "role.created",
+            category: "roles",
+            description: `Created role "${name.trim()}"`,
+            actorId: context.teamMember._id,
+            orgId: context.orgId,
+            targetType: "role",
+            targetId: result._key,
+            metadata: {
+                after: JSON.stringify({ name: name.trim(), permissions }),
+            },
         });
 
         return NextResponse.json(result, { status: 201 });

@@ -3,6 +3,7 @@ import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { updateJobPositionStatus } from "@/features/job-positions/services/jobPositionService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 export async function PATCH(request, { params }) {
   try {
@@ -21,6 +22,20 @@ export async function PATCH(request, { params }) {
     }
 
     const position = await updateJobPositionStatus(id, status);
+
+    await logAuditEvent({
+      action: "position.status_changed",
+      category: "positions",
+      description: `Changed position "${position.title || id}" status to "${status}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "position",
+      targetId: id,
+      metadata: {
+        after: JSON.stringify({ status }),
+      },
+    });
+
     return NextResponse.json(position);
   } catch (error) {
     console.error("Error updating position status:", error);

@@ -5,6 +5,8 @@
 import Link from 'next/link';
 import { Clock, CheckCircle, FileText, Plus } from 'lucide-react';
 import { formatRelativeDate } from '../lib/dateUtils';
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function RecentActivity({ activities }) {
     if (activities.length === 0) {
@@ -21,13 +23,15 @@ export function RecentActivity({ activities }) {
                     <p className="text-gray-500 mb-4">
                         Create your first form to get started
                     </p>
-                    <Link
-                        href="/dashboard/forms/create"
-                        className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        <Plus size={20} />
-                        Create Form
-                    </Link>
+                    <PermissionGate permission={PERMISSIONS.MANAGE_FORMS}>
+                        <Link
+                            href="/dashboard/forms/create"
+                            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                            <Plus size={20} />
+                            Create Form
+                        </Link>
+                    </PermissionGate>
                 </div>
             </div>
         );
@@ -48,8 +52,8 @@ export function RecentActivity({ activities }) {
                         <div className="flex items-center gap-4">
                             <div
                                 className={`w-10 h-10 rounded-lg flex items-center justify-center ${activity.status === 'published'
-                                        ? 'bg-green-100'
-                                        : 'bg-yellow-100'
+                                    ? 'bg-green-100'
+                                    : 'bg-yellow-100'
                                     }`}
                             >
                                 {activity.status === 'published' ? (
@@ -77,3 +81,4 @@ export function RecentActivity({ activities }) {
         </div>
     );
 }
+

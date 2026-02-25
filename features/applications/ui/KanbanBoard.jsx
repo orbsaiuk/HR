@@ -11,6 +11,8 @@ import {
 } from "@dnd-kit/core";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanCard } from "./KanbanCard";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const PIPELINE_STAGES = [
   {
@@ -63,6 +65,8 @@ export function KanbanBoard({
   onStatusChange,
   onDelete,
 }) {
+  const { hasPermission } = usePermissions();
+  const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
   const [activeApp, setActiveApp] = useState(null);
 
   const sensors = useSensors(
@@ -100,6 +104,8 @@ export function KanbanBoard({
     const appId = active.id;
     const targetStatus = over.id;
 
+    if (!canManageApplications) return;
+
     const app = applications.find((a) => a._id === appId);
     if (!app || app.status === targetStatus) return;
 
@@ -128,7 +134,7 @@ export function KanbanBoard({
               lightText={column.lightText}
               items={column.items}
               positionId={positionId}
-              onDelete={onDelete}
+              onDelete={canManageApplications ? onDelete : undefined}
             />
           ))}
         </div>

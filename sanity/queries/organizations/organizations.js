@@ -138,6 +138,12 @@ export const organizationQueries = {
     getTeamMemberByEmail: `*[_type == "organization" && _id == $orgId][0].teamMembers[user->email == $email][0]`,
 
     /**
+     * Get all user _ref values from the teamMembers array.
+     * Used for idempotent membership checks before adding a new member.
+     */
+    getTeamMemberUserRefs: `*[_type == "organization" && _id == $orgId][0].teamMembers[].user._ref`,
+
+    /**
      * Public: Get all organizations with career pages enabled, plus their open position count.
      */
     getPublicCompanies: `*[_type == "organization" && settings.careerPageEnabled == true] | order(name asc) {

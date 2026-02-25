@@ -31,6 +31,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const STATUS_VARIANT = {
   draft: "secondary",
@@ -55,6 +57,9 @@ const TYPE_LABELS = {
 };
 
 export function JobPositionsTable({ positions, onDelete, onStatusChange }) {
+  const { hasPermission } = usePermissions();
+  const canManagePositions = hasPermission(PERMISSIONS.MANAGE_POSITIONS);
+
   const formatSalary = (min, max, currency) => {
     if (!min && !max) return null;
     const fmt = (n) => n?.toLocaleString();
@@ -175,44 +180,48 @@ export function JobPositionsTable({ positions, onDelete, onStatusChange }) {
                           </Link>
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuSeparator />
-                      {position.status !== "open" && (
-                        <DropdownMenuItem
-                          onClick={() => onStatusChange(position._id, "open")}
-                          className="text-green-600 focus:text-green-600"
-                        >
-                          <Play size={14} />
-                          Open Position
-                        </DropdownMenuItem>
+                      {canManagePositions && (
+                        <>
+                          <DropdownMenuSeparator />
+                          {position.status !== "open" && (
+                            <DropdownMenuItem
+                              onClick={() => onStatusChange(position._id, "open")}
+                              className="text-green-600 focus:text-green-600"
+                            >
+                              <Play size={14} />
+                              Open Position
+                            </DropdownMenuItem>
+                          )}
+                          {position.status === "open" && (
+                            <DropdownMenuItem
+                              onClick={() =>
+                                onStatusChange(position._id, "on-hold")
+                              }
+                              className="text-yellow-600 focus:text-yellow-600"
+                            >
+                              <Pause size={14} />
+                              Put On Hold
+                            </DropdownMenuItem>
+                          )}
+                          {position.status !== "closed" && (
+                            <DropdownMenuItem
+                              onClick={() => onStatusChange(position._id, "closed")}
+                              className="text-orange-600 focus:text-orange-600"
+                            >
+                              <XCircle size={14} />
+                              Close Position
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => onDelete(position._id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 size={14} />
+                            Delete
+                          </DropdownMenuItem>
+                        </>
                       )}
-                      {position.status === "open" && (
-                        <DropdownMenuItem
-                          onClick={() =>
-                            onStatusChange(position._id, "on-hold")
-                          }
-                          className="text-yellow-600 focus:text-yellow-600"
-                        >
-                          <Pause size={14} />
-                          Put On Hold
-                        </DropdownMenuItem>
-                      )}
-                      {position.status !== "closed" && (
-                        <DropdownMenuItem
-                          onClick={() => onStatusChange(position._id, "closed")}
-                          className="text-orange-600 focus:text-orange-600"
-                        >
-                          <XCircle size={14} />
-                          Close Position
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => onDelete(position._id)}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 size={14} />
-                        Delete
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

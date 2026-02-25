@@ -95,4 +95,7 @@ export const API_ENDPOINTS = {
     `/api/applications/${applicationId}/scorecards/mine`,
   SCORECARD_SUMMARY: (applicationId) =>
     `/api/applications/${applicationId}/scorecards/summary`,
+
+  // Audit Logs
+  AUDIT_LOGS: "/api/audit-logs",
 };

@@ -4,6 +4,7 @@ import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { updateApplicationStatus } from "@/features/applications/services/applicationService";
 import { notifyApplicationStatusChange } from "@/features/applications/services/applicationNotificationService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 const VALID_STATUSES = [
   "new",
@@ -36,6 +37,19 @@ export async function PATCH(request, { params }) {
       notes,
       rejectionReason,
       rating,
+    });
+
+    await logAuditEvent({
+      action: "application.status_changed",
+      category: "applications",
+      description: `Changed application "${id}" status to "${status}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "application",
+      targetId: id,
+      metadata: {
+        after: JSON.stringify({ status, notes, rejectionReason }),
+      },
     });
 
     // Fire-and-forget: notify the applicant about the status change

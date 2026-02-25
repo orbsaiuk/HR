@@ -1,7 +1,3 @@
-/**
- * Conversation detail page - Clean Architecture implementation
- */
-
 "use client";
 
 import { useParams } from "next/navigation";
@@ -9,6 +5,8 @@ import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { ConversationPage } from "@/features/chat";
 import { Loading } from "@/shared/components/feedback/Loading";
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export default function Page() {
   const params = useParams();
@@ -21,11 +19,9 @@ export default function Page() {
       if (!user?.id) return;
 
       try {
-        // Determine user type from role
         const role = user.publicMetadata?.role;
         const userType = role === "teamMember" ? "teamMember" : "user";
 
-        // Fetch Sanity user ID
         const response = await fetch(
           `/api/auth/sanity-user?clerkId=${user.id}&type=${userType}`,
         );
@@ -47,9 +43,11 @@ export default function Page() {
   if (loading) return <Loading fullPage />;
 
   return (
-    <ConversationPage
-      conversationId={params.conversationId}
-      currentUserId={sanityUserId}
-    />
+    <PermissionGate permission={PERMISSIONS.VIEW_MESSAGES} behavior="block">
+      <ConversationPage
+        conversationId={params.conversationId}
+        currentUserId={sanityUserId}
+      />
+    </PermissionGate>
   );
 }

@@ -9,6 +9,8 @@ import { MessageList } from "../components/MessageList";
 import { MessageInput } from "../components/MessageInput";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function ConversationPage({ conversationId, currentUserId }) {
   const router = useRouter();
@@ -135,9 +137,11 @@ export function ConversationPage({ conversationId, currentUserId }) {
       </div>
 
       {/* Input */}
-      <div className="bg-white">
-        <MessageInput onSend={handleSend} disabled={sending} />
-      </div>
+      <PermissionGate permission={PERMISSIONS.MANAGE_MESSAGES}>
+        <div className="bg-white">
+          <MessageInput onSend={handleSend} disabled={sending} />
+        </div>
+      </PermissionGate>
     </div>
   );
 }

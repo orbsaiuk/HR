@@ -1,9 +1,13 @@
-/**
- * Messages page - Clean Architecture implementation
- */
+"use client";
 
-import { ConversationsPage } from '@/features/chat';
+import { ConversationsPage } from "@/features/chat";
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export default function Page() {
-    return <ConversationsPage />;
+    return (
+        <PermissionGate permission={PERMISSIONS.VIEW_MESSAGES} behavior="block">
+            <ConversationsPage />
+        </PermissionGate>
+    );
 }

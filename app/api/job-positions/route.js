@@ -6,6 +6,7 @@ import {
   getJobPositions,
   createJobPosition,
 } from "@/features/job-positions/services/jobPositionService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 export async function GET() {
   try {
@@ -26,6 +27,17 @@ export async function POST(request) {
     requirePermission(context, PERMISSIONS.MANAGE_POSITIONS);
     const input = await request.json();
     const position = await createJobPosition(input, context.orgId);
+
+    await logAuditEvent({
+      action: "position.created",
+      category: "positions",
+      description: `Created position "${input.title || "Untitled"}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "position",
+      targetId: position._id,
+    });
+
     return NextResponse.json(position, { status: 201 });
   } catch (error) {
     console.error("Error creating position:", error);

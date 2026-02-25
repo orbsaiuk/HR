@@ -6,6 +6,7 @@ import {
   getOrganizationById,
   updateOrganization,
 } from "@/features/organizations/services/organizationService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 /**
  * GET /api/organizations/[id] — Get organization details by ID
@@ -54,6 +55,20 @@ export async function PUT(request, { params }) {
 
     const input = await request.json();
     const organization = await updateOrganization(id, input);
+
+    await logAuditEvent({
+      action: "settings.updated",
+      category: "settings",
+      description: `Updated organization settings`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "organization",
+      targetId: id,
+      metadata: {
+        after: JSON.stringify(input),
+      },
+    });
+
     return NextResponse.json(organization);
   } catch (error) {
     console.error("Error updating organization:", error);

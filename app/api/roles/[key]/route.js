@@ -8,6 +8,7 @@ import {
     deleteRole,
     getRoleMemberCount,
 } from "@/features/roles/services/rolesService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 /**
  * GET /api/roles/[key] — Get a single role by key
@@ -54,6 +55,21 @@ export async function PUT(request, { params }) {
         }
 
         const result = await updateRole(context.orgId, key, updates);
+
+        await logAuditEvent({
+            action: "role.updated",
+            category: "roles",
+            description: `Updated role "${role.name}"`,
+            actorId: context.teamMember._id,
+            orgId: context.orgId,
+            targetType: "role",
+            targetId: key,
+            metadata: {
+                before: JSON.stringify({ name: role.name, permissions: role.permissions }),
+                after: JSON.stringify(updates),
+            },
+        });
+
         return NextResponse.json(result);
     } catch (error) {
         console.error("Error updating role:", error);
@@ -83,7 +99,24 @@ export async function DELETE(request, { params }) {
             );
         }
 
+        // Fetch role before deletion for audit log
+        const roleToDelete = await getRoleByKey(context.orgId, key);
+
         const result = await deleteRole(context.orgId, key);
+
+        await logAuditEvent({
+            action: "role.deleted",
+            category: "roles",
+            description: `Deleted role "${roleToDelete?.name || key}"`,
+            actorId: context.teamMember._id,
+            orgId: context.orgId,
+            targetType: "role",
+            targetId: key,
+            metadata: {
+                before: JSON.stringify(roleToDelete),
+            },
+        });
+
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error("Error deleting role:", error);

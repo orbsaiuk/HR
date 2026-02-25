@@ -17,16 +17,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export function InvitesList({ invites, roles = [], onDelete }) {
+export function InvitesList({ invites: rawInvites, roles = [], onDelete }) {
+  const invites = rawInvites || [];
   const pendingInvites = invites.filter((i) => i.status === "pending");
-  const joinedInvites = invites.filter((i) => i.status === "joined");
 
-  if (invites.length === 0) {
+  if (pendingInvites.length === 0) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
           <Mail className="h-10 w-10 text-muted-foreground/50 mb-3" />
-          <h3 className="text-base font-semibold mb-1">No invites yet</h3>
+          <h3 className="text-base font-semibold mb-1">No pending invites</h3>
           <p className="text-sm text-muted-foreground">
             Invite team members by entering their email above.
           </p>
@@ -39,9 +39,9 @@ export function InvitesList({ invites, roles = [], onDelete }) {
     <Card>
       <CardHeader>
         <CardTitle>
-          Invites
+          Pending Invites
           <span className="ml-2 text-sm font-normal text-muted-foreground">
-            ({pendingInvites.length} pending, {joinedInvites.length} joined)
+            ({pendingInvites.length})
           </span>
         </CardTitle>
       </CardHeader>
@@ -57,7 +57,7 @@ export function InvitesList({ invites, roles = [], onDelete }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invites.map((invite) => (
+            {pendingInvites.map((invite) => (
               <InviteRow
                 key={invite._key}
                 invite={invite}

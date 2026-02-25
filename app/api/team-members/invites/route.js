@@ -6,6 +6,7 @@ import {
   getInvites,
   createInvite,
 } from "@/features/team-member-management/services/teamMemberManagementService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 export async function GET() {
   try {
@@ -53,6 +54,20 @@ export async function POST(request) {
         roleName,
       },
     );
+
+    await logAuditEvent({
+      action: "member.invited",
+      category: "team",
+      description: `Invited ${email} as "${roleName}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "invite",
+      targetId: invite._key,
+      metadata: {
+        after: JSON.stringify({ email, roleKey: effectiveRoleKey, roleName }),
+      },
+    });
+
     return NextResponse.json(invite, { status: 201 });
   } catch (error) {
     console.error("Error creating invite:", error);

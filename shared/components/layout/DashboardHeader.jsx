@@ -25,24 +25,58 @@ import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
 import { urlFor } from "@/shared/lib/sanityImage";
 import { Button } from "@/components/ui/button";
 
+const allNavItems = [
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    permission: null,
+  },
+  {
+    name: "Positions",
+    href: "/dashboard/positions",
+    icon: Briefcase,
+    permission: PERMISSIONS.VIEW_POSITIONS,
+  },
+  {
+    name: "Messages",
+    href: "/dashboard/messages",
+    icon: MessageSquare,
+    permission: PERMISSIONS.VIEW_MESSAGES,
+  },
+  {
+    name: "Team Members",
+    href: "/dashboard/team-members",
+    icon: Users,
+    permission: PERMISSIONS.MANAGE_TEAM,
+  },
+  {
+    name: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
+    permission: null,
+  },
+];
+
 export function DashboardHeader() {
   const { unreadCount } = useUnreadCount();
-  const { hasPermission } = usePermissions();
+  const { hasPermission, loading: permissionsLoading } = usePermissions();
   const { org } = useCurrentOrg();
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const logoUrl = org?.logo ? urlFor(org.logo).width(64).height(64).url() : null;
 
-  const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Positions", href: "/dashboard/positions", icon: Briefcase },
-    { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-    ...(hasPermission(PERMISSIONS.MANAGE_TEAM)
-      ? [{ name: "Team Members", href: "/dashboard/team-members", icon: Users }]
-      : []),
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  ];
+  // While permissions are loading, show all items to avoid layout shift.
+  // Once loaded, filter based on actual permissions.
+  const navItems = permissionsLoading
+    ? allNavItems
+    : allNavItems.filter(
+      (item) => !item.permission || hasPermission(item.permission),
+    );
+
+  const canCreatePosition =
+    permissionsLoading || hasPermission(PERMISSIONS.MANAGE_POSITIONS);
 
   const isActive = (href) => {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -113,17 +147,21 @@ export function DashboardHeader() {
           >
             <Home size={18} />
           </Link>
-          <Button size="sm" asChild className="hidden sm:inline-flex">
-            <Link href="/dashboard/positions/create">
-              <Plus size={16} className="mr-1.5" />
-              New Position
-            </Link>
-          </Button>
-          <Button size="icon" variant="ghost" asChild className="sm:hidden">
-            <Link href="/dashboard/positions/create">
-              <Plus size={18} />
-            </Link>
-          </Button>
+          {canCreatePosition && (
+            <>
+              <Button size="sm" asChild className="hidden sm:inline-flex">
+                <Link href="/dashboard/positions/create">
+                  <Plus size={16} className="mr-1.5" />
+                  New Position
+                </Link>
+              </Button>
+              <Button size="icon" variant="ghost" asChild className="sm:hidden">
+                <Link href="/dashboard/positions/create">
+                  <Plus size={18} />
+                </Link>
+              </Button>
+            </>
+          )}
           <UserButton />
 
           {/* Mobile menu toggle */}

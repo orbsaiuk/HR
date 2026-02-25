@@ -1,6 +1,6 @@
 import { client } from "@/sanity/client";
 import { clerkClient } from "@clerk/nextjs/server";
-import { getOrganizationByClerkOrgId } from "@/features/organizations/services/organizationService";
+import { getOrganizationByClerkOrgId, addTeamMemberToOrg } from "@/features/organizations/services/organizationService";
 import { getUserByClerkId } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
@@ -100,28 +100,11 @@ async function ensureDefaultRoles(clerkOrgId, sanityOrgId) {
 async function addRequestingUserAsAdmin(request, sanityOrg) {
     if (!request.requestedBy?.clerkId) return;
 
-    const now = new Date().toISOString();
     const userDoc = await getUserByClerkId(request.requestedBy.clerkId);
     if (!userDoc) return;
 
-    const isAlreadyMember = sanityOrg.teamMembers?.some(
-        (tm) => tm.user?._ref === userDoc._id,
-    );
-
-    if (!isAlreadyMember) {
-        await client
-            .patch(sanityOrg._id)
-            .setIfMissing({ teamMembers: [] })
-            .append("teamMembers", [
-                {
-                    _key: `${userDoc._id}-${Date.now()}`,
-                    user: { _type: "reference", _ref: userDoc._id },
-                    roleKey: ADMIN_ROLE_KEY,
-                    joinedAt: now,
-                },
-            ])
-            .commit();
-    }
+    // Uses the idempotent addTeamMemberToOrg which checks for existing membership
+    await addTeamMemberToOrg(sanityOrg._id, userDoc._id, ADMIN_ROLE_KEY);
 }
 
 async function updateUserClerkRole(clerkId) {

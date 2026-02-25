@@ -6,6 +6,7 @@ import {
   getScorecardsByApplication,
   upsertScorecard,
 } from "@/features/scorecards/services/scorecardService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 /**
  * GET /api/applications/[id]/scorecards — list all scorecards for an application
@@ -55,6 +56,19 @@ export async function POST(request, { params }) {
       overallScore,
       recommendation,
       summary,
+    });
+
+    await logAuditEvent({
+      action: "application.scorecard_submitted",
+      category: "applications",
+      description: `Submitted scorecard for application "${id}"`,
+      actorId: teamMember._id,
+      orgId,
+      targetType: "application",
+      targetId: id,
+      metadata: {
+        after: JSON.stringify({ overallScore, recommendation }),
+      },
     });
 
     return NextResponse.json(result);

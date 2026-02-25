@@ -19,9 +19,9 @@ export function useTeamMemberManagement() {
         teamMemberManagementApi.getTeamMembers(),
         teamMemberManagementApi.getRoles(),
       ]);
-      setInvites(invitesData);
-      setTeamMembers(teamMembersData);
-      setRoles(rolesData);
+      setInvites(invitesData || []);
+      setTeamMembers(teamMembersData || []);
+      setRoles(rolesData || []);
     } catch (err) {
       setError(err.message || "Failed to fetch team member management data");
     } finally {

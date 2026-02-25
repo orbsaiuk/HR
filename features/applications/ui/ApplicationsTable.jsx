@@ -22,6 +22,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const STATUS_OPTIONS = [
   "new",
@@ -38,6 +40,8 @@ export function ApplicationsTable({
   onStatusChange,
   onDelete,
 }) {
+  const { hasPermission } = usePermissions();
+  const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -96,17 +100,15 @@ export function ApplicationsTable({
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${
-                  isActive
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${isActive
                     ? "bg-gray-900 text-white border-gray-900"
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
                 <span
-                  className={`text-[10px] font-bold ${
-                    isActive ? "text-gray-300" : "text-muted-foreground"
-                  }`}
+                  className={`text-[10px] font-bold ${isActive ? "text-gray-300" : "text-muted-foreground"
+                    }`}
                 >
                   {count}
                 </span>
@@ -158,8 +160,8 @@ export function ApplicationsTable({
                   <TableCell className="text-sm text-muted-foreground">
                     {app.appliedAt
                       ? formatDistanceToNow(new Date(app.appliedAt), {
-                          addSuffix: true,
-                        })
+                        addSuffix: true,
+                      })
                       : "—"}
                   </TableCell>
                   <TableCell>
@@ -178,25 +180,29 @@ export function ApplicationsTable({
                             View Details
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {STATUS_OPTIONS.filter((s) => s !== app.status).map(
-                          (s) => (
+                        {canManageApplications && (
+                          <>
+                            <DropdownMenuSeparator />
+                            {STATUS_OPTIONS.filter((s) => s !== app.status).map(
+                              (s) => (
+                                <DropdownMenuItem
+                                  key={s}
+                                  onClick={() => onStatusChange(app._id, s)}
+                                >
+                                  Move to {s.charAt(0).toUpperCase() + s.slice(1)}
+                                </DropdownMenuItem>
+                              ),
+                            )}
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              key={s}
-                              onClick={() => onStatusChange(app._id, s)}
+                              className="text-destructive"
+                              onClick={() => onDelete(app._id)}
                             >
-                              Move to {s.charAt(0).toUpperCase() + s.slice(1)}
+                              <Trash2 size={14} className="mr-2" />
+                              Delete
                             </DropdownMenuItem>
-                          ),
+                          </>
                         )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => onDelete(app._id)}
-                        >
-                          <Trash2 size={14} className="mr-2" />
-                          Delete
-                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -213,3 +219,4 @@ export function ApplicationsTable({
     </div>
   );
 }
+

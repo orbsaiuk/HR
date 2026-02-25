@@ -4,24 +4,28 @@
 
 import Link from 'next/link';
 import { Plus, ArrowRight } from 'lucide-react';
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function QuickActions() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Link
-                href="/dashboard/forms/create"
-                className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-sm p-6 text-white hover:from-blue-700 hover:to-blue-800 transition-all"
-            >
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h3 className="text-xl font-bold mb-2">Create New Form</h3>
-                        <p className="text-blue-100">
-                            Start building a new form from scratch
-                        </p>
+            <PermissionGate permission={PERMISSIONS.MANAGE_FORMS}>
+                <Link
+                    href="/dashboard/forms/create"
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-sm p-6 text-white hover:from-blue-700 hover:to-blue-800 transition-all"
+                >
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xl font-bold mb-2">Create New Form</h3>
+                            <p className="text-blue-100">
+                                Start building a new form from scratch
+                            </p>
+                        </div>
+                        <Plus size={32} />
                     </div>
-                    <Plus size={32} />
-                </div>
-            </Link>
+                </Link>
+            </PermissionGate>
 
             <Link
                 href="/dashboard/forms"

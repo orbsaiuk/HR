@@ -10,6 +10,7 @@ import {
   getExistingResponse,
 } from "@/features/forms/services/formService";
 import { currentUser } from "@clerk/nextjs/server";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 export async function GET(request, { params }) {
   try {
@@ -47,6 +48,17 @@ export async function PUT(request, { params }) {
     const { id } = await params;
     const input = await request.json();
     const form = await updateForm(id, input);
+
+    await logAuditEvent({
+      action: "form.updated",
+      category: "forms",
+      description: `Updated form "${form.title || id}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "form",
+      targetId: id,
+    });
+
     return NextResponse.json(form);
   } catch (error) {
     console.error("Error updating form:", error);
@@ -64,6 +76,17 @@ export async function DELETE(request, { params }) {
     requirePermission(context, PERMISSIONS.MANAGE_FORMS);
     const { id } = await params;
     await deleteForm(id);
+
+    await logAuditEvent({
+      action: "form.deleted",
+      category: "forms",
+      description: `Deleted form "${id}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "form",
+      targetId: id,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting form:", error);

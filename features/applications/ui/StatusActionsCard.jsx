@@ -2,6 +2,8 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const STATUS_OPTIONS = [
   "new",
@@ -13,6 +15,11 @@ const STATUS_OPTIONS = [
 ];
 
 export function StatusActionsCard({ status, onStatusChange, isLoading }) {
+  const { hasPermission } = usePermissions();
+  const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
+
+  if (!canManageApplications) return null;
+
   return (
     <Card>
       <CardHeader>

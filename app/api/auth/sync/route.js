@@ -109,10 +109,12 @@ export async function POST() {
 
       if (orgWithClerkId?.clerkOrgId) {
         try {
-          // Add user to Clerk organization
           await addUserToClerkOrg(user.id, orgWithClerkId.clerkOrgId);
 
-          // Now get the Sanity org via Clerk ID
+          // Wait briefly for the webhook to process the membership
+          await new Promise((r) => setTimeout(r, 2000));
+
+          // Refresh the org from Sanity (webhook should have added the member by now)
           org = await getOrganizationByClerkOrgId(orgWithClerkId.clerkOrgId);
 
           console.log(
@@ -134,42 +136,33 @@ export async function POST() {
     return NextResponse.json({ success: true });
   }
 
-  // 4. Check for pending invite in this organization
+  // 4. Check for pending invite in this organization and mark as joined
   const invite = userEmail ? await getInviteByEmail(userEmail, org._id) : null;
 
-  // 5. Determine if this user should be added as a team member
-  const shouldAddTeamMember =
-    role === "teamMember" ||
-    role === "teacher" ||
-    (invite && invite.status === "pending");
+  if (invite && invite.status === "pending") {
+    await markInviteJoined(userEmail, sanityUser._id, org._id);
+  }
 
-  if (shouldAddTeamMember) {
-    // Check if user is already a team member in this org's embedded array
-    const isAlreadyMember = org.teamMembers?.some(
-      (tm) => tm.user?._ref === sanityUser._id,
-    );
+  // 5. Ensure user is a team member (the webhook should have handled this,
+  //    but we check as a fallback for edge cases like webhook delays)
+  const freshOrg = await getOrganizationByIdWithMembers(org._id);
+  const isAlreadyMember = freshOrg?.teamMembers?.some(
+    (tm) => tm.user?._ref === sanityUser._id,
+  );
 
-    if (!isAlreadyMember) {
-      // Use the role from the invite if available, otherwise default to "viewer"
-      const memberRoleKey = invite?.roleKey || "viewer";
-      // Add user as a team member to the org's embedded array
-      await addTeamMemberToOrg(org._id, sanityUser._id, memberRoleKey);
+  if (!isAlreadyMember) {
+    const memberRoleKey = invite?.roleKey || "viewer";
+    await addTeamMemberToOrg(org._id, sanityUser._id, memberRoleKey);
+  }
 
-      // Update user role in Clerk if needed
-      if (role !== "teamMember") {
-        const clerk = await clerkClient();
-        await clerk.users.updateUserMetadata(user.id, {
-          publicMetadata: {
-            role: "teamMember",
-          },
-        });
-      }
-
-      // If there's a pending invite, mark it as joined
-      if (invite && invite.status === "pending") {
-        await markInviteJoined(userEmail, sanityUser._id, org._id);
-      }
-    }
+  // Update user role in Clerk if needed
+  if (role !== "teamMember") {
+    const clerk = await clerkClient();
+    await clerk.users.updateUserMetadata(user.id, {
+      publicMetadata: {
+        role: "teamMember",
+      },
+    });
   }
 
   return NextResponse.json({ success: true });

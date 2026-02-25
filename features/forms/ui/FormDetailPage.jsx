@@ -18,10 +18,14 @@ import {
 import { useFormDetail } from "../model/useFormDetail";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function FormDetailPage({ formId }) {
   const router = useRouter();
   const { form, loading, error, deleteForm, refetch } = useFormDetail(formId);
+  const { hasPermission } = usePermissions();
+  const canManageForms = hasPermission(PERMISSIONS.MANAGE_FORMS);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this form?")) return;
@@ -62,29 +66,31 @@ export function FormDetailPage({ formId }) {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/dashboard/forms/${form._id}/edit`}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            <Edit size={20} />
-            Edit
-          </Link>
-          <Link
-            href={`/dashboard/forms/${form._id}/share`}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            <Share2 size={20} />
-            Share
-          </Link>
-          <button
-            onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
-          >
-            <Trash2 size={20} />
-            Delete
-          </button>
-        </div>
+        {canManageForms && (
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/dashboard/forms/${form._id}/edit`}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              <Edit size={20} />
+              Edit
+            </Link>
+            <Link
+              href={`/dashboard/forms/${form._id}/share`}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              <Share2 size={20} />
+              Share
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
+            >
+              <Trash2 size={20} />
+              Delete
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Stats Cards */}

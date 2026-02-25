@@ -35,12 +35,14 @@ export async function createInvite(
   }
 
   const timestamp = new Date().toISOString();
+  const inviteKey = `${normalizedEmail}-${Date.now()}`;
 
   const result = await client
     .patch(orgId)
+    .setIfMissing({ invites: [] })
     .append("invites", [
       {
-        _key: `${normalizedEmail}-${Date.now()}`, // Unique key for the array item
+        _key: inviteKey,
         email: normalizedEmail,
         status: "pending",
         roleKey,

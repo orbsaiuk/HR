@@ -5,6 +5,7 @@ import { PERMISSIONS, ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 import { updateTeamMemberRole } from "@/features/team-member-management/services/teamMemberService";
 import { getRoleByKey } from "@/features/roles/services/rolesService";
 import { getOwnerTeamMember } from "@/features/team-member-management/services/teamMemberManagementService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 /**
  * PATCH /api/team-members/[id]/role — Change a team member's role
@@ -65,7 +66,22 @@ export async function PATCH(request, { params }) {
             );
         }
 
+        const previousRoleKey = targetMember.roleKey;
         await updateTeamMemberRole(context.orgId, id, roleKey);
+
+        await logAuditEvent({
+            action: "member.role_changed",
+            category: "team",
+            description: `Changed role of team member "${id}" from "${previousRoleKey}" to "${roleKey}"`,
+            actorId: context.teamMember._id,
+            orgId: context.orgId,
+            targetType: "teamMember",
+            targetId: id,
+            metadata: {
+                before: JSON.stringify({ roleKey: previousRoleKey }),
+                after: JSON.stringify({ roleKey }),
+            },
+        });
 
         return NextResponse.json({ success: true, roleKey });
     } catch (error) {

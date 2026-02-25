@@ -12,12 +12,17 @@ import { EmptyState } from "@/shared/components/feedback/EmptyState";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
 import { Button } from "@/components/ui/button";
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function JobPositionsListPage() {
   const { positions, loading, error, refetch, setPositions } =
     useJobPositionsList();
   const { deletePosition, updateStatus } = useJobPositionActions();
   const { toast, showToast, hideToast } = useToast();
+  const { hasPermission } = usePermissions();
+  const canManagePositions = hasPermission(PERMISSIONS.MANAGE_POSITIONS);
 
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this job position?")) return;
@@ -56,12 +61,14 @@ export function JobPositionsListPage() {
             Manage your open positions and track applications.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/positions/create">
-            <Plus size={18} />
-            New Position
-          </Link>
-        </Button>
+        <PermissionGate permission={PERMISSIONS.MANAGE_POSITIONS}>
+          <Button asChild>
+            <Link href="/dashboard/positions/create">
+              <Plus size={18} />
+              New Position
+            </Link>
+          </Button>
+        </PermissionGate>
       </div>
 
       {/* Stats */}
@@ -73,11 +80,15 @@ export function JobPositionsListPage() {
           icon={Briefcase}
           title="No job positions yet"
           description="Create your first job position to start receiving applications."
-          action={{
-            href: "/dashboard/positions/create",
-            label: "Create Position",
-            icon: Plus,
-          }}
+          action={
+            canManagePositions
+              ? {
+                href: "/dashboard/positions/create",
+                label: "Create Position",
+                icon: Plus,
+              }
+              : null
+          }
         />
       ) : (
         <JobPositionsTable
@@ -93,3 +104,4 @@ export function JobPositionsListPage() {
     </div>
   );
 }
+

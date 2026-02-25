@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const STATUS_VARIANT = {
   draft: "secondary",
@@ -42,6 +44,8 @@ export function PositionDetailHeader({
   onStatusChange,
   onDelete,
 }) {
+  const { hasPermission } = usePermissions();
+  const canManagePositions = hasPermission(PERMISSIONS.MANAGE_POSITIONS);
   const statusVariant = STATUS_VARIANT[position.status] || "secondary";
   const statusLabel = STATUS_LABELS[position.status] || position.status;
 
@@ -78,51 +82,53 @@ export function PositionDetailHeader({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {position.status !== "open" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onStatusChange("open")}
-            className="text-green-600 border-green-200 hover:bg-green-50 hover:text-green-600"
-          >
-            <Play size={14} />
-            Open
+      {canManagePositions && (
+        <div className="flex items-center gap-2">
+          {position.status !== "open" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onStatusChange("open")}
+              className="text-green-600 border-green-200 hover:bg-green-50 hover:text-green-600"
+            >
+              <Play size={14} />
+              Open
+            </Button>
+          )}
+          {position.status === "open" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onStatusChange("on-hold")}
+              className="text-yellow-600 border-yellow-200 hover:bg-yellow-50 hover:text-yellow-600"
+            >
+              <Pause size={14} />
+              Hold
+            </Button>
+          )}
+          {position.status !== "closed" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onStatusChange("closed")}
+              className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-600"
+            >
+              <XCircle size={14} />
+              Close
+            </Button>
+          )}
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/dashboard/positions/${positionId}/edit`}>
+              <Edit size={14} />
+              Edit
+            </Link>
           </Button>
-        )}
-        {position.status === "open" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onStatusChange("on-hold")}
-            className="text-yellow-600 border-yellow-200 hover:bg-yellow-50 hover:text-yellow-600"
-          >
-            <Pause size={14} />
-            Hold
+          <Button variant="destructive" size="sm" onClick={onDelete}>
+            <Trash2 size={14} />
+            Delete
           </Button>
-        )}
-        {position.status !== "closed" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onStatusChange("closed")}
-            className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-600"
-          >
-            <XCircle size={14} />
-            Close
-          </Button>
-        )}
-        <Button variant="outline" size="sm" asChild>
-          <Link href={`/dashboard/positions/${positionId}/edit`}>
-            <Edit size={14} />
-            Edit
-          </Link>
-        </Button>
-        <Button variant="destructive" size="sm" onClick={onDelete}>
-          <Trash2 size={14} />
-          Delete
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

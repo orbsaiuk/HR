@@ -14,11 +14,16 @@ import { FormsTable } from "./FormsTable";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
 import { EmptyState } from "@/shared/components/feedback/EmptyState";
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function FormsListPage() {
   const { forms, loading, error, refetch, setForms } = useFormsList();
   const { deleteForm } = useFormActions();
   const filters = useFormFilters(forms);
+  const { hasPermission } = usePermissions();
+  const canManageForms = hasPermission(PERMISSIONS.MANAGE_FORMS);
 
   const handleAction = async (action, formId) => {
     let result;
@@ -62,13 +67,15 @@ export function FormsListPage() {
           <h1 className="text-3xl font-bold text-gray-900">Forms</h1>
           <p className="text-gray-600 mt-1">Manage and organize your forms</p>
         </div>
-        <Link
-          href="/dashboard/forms/create"
-          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus size={20} />
-          Create Form
-        </Link>
+        <PermissionGate permission={PERMISSIONS.MANAGE_FORMS}>
+          <Link
+            href="/dashboard/forms/create"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus size={20} />
+            Create Form
+          </Link>
+        </PermissionGate>
       </div>
 
       {/* Filters */}
@@ -91,14 +98,17 @@ export function FormsListPage() {
               : "Create your first form to get started"
           }
           action={
-            !hasFilters && {
-              label: "Create Form",
-              href: "/dashboard/forms/create",
-              icon: Plus,
-            }
+            !hasFilters && canManageForms
+              ? {
+                label: "Create Form",
+                href: "/dashboard/forms/create",
+                icon: Plus,
+              }
+              : null
           }
         />
       )}
     </div>
   );
 }
+

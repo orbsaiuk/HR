@@ -22,8 +22,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function FormActionsMenu({ form, onAction }) {
+  const { hasPermission } = usePermissions();
+  const canManageForms = hasPermission(PERMISSIONS.MANAGE_FORMS);
+
   const handleAction = (action) => {
     onAction(action, form._id);
   };
@@ -46,15 +51,17 @@ export function FormActionsMenu({ form, onAction }) {
             View Details
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/dashboard/forms/${form._id}/edit`}
-            className="flex items-center"
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            Edit
-          </Link>
-        </DropdownMenuItem>
+        {canManageForms && (
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/forms/${form._id}/edit`}
+              className="flex items-center"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           <Link
             href={`/dashboard/forms/${form._id}/responses`}
@@ -73,23 +80,29 @@ export function FormActionsMenu({ form, onAction }) {
             Analytics
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/dashboard/forms/${form._id}/share`}
-            className="flex items-center"
-          >
-            <Share2 className="mr-2 h-4 w-4" />
-            Share
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => handleAction("delete")}
-          className="text-red-600 focus:text-red-600"
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete
-        </DropdownMenuItem>
+        {canManageForms && (
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/forms/${form._id}/share`}
+              className="flex items-center"
+            >
+              <Share2 className="mr-2 h-4 w-4" />
+              Share
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {canManageForms && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => handleAction("delete")}
+              className="text-red-600 focus:text-red-600"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,11 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Bell, Shield, Trash2, Users } from 'lucide-react';
+import { User, Bell, Shield, Trash2, Users, ScrollText } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RolesSettingsPage } from '@/features/roles';
+import { AuditLogPage } from '@/features/audit';
+import { usePermissions } from '@/features/team-member-management/model/usePermissions';
+import { PERMISSIONS } from '@/shared/lib/permissions';
 
 export default function SettingsPage() {
+    const { hasPermission } = usePermissions();
+    const canManageRoles = hasPermission(PERMISSIONS.MANAGE_ROLES);
+    const canManageSettings = hasPermission(PERMISSIONS.MANAGE_SETTINGS);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
@@ -67,14 +73,22 @@ export default function SettingsPage() {
                         <Bell className="h-4 w-4" />
                         Notifications
                     </TabsTrigger>
-                    <TabsTrigger value="roles" className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Roles
-                    </TabsTrigger>
+                    {canManageRoles && (
+                        <TabsTrigger value="roles" className="flex items-center gap-2">
+                            <Users className="h-4 w-4" />
+                            Roles
+                        </TabsTrigger>
+                    )}
                     <TabsTrigger value="security" className="flex items-center gap-2">
                         <Shield className="h-4 w-4" />
                         Security
                     </TabsTrigger>
+                    {canManageSettings && (
+                        <TabsTrigger value="activity" className="flex items-center gap-2">
+                            <ScrollText className="h-4 w-4" />
+                            Activity Log
+                        </TabsTrigger>
+                    )}
                 </TabsList>
 
                 <TabsContent value="profile">
@@ -154,9 +168,11 @@ export default function SettingsPage() {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="roles">
-                    <RolesSettingsPage />
-                </TabsContent>
+                {canManageRoles && (
+                    <TabsContent value="roles">
+                        <RolesSettingsPage />
+                    </TabsContent>
+                )}
 
                 <TabsContent value="security">
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -188,6 +204,12 @@ export default function SettingsPage() {
                         </button>
                     </div>
                 </TabsContent>
+
+                {canManageSettings && (
+                    <TabsContent value="activity">
+                        <AuditLogPage />
+                    </TabsContent>
+                )}
             </Tabs>
         </div>
     );

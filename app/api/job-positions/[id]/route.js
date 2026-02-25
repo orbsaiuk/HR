@@ -7,6 +7,7 @@ import {
   updateJobPosition,
   deleteJobPosition,
 } from "@/features/job-positions/services/jobPositionService";
+import { logAuditEvent } from "@/features/audit/services/auditService";
 
 export async function GET(request, { params }) {
   try {
@@ -40,6 +41,17 @@ export async function PUT(request, { params }) {
     const { id } = await params;
     const input = await request.json();
     const position = await updateJobPosition(id, input);
+
+    await logAuditEvent({
+      action: "position.updated",
+      category: "positions",
+      description: `Updated position "${position.title || id}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "position",
+      targetId: id,
+    });
+
     return NextResponse.json(position);
   } catch (error) {
     console.error("Error updating position:", error);
@@ -57,6 +69,17 @@ export async function DELETE(request, { params }) {
     requirePermission(context, PERMISSIONS.MANAGE_POSITIONS);
     const { id } = await params;
     await deleteJobPosition(id);
+
+    await logAuditEvent({
+      action: "position.deleted",
+      category: "positions",
+      description: `Deleted position "${id}"`,
+      actorId: context.teamMember._id,
+      orgId: context.orgId,
+      targetType: "position",
+      targetId: id,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting position:", error);

@@ -14,6 +14,9 @@ import messagingSchemas from "./messaging";
 // Recruitment schemas
 import recruitmentSchemas from "./recruitment";
 
+// Audit schemas
+import auditSchemas from "./audit";
+
 // Combine all schemas
 export const schemaTypes = [
   ...organizationSchemas,
@@ -21,6 +24,7 @@ export const schemaTypes = [
   ...formSchemas,
   ...messagingSchemas,
   ...recruitmentSchemas,
+  ...auditSchemas,
 ];
 
 export const schema = {
@@ -33,3 +37,4 @@ export { user } from "./users";
 export { form, formField } from "./forms";
 export { conversation, message } from "./messaging";
 export { jobPosition, application, evaluationScorecard, scorecardCriterion } from "./recruitment";
+export { auditLog } from "./audit";

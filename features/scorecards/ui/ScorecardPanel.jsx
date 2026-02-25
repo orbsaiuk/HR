@@ -7,8 +7,12 @@ import { ScorecardsList } from "./ScorecardsList";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { ClipboardCheck, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function ScorecardPanel({ applicationId }) {
+  const { hasPermission } = usePermissions();
+  const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
   const [tab, setTab] = useState("all"); // "all" | "mine"
   const [myScorecard, setMyScorecard] = useState(null);
   const [loadingMine, setLoadingMine] = useState(true);
@@ -46,14 +50,16 @@ export function ScorecardPanel({ applicationId }) {
           <List size={14} className="mr-1.5" />
           All Evaluations
         </Button>
-        <Button
-          variant={tab === "mine" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setTab("mine")}
-        >
-          <ClipboardCheck size={14} className="mr-1.5" />
-          {myScorecard ? "Edit My Evaluation" : "Add My Evaluation"}
-        </Button>
+        {canManageApplications && (
+          <Button
+            variant={tab === "mine" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setTab("mine")}
+          >
+            <ClipboardCheck size={14} className="mr-1.5" />
+            {myScorecard ? "Edit My Evaluation" : "Add My Evaluation"}
+          </Button>
+        )}
       </div>
 
       {/* Content */}

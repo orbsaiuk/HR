@@ -5,6 +5,8 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ApplicationStatusBadge } from "./ApplicationStatusBadge";
 import { Button } from "@/components/ui/button";
+import { PermissionGate } from "@/shared/components/auth/PermissionGate";
+import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function ApplicationDetailHeader({
   applicantName,
@@ -42,10 +44,12 @@ export function ApplicationDetailHeader({
       </div>
       <div className="flex items-center gap-2">
         <ApplicationStatusBadge status={status} />
-        <Button variant="destructive" size="sm" onClick={onDelete}>
-          <Trash2 size={14} className="mr-1" />
-          Delete
-        </Button>
+        <PermissionGate permission={PERMISSIONS.MANAGE_APPLICATIONS}>
+          <Button variant="destructive" size="sm" onClick={onDelete}>
+            <Trash2 size={14} className="mr-1" />
+            Delete
+          </Button>
+        </PermissionGate>
       </div>
     </div>
   );
