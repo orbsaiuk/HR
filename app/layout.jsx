@@ -1,22 +1,32 @@
 import { AuthProvider } from "@/features/auth/components/AuthProvider.jsx";
 import { Toaster } from "@/components/ui/sonner";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const tsDamas = localFont({
+  src: "../public/fonts/ts-damas-sans-free-regular.otf",
+  variable: "--font-heading",
+  display: "swap",
+});
+
+const lamaSans = localFont({
+  src: "../public/fonts/LamaSans-Regular.otf",
+  variable: "--font-body",
+  display: "swap",
+});
 
 export const metadata = {
-  title: "Form Builder",
+  title: "HireHub - منصة التوظيف الذكية",
   description:
-    "A powerful form builder for team members to collect responses, analyze data, and communicate with candidates.",
+    "منصة ذكية تربط الشركات الطموحة بأفضل المواهب بدوام كامل أو بنظام العمل الحر",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="ar" dir="rtl">
+      <body className={`${tsDamas.variable} ${lamaSans.variable}`}>
         <AuthProvider>{children}</AuthProvider>
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-left" richColors />
       </body>
     </html>
   );
