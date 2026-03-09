@@ -1,12 +1,17 @@
 import { auth } from "@clerk/nextjs/server";
-import { LandingPage } from "@/features/landing";
+import { LandingPage, CompanyLandingPage } from "@/features/landing";
 
 export default async function HomePage() {
     const { userId, orgId } = await auth();
+    const isTeamMember = Boolean(userId && orgId);
 
     return (
         <main>
-            <LandingPage isTeamMember={Boolean(userId && orgId)} isSignedIn={Boolean(userId)} />
+            {isTeamMember ? (
+                <CompanyLandingPage />
+            ) : (
+                <LandingPage isTeamMember={isTeamMember} isSignedIn={Boolean(userId)} />
+            )}
         </main>
     );
 }
