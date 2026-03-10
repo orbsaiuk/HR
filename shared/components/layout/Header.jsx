@@ -212,8 +212,8 @@ export function Header() {
       {/* Mobile Navigation - Slide down overlay */}
       <div
         className={`md:hidden fixed inset-x-0 top-[52px] sm:top-[60px] bottom-0 bg-white z-40 transition-all duration-300 ease-in-out ${mobileMenuOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-4 pointer-events-none"
+          ? "opacity-100 translate-y-0 pointer-events-auto"
+          : "opacity-0 -translate-y-4 pointer-events-none"
           }`}
       >
         <div className="px-4 py-6 space-y-1 overflow-y-auto max-h-full">
@@ -249,6 +249,64 @@ export function Header() {
                   )}
                 </Link>
               )}
+              {hasApprovedRequest && (
+                <a
+                  href="/dashboard"
+                  className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    setMobileMenuOpen(false);
+                    if (isOrgListLoaded && setActive && userMemberships?.data?.length) {
+                      try {
+                        await setActive({ organization: userMemberships.data[0].organization.id });
+                        window.location.href = "/dashboard";
+                      } catch (err) {
+                        router.push("/dashboard");
+                      }
+                    } else {
+                      router.push("/dashboard");
+                    }
+                  }}
+                >
+                  لوحة التحكم
+                </a>
+              )}
+              {hasPendingRequest && !hasApprovedRequest && (
+                <Link href="/user/organization-requests" className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors">
+                  <Clock size={16} />
+                  طلب المنظمة
+                </Link>
+              )}
+            </>
+          )}
+
+          {isSignedIn && isUserLoaded && isTeamMember && (
+            <>
+              <div className="border-t border-gray-100 my-3" />
+              <a
+                href="/dashboard"
+                className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  if (organization) {
+                    router.push("/dashboard");
+                    return;
+                  }
+                  if (isOrgListLoaded && setActive && userMemberships?.data?.length) {
+                    try {
+                      await setActive({ organization: userMemberships.data[0].organization.id });
+                      window.location.href = "/dashboard";
+                    } catch (err) {
+                      router.push("/dashboard");
+                    }
+                  } else {
+                    router.push("/dashboard");
+                  }
+                }}
+              >
+                لوحة التحكم
+              </a>
             </>
           )}
 
@@ -277,3 +335,4 @@ export function Header() {
     </header>
   );
 }
+

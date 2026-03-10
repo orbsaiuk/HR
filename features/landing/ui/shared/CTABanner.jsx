@@ -58,15 +58,15 @@ export function CTABanner({
 }) {
     return (
         <section
-            className="relative py-16 sm:py-20 md:py-28 px-4 sm:px-6 overflow-hidden text-white"
+            className="relative py-12 sm:py-16 md:py-20 lg:py-28 px-4 sm:px-6 overflow-hidden text-white"
             style={{ backgroundColor: bgColor }}
         >
-            {/* Floating avatar decorations */}
+            {/* Floating avatar decorations - hidden on mobile, shown on larger screens */}
             {
                 FLOATING_AVATARS.map((avatar) => (
                     <div
                         key={avatar.id}
-                        className={`absolute ${avatar.size} rounded-full overflow-hidden shadow-lg animate-float-card hidden sm:block`}
+                        className={`absolute ${avatar.size} rounded-full overflow-hidden shadow-lg animate-float-card hidden md:block`}
                         style={{
                             top: avatar.top,
                             insetInlineStart: avatar.start,
@@ -85,15 +85,15 @@ export function CTABanner({
 
             {/* Content */}
             <div className="relative z-10 container mx-auto max-w-3xl text-center">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-snug mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-snug mb-3 sm:mb-4 md:mb-6">
                     {title}
                 </h2>
-                <p className="text-sm sm:text-base md:text-xl lg:text-2xl leading-relaxed mb-6 sm:mb-8 md:mb-10 max-w-3xl mx-auto">
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed mb-5 sm:mb-6 md:mb-8 lg:mb-10 max-w-2xl lg:max-w-3xl mx-auto px-2 sm:px-0">
                     {description}
                 </p>
                 <Button
                     asChild
-                    className="h-11 sm:h-12 px-10 sm:px-14 rounded-lg bg-white text-black hover:bg-white/90 font-semibold text-sm sm:text-base"
+                    className="h-10 sm:h-11 md:h-12 px-8 sm:px-10 md:px-14 rounded-lg bg-white text-black hover:bg-white/90 font-semibold text-sm sm:text-base w-full sm:w-auto max-w-xs sm:max-w-none"
                 >
                     <Link href={buttonHref}>{buttonText}</Link>
                 </Button>

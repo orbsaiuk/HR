@@ -185,8 +185,14 @@
   .bg-hero {
     background-image: url("/images/Home/Hero/hero.png");
     background-size: cover;
-    background-position: center;
+    background-position: center top;
     background-repeat: no-repeat;
+  }
+
+  @media (max-width: 640px) {
+    .bg-hero {
+      background-position: center center;
+    }
   }
 
   /* Section fade-in animation */
@@ -195,6 +201,7 @@
       opacity: 0;
       transform: translateY(24px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

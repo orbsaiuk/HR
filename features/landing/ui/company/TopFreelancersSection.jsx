@@ -79,16 +79,16 @@ function getInitials(name) {
 
 export function TopFreelancersSection() {
     return (
-        <section className="py-12">
+        <section className="py-8 sm:py-12">
             <div className="mx-auto container px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-4 sm:mb-6">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight text-[#5286A5]">
+                <div className="mb-3 sm:mb-4 md:mb-6">
+                    <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl leading-tight text-[#5286A5]">
                         أفضل فريلانسرز
                     </h2>
                 </div>
-                <div className="max-w-3xl mb-8 sm:mb-12">
-                    <p className="text-sm sm:text-base md:text-2xl leading-relaxed">
+                <div className="max-w-3xl mb-6 sm:mb-8 md:mb-12">
+                    <p className="text-sm sm:text-base md:text-xl lg:text-2xl leading-relaxed">
                         سواء كنت تبحث عن موظف دائم أو مستقل، نوفر لك الحل المناسب
                     </p>
                 </div>
@@ -125,7 +125,7 @@ function FreelancerCard({ freelancer }) {
     return (
         <Card className="h-full overflow-hidden border-gray-200 shadow-sm hover:shadow-md transition-shadow rounded-xl">
             {/* Colorful Banner */}
-            <div className="relative h-28 overflow-hidden rounded-t-xl">
+            <div className="relative h-24 sm:h-28 overflow-hidden rounded-t-xl">
                 <Image
                     src="/images/Home/Freelance/bg.png"
                     alt=""
@@ -136,60 +136,60 @@ function FreelancerCard({ freelancer }) {
             </div>
 
             {/* Avatar overlapping banner */}
-            <div className="flex justify-between -mt-10 relative z-10">
-                <Avatar className="h-20 w-20 border-4 border-white shadow-md">
+            <div className="flex justify-between items-end -mt-8 sm:-mt-10 relative z-10 px-3">
+                <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-4 border-white shadow-md">
                     <AvatarImage
                         src={freelancer.image}
                         alt={freelancer.name}
                     />
-                    <AvatarFallback className="text-lg font-bold bg-[#2D8C5E]/10 text-[#2D8C5E]">
+                    <AvatarFallback className="text-base sm:text-lg font-bold bg-[#2D8C5E]/10 text-[#2D8C5E]">
                         {getInitials(freelancer.name)}
                     </AvatarFallback>
                 </Avatar>
                 {/* Stars on banner */}
-                <div className="flex items-center gap-0.5 mt-6">
+                <div className="flex items-center gap-0.5 mb-1">
                     {Array.from({ length: freelancer.rating }).map((_, i) => (
                         <Star
                             key={i}
-                            className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
+                            className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400"
                         />
                     ))}
                 </div>
             </div>
 
-            <CardContent className="pt-3 pb-5 px-3">
+            <CardContent className="pt-2 sm:pt-3 pb-4 sm:pb-5 px-3">
                 {/* Name and title */}
-                <h3 className="font-bold text-base sm:text-lg truncate">
+                <h3 className="font-bold text-sm sm:text-base md:text-lg truncate">
                     {freelancer.name}
                 </h3>
-                <p className="text-sm text-muted-foreground truncate mb-4">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate mb-3 sm:mb-4">
                     {freelancer.title}
                 </p>
 
                 <hr />
 
                 {/* Stats row */}
-                <div className="flex items-center justify-between my-5 px-2 text-red-700">
-                    <span className="text-sm font-medium">
+                <div className="flex items-center justify-between my-3 sm:my-5 px-1 sm:px-2 text-red-700">
+                    <span className="text-xs sm:text-sm font-medium">
                         {freelancer.projects} مشروع
                     </span>
-                    <span className="text-sm font-medium">
+                    <span className="text-xs sm:text-sm font-medium">
                         ${freelancer.hourlyRate}/ساعة
                     </span>
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                     <Button
                         size="sm"
-                        className="flex-1 h-9 rounded-lg bg-[#5286A5] hover:bg-[#5286A5]/90 text-white text-xs sm:text-sm"
+                        className="flex-1 h-8 sm:h-9 rounded-lg bg-[#5286A5] hover:bg-[#5286A5]/90 text-white text-xs sm:text-sm"
                     >
                         عرض الملف
                     </Button>
                     <Button
                         size="sm"
                         variant="outline"
-                        className="flex-1 h-9 rounded-lg border-[#5286A5] text-[#5286A5] text-xs sm:text-sm"
+                        className="flex-1 h-8 sm:h-9 rounded-lg border-[#5286A5] text-[#5286A5] text-xs sm:text-sm"
                     >
                         دعوة للتقديم
                     </Button>

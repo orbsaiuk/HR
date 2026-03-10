@@ -61,16 +61,16 @@ const ARTICLES = [
 
 export function PlatformNewsSection() {
     return (
-        <section className="py-12">
+        <section className="py-8 sm:py-12">
             <div className="mx-auto container px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="text-right mb-3 sm:mb-4">
-                    <h2 className="text-2xl sm:text-3xl md:text-5xl leading-tight">
+                <div className="text-right mb-2 sm:mb-3 md:mb-4">
+                    <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl leading-tight">
                         أخبار المنصة
                     </h2>
                 </div>
-                <div className="text-right max-w-3xl mr-0 mb-8 sm:mb-12">
-                    <p className="text-sm sm:text-base md:text-xl leading-relaxed">
+                <div className="text-right max-w-3xl me-0 mb-6 sm:mb-8 md:mb-12">
+                    <p className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed">
                         تابع آخر التحديثات والمقالات والنصائح الخاصة بالفريلانسرز والشركات
                     </p>
                 </div>
@@ -105,7 +105,7 @@ function ArticleCard({ article }) {
     return (
         <Card className="group overflow-hidden border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full">
             {/* Image */}
-            <div className="relative w-full h-48 sm:h-52 overflow-hidden">
+            <div className="relative w-full h-40 sm:h-48 md:h-52 overflow-hidden">
                 <Image
                     src={article.image}
                     alt={article.title}
@@ -116,30 +116,30 @@ function ArticleCard({ article }) {
             </div>
 
             {/* Content */}
-            <CardContent className="p-5 sm:p-6 pb-2">
+            <CardContent className="p-4 sm:p-5 md:p-6 pb-2">
                 {/* Title */}
-                <h3 className="text-base sm:text-lg mb-2 line-clamp-2">
+                <h3 className="text-sm sm:text-base md:text-lg mb-1.5 sm:mb-2 line-clamp-2">
                     {article.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                     {article.description}
                 </p>
             </CardContent>
 
             {/* Footer */}
-            <CardFooter className="px-5 sm:px-6 pb-5 pt-3 flex items-center justify-between">
+            <CardFooter className="px-4 sm:px-5 md:px-6 pb-4 sm:pb-5 pt-2 sm:pt-3 flex items-center justify-between gap-2">
                 <Link
                     href={article.slug}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-[#5286A5]"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-[#5286A5] shrink-0"
                 >
                     اقرأ المزيد
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </Link>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-xs sm:text-sm">{article.date}</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground">
+                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span className="text-[10px] sm:text-xs md:text-sm whitespace-nowrap">{article.date}</span>
                 </div>
             </CardFooter>
         </Card>
