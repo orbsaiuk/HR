@@ -1,98 +1,116 @@
 "use client";
 
+import { useState } from "react";
 import { useCareersList } from "../model/useCareersList";
-import { Loading } from "@/shared/components/feedback/Loading";
-import { EmptyState } from "@/shared/components/feedback/EmptyState";
-import { Error } from "@/shared/components/feedback/Error";
-import { PositionCard } from "./components/PositionCard";
-import { CareersFilters } from "./components/CareersFilters";
-import { Briefcase } from "lucide-react";
+import { CareersHero } from "./components/CareersHero";
+import { CareersSidebar, CareersMobileSidebar } from "./components/filters";
+import { CareersResults } from "./components/CareersResults";
 
 export function CareersPage() {
   const {
     positions,
+    totalCount,
     filters,
+    filterCounts,
     loading,
     error,
+
+    // Search
     search,
     setSearch,
-    department,
-    setDepartment,
-    location,
-    setLocation,
-    type,
-    setType,
+    searchLocation,
+    setSearchLocation,
+
+    // Multi-select filters
+    selectedTypes,
+    toggleType,
+    selectedDepartments,
+    toggleDepartment,
+    selectedLevels,
+    toggleLevel,
+    selectedSalaryRanges,
+    toggleSalaryRange,
+
+    // View & sort
+    viewMode,
+    setViewMode,
+    sortBy,
+    setSortBy,
+
+    // Pagination
+    currentPage,
+    setCurrentPage,
+    totalPages,
+
+    // Actions
     clearFilters,
+    hasActiveFilters,
   } = useCareersList();
 
-  const hasActiveFilters = search || department || location || type;
+  // Mobile sidebar toggle
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Shared sidebar filter props
+  const sidebarProps = {
+    selectedTypes,
+    onToggleType: toggleType,
+    selectedDepartments,
+    onToggleDepartment: toggleDepartment,
+    selectedLevels,
+    onToggleLevel: toggleLevel,
+    selectedSalaryRanges,
+    onToggleSalaryRange: toggleSalaryRange,
+    filterCounts,
+    apiDepartments: filters.departments,
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div dir="rtl" className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-linear-to-r from-blue-600 to-blue-800 text-white">
-        <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Find Jobs</h1>
-          <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
-            Browse open positions from top companies and find your next career
-            opportunity.
-          </p>
-        </div>
-      </div>
+      <CareersHero
+        search={search}
+        onSearchChange={setSearch}
+        searchLocation={searchLocation}
+        onSearchLocationChange={setSearchLocation}
+        locations={filters.locations}
+        onSearch={() => { }}
+      />
 
+      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* Filters */}
-        <CareersFilters
-          search={search}
-          onSearchChange={setSearch}
-          department={department}
-          onDepartmentChange={setDepartment}
-          location={location}
-          onLocationChange={setLocation}
-          type={type}
-          onTypeChange={setType}
-          departments={filters.departments}
-          locations={filters.locations}
-          onClear={clearFilters}
-          hasActiveFilters={hasActiveFilters}
-        />
+        <div className="flex gap-8">
+          {/* Desktop sidebar */}
+          <div className="hidden lg:block w-[260px] shrink-0">
+            <CareersSidebar {...sidebarProps} />
+          </div>
 
-        {/* Results */}
-        {loading ? (
-          <Loading />
-        ) : error ? (
-          <Error message={error} />
-        ) : positions.length === 0 ? (
-          <EmptyState
-            icon={Briefcase}
-            title={
-              hasActiveFilters
-                ? "No positions match your filters"
-                : "No open positions"
-            }
-            description={
-              hasActiveFilters
-                ? "Try adjusting your search or filters."
-                : "Check back later for new opportunities."
-            }
-            action={
-              hasActiveFilters
-                ? { label: "Clear Filters", onClick: clearFilters }
-                : undefined
-            }
+          {/* Mobile sidebar overlay */}
+          <CareersMobileSidebar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={clearFilters}
+            sidebarProps={sidebarProps}
           />
-        ) : (
-          <>
-            <p className="text-sm text-gray-500 mb-6">
-              {positions.length} open position{positions.length !== 1 && "s"}
-            </p>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {positions.map((position) => (
-                <PositionCard key={position._id} position={position} />
-              ))}
-            </div>
-          </>
-        )}
+
+          {/* Results area */}
+          <CareersResults
+            positions={positions}
+            totalCount={totalCount}
+            loading={loading}
+            error={error}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={clearFilters}
+            onFilterToggle={() => setSidebarOpen(!sidebarOpen)}
+          />
+        </div>
       </div>
     </div>
   );
