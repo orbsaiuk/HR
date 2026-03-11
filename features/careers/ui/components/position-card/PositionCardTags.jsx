@@ -1,5 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { MapPin, DollarSign, BarChart3 } from "lucide-react";
+import { MapPin, BarChart3 } from "lucide-react";
+import { GrCurrency } from "react-icons/gr";
+
 import { TYPE_LABELS, LEVEL_LABELS } from "./positionCardUtils";
 
 export function PositionCardTags({ type, location, salary, level, compact = false }) {
@@ -24,7 +26,7 @@ export function PositionCardTags({ type, location, salary, level, compact = fals
             )}
             {salary && (
                 <span className="flex items-center gap-1 text-gray-500">
-                    <DollarSign size={iconSize} className="text-gray-400" />
+                    <GrCurrency size={iconSize} className="text-gray-400" />
                     {salary}
                 </span>
             )}

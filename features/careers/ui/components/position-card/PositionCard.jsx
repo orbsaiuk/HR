@@ -20,7 +20,7 @@ export function PositionCard({ position, viewMode = "list" }) {
         ? urlFor(position.organizationLogo).width(56).height(56).url()
         : null;
 
-    const postedTime = timeAgo(position._createdAt || position.deadline);
+    const postedTime = timeAgo(position.createdAt || position.deadline);
 
     // Grid view card
     if (viewMode === "grid") {

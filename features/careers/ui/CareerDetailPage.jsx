@@ -1,326 +1,42 @@
 "use client";
 
+import { useEffect } from "react";
 import { useCareerDetail } from "../model/useCareerDetail";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { MarkdownContent } from "@/components/ui/markdown-content";
-import Link from "next/link";
-import { SignInButton } from "@clerk/nextjs";
-import Image from "next/image";
-import { urlFor } from "@/shared/lib/sanityImage";
+import { CareerDetailSkeleton } from "./CareerDetailSkeleton";
 import {
-  ArrowLeft,
-  MapPin,
-  Clock,
-  DollarSign,
-  Building2,
-  Calendar,
-  Users,
-  ExternalLink,
-  Lock,
-  ChevronRight,
-} from "lucide-react";
-
-const TYPE_LABELS = {
-  "full-time": "Full-time",
-  "part-time": "Part-time",
-  contract: "Contract",
-  internship: "Internship",
-  remote: "Remote",
-};
-
-function formatSalary(min, max, currency = "USD") {
-  const fmt = (v) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0,
-    }).format(v);
-  if (min && max) return `${fmt(min)} – ${fmt(max)}`;
-  if (min) return `From ${fmt(min)}`;
-  if (max) return `Up to ${fmt(max)}`;
-  return null;
-}
+  CareerDetailHeader,
+  CareerDetailContent,
+  CareerDetailSidebar,
+} from "./career-detail";
 
 export function CareerDetailPage({ positionId }) {
   const { isSignedIn, isLoaded } = useAuth();
   const { position, loading, error } = useCareerDetail(positionId);
 
-  if (loading) return <Loading fullPage />;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [positionId]);
+
+  if (loading) return <CareerDetailSkeleton />;
   if (error) return <Error message={error} />;
-  if (!position) return <Error message="Position not found" />;
-
-  const salary = formatSalary(
-    position.salaryMin,
-    position.salaryMax,
-    position.currency,
-  );
-
-  const deadlineDate = position.deadline ? new Date(position.deadline) : null;
+  if (!position) return <Error message="الوظيفة غير موجودة" />;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <Link
-            href="/careers"
-            className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 mb-4"
-          >
-            <ArrowLeft size={16} />
-            Back to all positions
-          </Link>
+      <CareerDetailHeader position={position} />
 
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                {position.title}
-              </h1>
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                {position.organizationName && (
-                  <Link
-                    href={position.organizationSlug ? `/companies/${position.organizationSlug}` : "#"}
-                    className="flex items-center gap-1.5 hover:text-blue-600 transition-colors"
-                  >
-                    {position.organizationLogo ? (
-                      <Image
-                        src={urlFor(position.organizationLogo).width(28).height(28).url()}
-                        alt=""
-                        width={28}
-                        height={28}
-                        className="w-5 h-5 rounded object-cover"
-                      />
-                    ) : (
-                      <Building2 size={14} />
-                    )}
-                    {position.organizationName}
-                  </Link>
-                )}
-                {position.department && (
-                  <span className="flex items-center gap-1.5">
-                    <Building2 size={14} />
-                    {position.department}
-                  </span>
-                )}
-                {position.location && (
-                  <span className="flex items-center gap-1.5">
-                    <MapPin size={14} />
-                    {position.location}
-                  </span>
-                )}
-                {position.type && (
-                  <span className="flex items-center gap-1.5">
-                    <Clock size={14} />
-                    {TYPE_LABELS[position.type] || position.type}
-                  </span>
-                )}
-                {salary && (
-                  <span className="flex items-center gap-1.5">
-                    <DollarSign size={14} />
-                    {salary}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {isLoaded && !isSignedIn ? (
-              <SignInButton
-                mode="modal"
-                forceRedirectUrl={`/careers/${positionId}/apply`}
-              >
-                <Button size="lg" variant="outline">
-                  <Lock size={16} />
-                  Sign In to Apply
-                </Button>
-              </SignInButton>
-            ) : (
-              <Button asChild size="lg">
-                <Link href={`/careers/${positionId}/apply`}>
-                  Apply Now
-                  <ExternalLink size={16} />
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main content */}
-          <div className="lg:col-span-2 space-y-8">
-            {position.description && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">About This Role</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <MarkdownContent
-                    content={position.description}
-                    className="text-muted-foreground"
-                  />
-                </CardContent>
-              </Card>
-            )}
+          <CareerDetailContent position={position} />
 
-            {position.requirements && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Requirements</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <MarkdownContent
-                    content={position.requirements}
-                    className="text-muted-foreground"
-                  />
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm uppercase tracking-wide">
-                  Position Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <dl className="space-y-4">
-                  {position.department && (
-                    <div>
-                      <dt className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Department
-                      </dt>
-                      <dd className="text-sm font-medium text-foreground mt-0.5">
-                        {position.department}
-                      </dd>
-                    </div>
-                  )}
-                  {position.type && (
-                    <div>
-                      <dt className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Employment Type
-                      </dt>
-                      <dd className="text-sm font-medium text-foreground mt-0.5">
-                        {TYPE_LABELS[position.type] || position.type}
-                      </dd>
-                    </div>
-                  )}
-                  {position.location && (
-                    <div>
-                      <dt className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Location
-                      </dt>
-                      <dd className="text-sm font-medium text-foreground mt-0.5">
-                        {position.location}
-                      </dd>
-                    </div>
-                  )}
-                  {salary && (
-                    <div>
-                      <dt className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Salary Range
-                      </dt>
-                      <dd className="text-sm font-medium text-foreground mt-0.5">
-                        {salary}
-                      </dd>
-                    </div>
-                  )}
-                  {deadlineDate && (
-                    <div>
-                      <dt className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Application Deadline
-                      </dt>
-                      <dd className="text-sm font-medium text-foreground mt-0.5">
-                        {deadlineDate.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </dd>
-                    </div>
-                  )}
-                  {position.applicationCount > 0 && (
-                    <div>
-                      <dt className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Applicants
-                      </dt>
-                      <dd className="text-sm font-medium text-foreground mt-0.5 flex items-center gap-1">
-                        <Users size={14} />
-                        {position.applicationCount}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-              </CardContent>
-            </Card>
-
-            {/* Company Info */}
-            {position.organizationName && position.organizationSlug && (
-              <Card>
-                <CardContent className="pt-6">
-                  <Link
-                    href={`/companies/${position.organizationSlug}`}
-                    className="flex items-center gap-3 group/company"
-                  >
-                    {position.organizationLogo ? (
-                      <Image
-                        src={urlFor(position.organizationLogo).width(80).height(80).url()}
-                        alt={position.organizationName}
-                        width={80}
-                        height={80}
-                        className="w-12 h-12 rounded-lg object-cover border border-gray-200"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <Building2 size={20} className="text-blue-600" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground group-hover/company:text-blue-600 transition-colors truncate">
-                        {position.organizationName}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        View company profile
-                      </p>
-                    </div>
-                    <ChevronRight size={16} className="text-muted-foreground" />
-                  </Link>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* CTA */}
-            {isLoaded && !isSignedIn ? (
-              <Button asChild className="w-full" size="lg" variant="outline">
-                <Link href="/sign-in">
-                  <Lock size={16} />
-                  Sign In to Apply
-                </Link>
-              </Button>
-            ) : (
-              <Button asChild className="w-full" size="lg">
-                <Link href={`/careers/${positionId}/apply`}>
-                  Apply for This Position
-                </Link>
-              </Button>
-            )}
-
-            <p className="text-xs text-gray-400 text-center">
-              Posted{" "}
-              {new Date(position.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
+          <CareerDetailSidebar
+            position={position}
+            positionId={positionId}
+            isSignedIn={isSignedIn}
+            isLoaded={isLoaded}
+          />
         </div>
       </div>
     </div>

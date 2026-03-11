@@ -14,7 +14,7 @@ export async function GET(request) {
 
     let positions = await careerService.getPublicPositions();
 
-    // Apply client-side filtering (Sanity GROQ handles status == "open")
+    // Apply client-side filtering
     if (search) {
       const q = search.toLowerCase();
       positions = positions.filter(

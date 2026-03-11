@@ -57,6 +57,7 @@ export const careerQueries = {
     "organizationName": organization->name,
     "organizationLogo": organization->logo,
     "organizationSlug": organization->slug.current,
+    "organizationSize": organization->size,
     "form": form->{
       _id,
       title,

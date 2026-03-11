@@ -1,27 +1,37 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { urlFor } from "@/shared/lib/sanityImage";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, Users, Globe, Calendar } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { ArrowRight, MapPin, Users, Globe, Calendar } from "lucide-react";
 
 const INDUSTRY_LABELS = {
-    technology: "Technology",
-    healthcare: "Healthcare",
-    finance: "Finance",
-    education: "Education",
-    retail: "Retail",
-    manufacturing: "Manufacturing",
-    consulting: "Consulting",
-    media: "Media & Entertainment",
-    nonprofit: "Non-Profit",
-    government: "Government",
-    other: "Other",
+    technology: "تكنولوجيا",
+    healthcare: "رعاية صحية",
+    finance: "مالية",
+    education: "تعليم",
+    retail: "تجارة التجزئة",
+    manufacturing: "تصنيع",
+    consulting: "استشارات",
+    media: "إعلام وترفيه",
+    nonprofit: "غير ربحي",
+    government: "حكومي",
+    other: "أخرى",
+};
+
+const SIZE_LABELS = {
+    "1-10": "1-10 موظفين",
+    "11-50": "11-50 موظف",
+    "51-200": "51-200 موظف",
+    "201-500": "201-500 موظف",
+    "500+": "500+ موظف",
 };
 
 export function CompanyHeader({ company }) {
     const logoUrl = company.logo
-        ? urlFor(company.logo).width(120).height(120).url()
+        ? urlFor(company.logo).url()
         : null;
 
     return (
@@ -29,26 +39,25 @@ export function CompanyHeader({ company }) {
             <div className="container mx-auto px-4 py-6">
                 <Link
                     href="/careers"
-                    className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 mb-6"
+                    className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 mb-6 transition-colors"
                 >
-                    <ArrowLeft size={16} />
-                    Back to careers
+                    <ArrowRight size={16} className="rtl:rotate-0 ltr:rotate-180" />
+                    العودة إلى الوظائف
                 </Link>
 
-                <div className="flex flex-col md:flex-row items-start gap-6">
-                    {logoUrl ? (
-                        <img
-                            src={logoUrl}
-                            alt={`${company.name} logo`}
-                            className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover border border-gray-200 shrink-0"
-                        />
-                    ) : (
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-                            <span className="text-3xl font-bold text-blue-600">
-                                {company.name?.charAt(0)?.toUpperCase()}
-                            </span>
-                        </div>
-                    )}
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                    <Avatar className="w-20 h-20 md:w-24 md:h-24 rounded-xl border border-gray-200 shrink-0">
+                        {logoUrl ? (
+                            <AvatarImage
+                                src={logoUrl}
+                                alt={`شعار ${company.name}`}
+                                className="object-contain"
+                            />
+                        ) : null}
+                        <AvatarFallback className="rounded-xl bg-blue-100 text-3xl font-bold text-blue-600">
+                            {company.name?.charAt(0)?.toUpperCase()}
+                        </AvatarFallback>
+                    </Avatar>
 
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -56,11 +65,6 @@ export function CompanyHeader({ company }) {
                         </h1>
 
                         <div className="flex flex-wrap gap-3 mb-4">
-                            {company.industry && (
-                                <Badge variant="secondary">
-                                    {INDUSTRY_LABELS[company.industry] || company.industry}
-                                </Badge>
-                            )}
                             {company.location && (
                                 <span className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <MapPin size={14} />
@@ -70,7 +74,7 @@ export function CompanyHeader({ company }) {
                             {company.size && (
                                 <span className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Users size={14} />
-                                    {company.size} employees
+                                    {SIZE_LABELS[company.size] || `${company.size} موظف`}
                                 </span>
                             )}
                             {company.website && (
@@ -78,27 +82,28 @@ export function CompanyHeader({ company }) {
                                     href={company.website}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
                                 >
                                     <Globe size={14} />
-                                    Website
+                                    الموقع الإلكتروني
                                 </a>
+                            )}
+                            {company.createdAt && (
+                                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                    <Calendar size={12} />
+                                    عضو منذ{" "}
+                                    {new Date(company.createdAt).toLocaleDateString("ar-EG", {
+                                        month: "long",
+                                        year: "numeric",
+                                    })}
+                                </p>
                             )}
                         </div>
 
-                        {company.createdAt && (
-                            <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Calendar size={12} />
-                                Member since{" "}
-                                {new Date(company.createdAt).toLocaleDateString("en-US", {
-                                    month: "long",
-                                    year: "numeric",
-                                })}
-                            </p>
-                        )}
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+

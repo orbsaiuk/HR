@@ -1,0 +1,131 @@
+import Link from "next/link";
+import { UserButton, SignUpButton } from "@clerk/nextjs";
+import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DashboardLink } from "./DashboardLink";
+
+export function MobileNav({
+    isOpen,
+    onClose,
+    isSignedIn,
+    isUser,
+    isUserLoaded,
+    isTeamMember,
+    unreadCount,
+    hasOrgRequest,
+    hasPendingRequest,
+    hasApprovedRequest,
+    navigateToDashboard,
+}) {
+    return (
+        <div
+            className={`md:hidden fixed inset-x-0 top-[52px] sm:top-[60px] bottom-0 bg-white z-40 transition-all duration-300 ease-in-out ${isOpen
+                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                    : "opacity-0 -translate-y-4 pointer-events-none"
+                }`}
+        >
+            <div className="px-4 py-6 space-y-1 overflow-y-auto max-h-full">
+                {/* Public links */}
+                <NavLink href="/">الرئيسية</NavLink>
+                <NavLink href="/careers">الوظائف</NavLink>
+                <NavLink href="#">تواصل معنا</NavLink>
+
+                {/* Signed-in user links */}
+                {isSignedIn && isUserLoaded && isUser && (
+                    <>
+                        <Divider />
+                        <NavLink href="/user/profile">ملفي</NavLink>
+                        <NavLink href="/my-applications">طلباتي</NavLink>
+
+                        {!hasOrgRequest && (
+                            <Link
+                                href="/messages"
+                                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                            >
+                                الرسائل
+                                {unreadCount > 0 && (
+                                    <span className="bg-red-500 text-white text-xs font-bold rounded-full min-w-5 h-5 flex items-center justify-center px-1.5">
+                                        {unreadCount > 99 ? "99+" : unreadCount}
+                                    </span>
+                                )}
+                            </Link>
+                        )}
+
+                        {hasApprovedRequest && (
+                            <DashboardLink
+                                navigateToDashboard={navigateToDashboard}
+                                className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                                onBeforeNavigate={onClose}
+                            />
+                        )}
+
+                        {hasPendingRequest && !hasApprovedRequest && (
+                            <Link
+                                href="/user/organization-requests"
+                                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                            >
+                                <Clock size={16} />
+                                طلب المنظمة
+                            </Link>
+                        )}
+                    </>
+                )}
+
+                {/* Team member dashboard */}
+                {isSignedIn && isUserLoaded && isTeamMember && (
+                    <>
+                        <Divider />
+                        <DashboardLink
+                            navigateToDashboard={navigateToDashboard}
+                            className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                            onBeforeNavigate={onClose}
+                        />
+                    </>
+                )}
+
+                {/* Guest CTA */}
+                {!isSignedIn && (
+                    <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 mt-3">
+                        <Link href="/register-organization">
+                            <Button className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white h-11">
+                                ابدأ كشركة
+                            </Button>
+                        </Link>
+                        <SignUpButton mode="modal">
+                            <Button
+                                variant="outline"
+                                className="w-full rounded-full border-gray-300 h-11"
+                            >
+                                سجل كباحث عن عمل
+                            </Button>
+                        </SignUpButton>
+                    </div>
+                )}
+
+                {/* User button */}
+                {isSignedIn && (
+                    <div className="pt-4 border-t border-gray-100 mt-3 px-3">
+                        <UserButton />
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+/* ── tiny helpers ── */
+
+function NavLink({ href, children }) {
+    return (
+        <Link
+            href={href}
+            className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+        >
+            {children}
+        </Link>
+    );
+}
+
+function Divider() {
+    return <div className="border-t border-gray-100 my-3" />;
+}

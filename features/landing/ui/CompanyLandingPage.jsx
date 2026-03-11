@@ -6,7 +6,6 @@ import { TopFreelancersSection } from "./company/TopFreelancersSection";
 import { TrustedCompaniesSection } from "./company/TrustedCompaniesSection";
 import { PlatformNewsSection } from "./company/PlatformNewsSection";
 import { CompanyCTASection } from "./company/CompanyCTASection";
-import { Footer } from "./Footer";
 
 export function CompanyLandingPage() {
     return (
@@ -17,7 +16,6 @@ export function CompanyLandingPage() {
             <TrustedCompaniesSection />
             <PlatformNewsSection />
             <CompanyCTASection />
-            <Footer />
         </>
     );
 }

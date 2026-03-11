@@ -7,7 +7,6 @@ import { CategoriesSection } from "./CategoriesSection";
 import { HowSection } from "./HowSection";
 import { WhySection } from "./WhySection";
 import { CTASection } from "./CTASection";
-import { Footer } from "./Footer";
 
 export function LandingPage() {
     return (
@@ -19,7 +18,6 @@ export function LandingPage() {
             <HowSection />
             <WhySection />
             <CTASection />
-            <Footer />
         </>
     );
 }
