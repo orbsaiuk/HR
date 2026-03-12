@@ -78,7 +78,10 @@ export function LatestJobsSection() {
     <section className="py-8 sm:py-12 bg-gray-50">
       <div className="mx-auto container px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8 md:mb-12" dir="rtl">
+        <div
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8 md:mb-12"
+          dir="rtl"
+        >
           <div className="text-right">
             <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl leading-tight mb-2 sm:mb-3">
               أحدث الوظائف على المنصة

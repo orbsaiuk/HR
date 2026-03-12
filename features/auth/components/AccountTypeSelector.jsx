@@ -140,9 +140,7 @@ export function AccountTypeSelector() {
         </div>
 
         {/* Error */}
-        {error && (
-          <p className="text-center text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="text-center text-sm text-red-600">{error}</p>}
 
         {/* Note about permanence */}
         <p className="text-center text-xs text-gray-400">
