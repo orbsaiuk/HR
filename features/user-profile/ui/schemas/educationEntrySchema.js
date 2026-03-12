@@ -4,8 +4,8 @@ import { z } from "zod";
  * Zod validation schema for a single education entry.
  */
 export const educationEntrySchema = z.object({
-    institution: z.string().min(1, "Institution is required"),
-    degree: z.string().min(1, "Degree is required"),
+    institution: z.string().min(1, "اسم المؤسسة التعليمية مطلوب"),
+    degree: z.string().min(1, "الدرجة العلمية مطلوبة"),
     fieldOfStudy: z.string().optional().default(""),
     startDate: z.string().optional().default(""),
     endDate: z.string().optional().default(""),

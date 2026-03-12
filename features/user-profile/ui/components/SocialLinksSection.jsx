@@ -19,42 +19,42 @@ export function SocialLinksSection() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <LinkIcon size={18} />
-                    Social Links
+                    الروابط الاجتماعية
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <FormField label="LinkedIn URL" error={errors.linkedinUrl} htmlFor="linkedinUrl">
+                <FormField label="رابط لينكد إن" error={errors.linkedinUrl} htmlFor="linkedinUrl">
                     <div className="relative">
-                        <Linkedin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Linkedin size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             id="linkedinUrl"
                             {...register("linkedinUrl")}
                             type="url"
-                            className="pl-9"
+                            className="pr-9"
                             placeholder="https://linkedin.com/in/..."
                         />
                     </div>
                 </FormField>
-                <FormField label="GitHub URL" error={errors.githubUrl} htmlFor="githubUrl">
+                <FormField label="رابط جيت هب" error={errors.githubUrl} htmlFor="githubUrl">
                     <div className="relative">
-                        <Github size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Github size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             id="githubUrl"
                             {...register("githubUrl")}
                             type="url"
-                            className="pl-9"
+                            className="pr-9"
                             placeholder="https://github.com/..."
                         />
                     </div>
                 </FormField>
-                <FormField label="Portfolio URL" error={errors.portfolioUrl} htmlFor="portfolioUrl">
+                <FormField label="رابط معرض الأعمال" error={errors.portfolioUrl} htmlFor="portfolioUrl">
                     <div className="relative">
-                        <Globe size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Globe size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             id="portfolioUrl"
                             {...register("portfolioUrl")}
                             type="url"
-                            className="pl-9"
+                            className="pr-9"
                             placeholder="https://yourportfolio.com"
                         />
                     </div>

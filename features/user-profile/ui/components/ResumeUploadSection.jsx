@@ -48,18 +48,18 @@ export function ResumeUploadSection({
         setFileError(null);
 
         if (!ACCEPTED_TYPES.includes(file.type)) {
-            setFileError("Only PDF, DOC, and DOCX files are accepted.");
+            setFileError("يُقبل فقط ملفات PDF و DOC و DOCX.");
             return;
         }
 
         if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-            setFileError(`File must be smaller than ${MAX_SIZE_MB}MB.`);
+            setFileError(`يجب أن يكون حجم الملف أقل من ${MAX_SIZE_MB} ميجابايت.`);
             return;
         }
 
         // Stage the file locally — no network request yet
         onFileStaged?.(file);
-        toast.success(`Resume "${file.name}" staged — will upload on save`);
+        toast.success(`تم تجهيز السيرة الذاتية "${file.name}" — سيتم الرفع عند الحفظ`);
     };
 
     const handleFileChange = (e) => {
@@ -87,13 +87,13 @@ export function ResumeUploadSection({
         onFileStaged?.(null);
         setFileError(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
-        toast.info("Staged resume removed");
+        toast.info("تم إزالة السيرة الذاتية المُجهزة");
     };
 
     const handleRemoveUploaded = () => {
         setRemovedUpload(true);
         onResumeRemove?.();
-        toast.info("Resume removed — will be deleted on save");
+        toast.info("تم إزالة السيرة الذاتية — سيتم الحذف عند الحفظ");
     };
 
     return (
@@ -101,7 +101,7 @@ export function ResumeUploadSection({
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <FileText size={18} />
-                    Resume / CV
+                    السيرة الذاتية
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -116,7 +116,7 @@ export function ResumeUploadSection({
                                 rel="noopener noreferrer"
                                 className="text-sm text-primary hover:underline flex items-center gap-1 truncate"
                             >
-                                View current resume
+                                عرض السيرة الذاتية الحالية
                                 <ExternalLink size={12} />
                             </a>
                         </div>
@@ -141,7 +141,7 @@ export function ResumeUploadSection({
                         <AlertDescription className="flex items-center justify-between">
                             <span className="text-sm text-green-700">
                                 <strong>{stagedFile.name}</strong>{" "}
-                                ({(stagedFile.size / 1024 / 1024).toFixed(2)} MB) — ready to upload on save
+                                ({(stagedFile.size / 1024 / 1024).toFixed(2)} ميجابايت) — جاهز للرفع عند الحفظ
                             </span>
                             <Button
                                 type="button"
@@ -172,11 +172,11 @@ export function ResumeUploadSection({
                             <Upload size={28} className="mx-auto text-muted-foreground mb-3" />
                             <p className="text-sm font-medium text-foreground">
                                 {uploading
-                                    ? "Uploading..."
-                                    : "Drag & drop your resume here, or click to browse"}
+                                    ? "جارٍ الرفع..."
+                                    : "اسحب وأفلت سيرتك الذاتية هنا، أو انقر للتصفح"}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1.5">
-                                PDF, DOC, DOCX — max {MAX_SIZE_MB}MB
+                                PDF, DOC, DOCX — الحد الأقصى {MAX_SIZE_MB} ميجابايت
                             </p>
                         </div>}
 
@@ -198,7 +198,7 @@ export function ResumeUploadSection({
                         {/* External URL input */}
                         <div className="space-y-1.5">
                             <Label htmlFor="externalResumeUrl" className="text-sm">
-                                Or paste an external link
+                                أو الصق رابطاً خارجياً
                             </Label>
                             <Input
                                 id="externalResumeUrl"
@@ -212,7 +212,7 @@ export function ResumeUploadSection({
                 )}
 
                 {!editable && !hasResume && (
-                    <p className="text-sm text-muted-foreground">No resume uploaded yet.</p>
+                    <p className="text-sm text-muted-foreground">لم يتم رفع سيرة ذاتية بعد.</p>
                 )}
             </CardContent>
         </Card>

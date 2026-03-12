@@ -1,8 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { UserButton, SignUpButton } from "@clerk/nextjs";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardLink } from "./DashboardLink";
+import { cn } from "@/lib/utils";
+
+function isNavActive(href, pathname) {
+    if (href === "/") return pathname === "/";
+    if (href === "#") return false;
+    return pathname.startsWith(href);
+}
 
 export function MobileNav({
     isOpen,
@@ -11,31 +20,33 @@ export function MobileNav({
     isUser,
     isUserLoaded,
     isTeamMember,
+    isFreelancer,
     unreadCount,
     hasOrgRequest,
     hasPendingRequest,
     hasApprovedRequest,
     navigateToDashboard,
+    pathname,
 }) {
     return (
         <div
             className={`md:hidden fixed inset-x-0 top-[52px] sm:top-[60px] bottom-0 bg-white z-40 transition-all duration-300 ease-in-out ${isOpen
-                    ? "opacity-100 translate-y-0 pointer-events-auto"
-                    : "opacity-0 -translate-y-4 pointer-events-none"
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-4 pointer-events-none"
                 }`}
         >
             <div className="px-4 py-6 space-y-1 overflow-y-auto max-h-full">
                 {/* Public links */}
-                <NavLink href="/">الرئيسية</NavLink>
-                <NavLink href="/careers">الوظائف</NavLink>
-                <NavLink href="#">تواصل معنا</NavLink>
+                <NavLink href="/" pathname={pathname}>الرئيسية</NavLink>
+                <NavLink href="/careers" pathname={pathname}>{isFreelancer ? "المشاريع" : "الوظائف"}</NavLink>
+                <NavLink href="#" pathname={pathname}>تواصل معنا</NavLink>
 
                 {/* Signed-in user links */}
                 {isSignedIn && isUserLoaded && isUser && (
                     <>
                         <Divider />
-                        <NavLink href="/user/profile">ملفي</NavLink>
-                        <NavLink href="/my-applications">طلباتي</NavLink>
+                        <NavLink href="/user/profile" pathname={pathname}>الملف الشخصي</NavLink>
+                        <NavLink href="/my-applications" pathname={pathname}>طلباتي</NavLink>
 
                         {!hasOrgRequest && (
                             <Link
@@ -96,7 +107,7 @@ export function MobileNav({
                                 variant="outline"
                                 className="w-full rounded-full border-gray-300 h-11"
                             >
-                                سجل كباحث عن عمل
+                                إنشاء حساب
                             </Button>
                         </SignUpButton>
                     </div>
@@ -115,11 +126,17 @@ export function MobileNav({
 
 /* ── tiny helpers ── */
 
-function NavLink({ href, children }) {
+function NavLink({ href, pathname, children }) {
+    const active = isNavActive(href, pathname);
     return (
         <Link
             href={href}
-            className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+            className={cn(
+                "block font-medium py-3 px-3 rounded-lg transition-colors",
+                active
+                    ? "text-blue-700 bg-blue-50"
+                    : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+            )}
         >
             {children}
         </Link>

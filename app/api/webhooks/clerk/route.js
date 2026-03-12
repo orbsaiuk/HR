@@ -14,6 +14,7 @@ import {
   getUserByClerkId,
   createUser,
   updateUser,
+  setAccountType,
 } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
@@ -289,6 +290,12 @@ async function handleUserUpdated(data) {
 
   if (Object.keys(updates).length > 0) {
     await updateUser(userDoc._id, updates);
+  }
+
+  // Sync accountType from Clerk metadata to Sanity if missing in Sanity
+  const clerkAccountType = data.public_metadata?.accountType;
+  if (clerkAccountType && !userDoc.accountType) {
+    await setAccountType(userDoc._id, clerkAccountType);
   }
 
   return { message: "User updated in Sanity", id: userDoc._id };

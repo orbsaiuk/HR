@@ -27,12 +27,14 @@ export function Header() {
           isUserLoaded={state.isUserLoaded}
           isTeamMember={state.isTeamMember}
           isNavReady={state.isNavReady}
+          isFreelancer={state.isFreelancer}
           unreadCount={state.unreadCount}
           showOrgLink={state.showOrgLink}
           hasPendingRequest={state.hasPendingRequest}
           hasApprovedRequest={state.hasApprovedRequest}
           hasOrgRequest={state.hasOrgRequest}
           navigateToDashboard={state.navigateToDashboard}
+          pathname={state.pathname}
         />
 
         {/* Mobile toggle */}
@@ -54,11 +56,13 @@ export function Header() {
         isUser={state.isUser}
         isUserLoaded={state.isUserLoaded}
         isTeamMember={state.isTeamMember}
+        isFreelancer={state.isFreelancer}
         unreadCount={state.unreadCount}
         hasOrgRequest={state.hasOrgRequest}
         hasPendingRequest={state.hasPendingRequest}
         hasApprovedRequest={state.hasApprovedRequest}
         navigateToDashboard={state.navigateToDashboard}
+        pathname={state.pathname}
       />
     </header>
   );

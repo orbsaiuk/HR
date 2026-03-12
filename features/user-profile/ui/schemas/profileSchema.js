@@ -4,16 +4,16 @@ import { z } from "zod";
  * Zod validation schema for the user profile edit form.
  */
 export const profileSchema = z.object({
-    name: z.string().min(1, "Name is required"),
+    name: z.string().min(1, "الاسم مطلوب"),
     phone: z.string().optional().default(""),
     headline: z.string().optional().default(""),
     bio: z.string().optional().default(""),
     location: z.string().optional().default(""),
     dateOfBirth: z.string().optional().default(""),
-    resumeUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-    linkedinUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-    githubUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-    portfolioUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+    resumeUrl: z.string().url("يجب أن يكون رابطاً صالحاً").optional().or(z.literal("")),
+    linkedinUrl: z.string().url("يجب أن يكون رابطاً صالحاً").optional().or(z.literal("")),
+    githubUrl: z.string().url("يجب أن يكون رابطاً صالحاً").optional().or(z.literal("")),
+    portfolioUrl: z.string().url("يجب أن يكون رابطاً صالحاً").optional().or(z.literal("")),
     workExperience: z.array(z.any()).optional().default([]),
     education: z.array(z.any()).optional().default([]),
     skills: z.array(z.string()).optional().default([]),

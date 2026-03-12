@@ -79,7 +79,7 @@ function getInitials(name) {
 
 export function TopFreelancersSection() {
     return (
-        <section className="py-8 sm:py-12">
+        <section className="py-8 sm:py-12" dir="rtl">
             <div className="mx-auto container px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-3 sm:mb-4 md:mb-6">

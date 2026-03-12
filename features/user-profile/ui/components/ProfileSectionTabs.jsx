@@ -43,49 +43,49 @@ export function ProfileSectionTabs({ profile }) {
                         : "experience";
 
     return (
-        <Tabs defaultValue={defaultTab} className="w-full">
+        <Tabs defaultValue={defaultTab} className="w-full" dir="rtl">
             <TabsList className="w-full justify-start overflow-x-auto">
                 <TabsTrigger value="experience" className="gap-1.5">
                     <Briefcase size={14} />
-                    Experience
+                    الخبرات
                     {hasWork && (
-                        <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                        <Badge variant="secondary" className="me-1 h-5 px-1.5 text-xs">
                             {profile.workExperience.length}
                         </Badge>
                     )}
                 </TabsTrigger>
                 <TabsTrigger value="education" className="gap-1.5">
                     <GraduationCap size={14} />
-                    Education
+                    التعليم
                     {hasEdu && (
-                        <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                        <Badge variant="secondary" className="me-1 h-5 px-1.5 text-xs">
                             {profile.education.length}
                         </Badge>
                     )}
                 </TabsTrigger>
                 <TabsTrigger value="skills" className="gap-1.5">
                     <Sparkles size={14} />
-                    Skills
+                    المهارات
                     {hasSkills && (
-                        <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                        <Badge variant="secondary" className="me-1 h-5 px-1.5 text-xs">
                             {profile.skills.length}
                         </Badge>
                     )}
                 </TabsTrigger>
                 <TabsTrigger value="languages" className="gap-1.5">
                     <Languages size={14} />
-                    Languages
+                    اللغات
                     {hasLanguages && (
-                        <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                        <Badge variant="secondary" className="me-1 h-5 px-1.5 text-xs">
                             {profile.languages.length}
                         </Badge>
                     )}
                 </TabsTrigger>
                 <TabsTrigger value="resume" className="gap-1.5">
                     <FileText size={14} />
-                    Resume
+                    السيرة الذاتية
                     {hasResume && (
-                        <span className="ml-1 h-2 w-2 rounded-full bg-green-500 inline-block" />
+                        <span className="me-1 h-2 w-2 rounded-full bg-green-500 inline-block" />
                     )}
                 </TabsTrigger>
             </TabsList>
@@ -96,8 +96,8 @@ export function ProfileSectionTabs({ profile }) {
                 ) : (
                     <EmptySection
                         icon={Briefcase}
-                        title="No work experience yet"
-                        description="Add your work history to showcase your professional background."
+                        title="لا توجد خبرات عملية بعد"
+                        description="أضف سجل عملك لعرض خلفيتك المهنية."
                     />
                 )}
             </TabsContent>
@@ -108,8 +108,8 @@ export function ProfileSectionTabs({ profile }) {
                 ) : (
                     <EmptySection
                         icon={GraduationCap}
-                        title="No education added yet"
-                        description="Add your educational background to strengthen your profile."
+                        title="لا يوجد تعليم مضاف بعد"
+                        description="أضف خلفيتك التعليمية لتعزيز ملفك الشخصي."
                     />
                 )}
             </TabsContent>
@@ -120,8 +120,8 @@ export function ProfileSectionTabs({ profile }) {
                 ) : (
                     <EmptySection
                         icon={Sparkles}
-                        title="No skills added yet"
-                        description="Highlight your key skills to stand out to potential employers."
+                        title="لا توجد مهارات مضافة بعد"
+                        description="أبرز مهاراتك الرئيسية للتميز أمام أصحاب العمل المحتملين."
                     />
                 )}
             </TabsContent>
@@ -132,8 +132,8 @@ export function ProfileSectionTabs({ profile }) {
                 ) : (
                     <EmptySection
                         icon={Languages}
-                        title="No languages added yet"
-                        description="List the languages you speak and your proficiency level."
+                        title="لا توجد لغات مضافة بعد"
+                        description="أدرج اللغات التي تتحدثها ومستوى إتقانك لها."
                     />
                 )}
             </TabsContent>
@@ -147,8 +147,8 @@ export function ProfileSectionTabs({ profile }) {
                 ) : (
                     <EmptySection
                         icon={FileText}
-                        title="No resume uploaded yet"
-                        description="Upload your resume or paste an external link to make applying easier."
+                        title="لم يتم رفع سيرة ذاتية بعد"
+                        description="ارفع سيرتك الذاتية أو الصق رابطاً خارجياً لتسهيل عملية التقديم."
                     />
                 )}
             </TabsContent>
@@ -168,14 +168,14 @@ function EmptySection({ icon: Icon, title, description }) {
                 <div className="rounded-full bg-muted p-4 mb-4">
                     <Icon size={28} className="text-muted-foreground" />
                 </div>
-                <h3 className="text-base font-semibold mb-1">{title}</h3>
+                <h3 className="text-base md:text-lg mb-1">{title}</h3>
                 <p className="text-sm text-muted-foreground max-w-sm mb-4">
                     {description}
                 </p>
                 <Link href="/user/profile/edit">
                     <Button variant="outline" size="sm" className="gap-1.5">
                         <Pencil size={14} />
-                        Edit Profile
+                        اضف الآن
                     </Button>
                 </Link>
             </CardContent>

@@ -20,7 +20,7 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
         }
         onChange?.([...skills, trimmed]);
         setInput("");
-        toast.success(`Skill "${trimmed}" added successfully`);
+        toast.success(`تمت إضافة المهارة "${trimmed}" بنجاح`);
     };
 
     const handleKeyDown = (e) => {
@@ -33,7 +33,7 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
     const handleRemove = (index) => {
         const removed = skills[index];
         onChange?.(skills.filter((_, i) => i !== index));
-        toast.success(`Skill "${removed}" removed — save to commit`);
+        toast.success(`تم حذف المهارة "${removed}" — احفظ لتأكيد التغييرات`);
     };
 
     return (
@@ -41,7 +41,7 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Sparkles size={18} />
-                    Skills
+                    المهارات
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -51,7 +51,7 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder="Type a skill and press Enter"
+                            placeholder="اكتب مهارة واضغط Enter"
                             className="flex-1"
                         />
                         <Button
@@ -61,8 +61,8 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
                             onClick={handleAdd}
                             disabled={!input.trim()}
                         >
-                            <Plus size={14} className="mr-1" />
-                            Add
+                            <Plus size={14} className="me-1" />
+                            إضافة
                         </Button>
                     </div>
                 )}
@@ -80,7 +80,7 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
                                     <button
                                         type="button"
                                         onClick={() => handleRemove(idx)}
-                                        className="ml-1 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors p-0.5"
+                                        className="me-1 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors p-0.5"
                                     >
                                         <X size={12} />
                                     </button>
@@ -89,7 +89,7 @@ export function SkillsSection({ skills = [], editable = false, onChange }) {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-muted-foreground">No skills added yet.</p>
+                    <p className="text-sm text-muted-foreground">لا توجد مهارات مضافة بعد.</p>
                 )}
             </CardContent>
         </Card>

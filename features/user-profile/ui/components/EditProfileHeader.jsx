@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowRight, Save } from "lucide-react";
 
 /**
  * Sticky header bar for the edit profile page.
@@ -15,11 +15,11 @@ export function EditProfileHeader() {
                 <div className="flex items-center gap-3">
                     <Link href="/user/profile">
                         <Button type="button" variant="ghost" size="icon" className="h-8 w-8">
-                            <ArrowLeft size={16} />
+                            <ArrowRight size={16} />
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-xl font-bold">Edit Profile</h1>
+                        <h1 className="text-xl font-bold">تعديل الملف الشخصي</h1>
                     </div>
                 </div>
             </div>

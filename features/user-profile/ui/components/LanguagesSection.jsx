@@ -17,10 +17,10 @@ import {
 import { Languages, Plus, Trash2 } from "lucide-react";
 
 const PROFICIENCY_OPTIONS = [
-    { label: "Native", value: "native" },
-    { label: "Fluent", value: "fluent" },
-    { label: "Intermediate", value: "intermediate" },
-    { label: "Basic", value: "basic" },
+    { label: "لغة أم", value: "native" },
+    { label: "طلاقة", value: "fluent" },
+    { label: "متوسط", value: "intermediate" },
+    { label: "مبتدئ", value: "basic" },
 ];
 
 const PROFICIENCY_LABELS = Object.fromEntries(
@@ -51,7 +51,7 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
         setNewLang("");
         setNewProf("intermediate");
         setAdding(false);
-        toast.success(`Language "${trimmed}" added successfully`);
+        toast.success(`تمت إضافة اللغة "${trimmed}" بنجاح`);
     };
 
     const handleKeyDown = (e) => {
@@ -64,7 +64,7 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
     const handleRemove = (index) => {
         const removed = languages[index];
         onChange?.(languages.filter((_, i) => i !== index));
-        toast.success(`Language "${removed?.language}" removed — save to commit`);
+        toast.success(`تم حذف اللغة "${removed?.language}" — احفظ لتأكيد التغييرات`);
     };
 
     return (
@@ -72,12 +72,12 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Languages size={18} />
-                    Languages
+                    اللغات
                 </CardTitle>
                 {editable && !adding && (
                     <Button type="button" variant="outline" size="sm" onClick={() => setAdding(true)}>
-                        <Plus size={14} className="mr-1" />
-                        Add
+                        <Plus size={14} className="me-1" />
+                        إضافة
                     </Button>
                 )}
             </CardHeader>
@@ -85,17 +85,17 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
                 {adding && (
                     <div className="flex flex-wrap gap-3 mb-4 items-end rounded-lg border border-border bg-muted/40 p-4">
                         <div className="flex-1 min-w-[160px] space-y-1.5">
-                            <Label htmlFor="newLang">Language</Label>
+                            <Label htmlFor="newLang">اللغة</Label>
                             <Input
                                 id="newLang"
                                 value={newLang}
                                 onChange={(e) => setNewLang(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="e.g. English"
+                                placeholder="مثال: الإنجليزية"
                             />
                         </div>
                         <div className="min-w-[160px] space-y-1.5">
-                            <Label>Proficiency</Label>
+                            <Label>مستوى الإتقان</Label>
                             <Select value={newProf} onValueChange={setNewProf} >
                                 <SelectTrigger className="mb-0">
                                     <SelectValue />
@@ -111,10 +111,10 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
                         </div>
                         <div className="flex gap-2">
                             <Button type="button" size="sm" onClick={handleAdd} disabled={!newLang.trim()}>
-                                Save
+                                حفظ
                             </Button>
                             <Button type="button" variant="outline" size="sm" onClick={() => setAdding(false)}>
-                                Cancel
+                                إلغاء
                             </Button>
                         </div>
                     </div>
@@ -153,7 +153,7 @@ export function LanguagesSection({ languages = [], editable = false, onChange })
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-muted-foreground">No languages added yet.</p>
+                    <p className="text-sm text-muted-foreground">لا توجد لغات مضافة بعد.</p>
                 )}
             </CardContent>
         </Card>

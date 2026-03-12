@@ -61,7 +61,7 @@ const ARTICLES = [
 
 export function PlatformNewsSection() {
     return (
-        <section className="py-8 sm:py-12">
+        <section className="py-8 sm:py-12" dir="rtl">
             <div className="mx-auto container px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-right mb-2 sm:mb-3 md:mb-4">

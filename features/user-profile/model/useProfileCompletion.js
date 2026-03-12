@@ -5,42 +5,56 @@ import { userProfileApi } from "../api/userProfileApi";
 
 /**
  * Compute a completion percentage from the completeness data.
+ * Different fields are required based on account type.
  */
 function computePercentage(data) {
     if (!data) return 0;
 
-    const checks = [
+    const isFreelancer = data.accountType === "freelancer";
+
+    const commonChecks = [
         !!data.name,
         !!data.email,
         !!data.phone,
         !!data.headline,
         !!data.bio,
         !!data.location,
-        !!data.hasResume,
-        !!data.hasWorkExperience,
-        !!data.hasEducation,
         !!data.hasSkills,
     ];
 
+    const typeChecks = isFreelancer
+        ? [!!data.hasPortfolio] // Freelancer: portfolio required
+        : [!!data.hasResume, !!data.hasWorkExperience, !!data.hasEducation]; // Job Seeker: resume, work exp, education
+
+    const checks = [...commonChecks, ...typeChecks];
     const filled = checks.filter(Boolean).length;
     return Math.round((filled / checks.length) * 100);
 }
 
 /**
- * Identify which sections are still missing.
+ * Identify which sections are still missing based on account type.
  */
 function getMissingSections(data) {
     if (!data) return [];
 
+    const isFreelancer = data.accountType === "freelancer";
     const sections = [];
-    if (!data.phone) sections.push("Phone number");
-    if (!data.headline) sections.push("Headline");
-    if (!data.bio) sections.push("Bio / About me");
-    if (!data.location) sections.push("Location");
-    if (!data.hasResume) sections.push("Resume / CV");
-    if (!data.hasWorkExperience) sections.push("Work experience");
-    if (!data.hasEducation) sections.push("Education");
-    if (!data.hasSkills) sections.push("Skills");
+
+    // Common fields
+    if (!data.phone) sections.push("رقم الهاتف");
+    if (!data.headline) sections.push("العنوان المهني");
+    if (!data.bio) sections.push("النبذة التعريفية");
+    if (!data.location) sections.push("الموقع");
+    if (!data.hasSkills) sections.push("المهارات");
+
+    if (isFreelancer) {
+        if (!data.hasPortfolio) sections.push("رابط معرض الأعمال");
+    } else {
+        if (!data.hasResume) sections.push("السيرة الذاتية");
+        if (!data.hasWorkExperience) sections.push("الخبرات العملية");
+        if (!data.hasEducation) sections.push("التعليم");
+    }
+
     return sections;
 }
 
@@ -59,7 +73,7 @@ export function useProfileCompletion() {
             const data = await userProfileApi.getCompleteness();
             setCompleteness(data);
         } catch (err) {
-            setError(err.message || "Failed to load profile completeness");
+            setError(err.message || "فشل في تحميل بيانات اكتمال الملف الشخصي");
         } finally {
             setLoading(false);
         }

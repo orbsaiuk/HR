@@ -9,7 +9,7 @@ import { WorkEntryForm } from "./WorkEntryForm";
 
 function formatDate(dateStr) {
     if (!dateStr) return "";
-    return new Date(dateStr).toLocaleDateString("en-US", {
+    return new Date(dateStr).toLocaleDateString("ar-EG", {
         year: "numeric",
         month: "short",
     });
@@ -23,7 +23,7 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
         const newEntry = { ...data, _key: crypto.randomUUID() };
         onChange?.([...entries, newEntry]);
         setAdding(false);
-        toast.success("Work experience added successfully");
+        toast.success("تمت إضافة الخبرة العملية بنجاح");
     };
 
     const handleSaveEdit = (data) => {
@@ -32,12 +32,12 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
         );
         onChange?.(updated);
         setEditingIndex(null);
-        toast.success("Work entry updated — save to commit");
+        toast.success("تم تحديث الخبرة — احفظ لتأكيد التغييرات");
     };
 
     const handleRemove = (index) => {
         onChange?.(entries.filter((_, i) => i !== index));
-        toast.success("Work entry removed — save to commit");
+        toast.success("تم حذف الخبرة — احفظ لتأكيد التغييرات");
     };
 
     return (
@@ -45,12 +45,12 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Briefcase size={18} />
-                    Work Experience
+                    الخبرات العملية
                 </CardTitle>
                 {editable && !adding && editingIndex === null && (
                     <Button type="button" variant="outline" size="sm" onClick={() => setAdding(true)}>
-                        <Plus size={14} className="mr-1" />
-                        Add
+                        <Plus size={14} className="me-1" />
+                        إضافة
                     </Button>
                 )}
             </CardHeader>
@@ -72,12 +72,12 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
                         />
                     ) : (
                         <div key={entry._key || idx} className="flex items-start gap-2">
-                            <div className="flex-1 border-l-2 border-primary/30 pl-4">
+                            <div className="flex-1 border-r-2 border-primary/30 pr-4">
                                 <h4 className="font-semibold">{entry.title}</h4>
                                 <p className="text-sm text-muted-foreground">{entry.company}</p>
                                 <p className="text-xs text-muted-foreground/70 mt-0.5">
                                     {formatDate(entry.startDate)} –{" "}
-                                    {entry.isCurrent ? "Present" : formatDate(entry.endDate)}
+                                    {entry.isCurrent ? "حتى الآن" : formatDate(entry.endDate)}
                                 </p>
                                 {entry.description && (
                                     <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">
@@ -112,7 +112,7 @@ export function WorkExperienceSection({ entries = [], editable = false, onChange
                 )}
 
                 {!adding && !entries.length && (
-                    <p className="text-sm text-muted-foreground">No work experience added yet.</p>
+                    <p className="text-sm text-muted-foreground">لا توجد خبرات عملية مضافة بعد.</p>
                 )}
             </CardContent>
         </Card>

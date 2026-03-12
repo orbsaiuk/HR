@@ -9,7 +9,7 @@ import { EducationEntryForm } from "./EducationEntryForm";
 
 function formatDate(dateStr) {
     if (!dateStr) return "";
-    return new Date(dateStr).toLocaleDateString("en-US", {
+    return new Date(dateStr).toLocaleDateString("ar-EG", {
         year: "numeric",
         month: "short",
     });
@@ -23,7 +23,7 @@ export function EducationSection({ entries = [], editable = false, onChange }) {
         const newEntry = { ...data, _key: crypto.randomUUID() };
         onChange?.([...entries, newEntry]);
         setAdding(false);
-        toast.success("Education added successfully");
+        toast.success("تمت إضافة التعليم بنجاح");
     };
 
     const handleSaveEdit = (data) => {
@@ -32,12 +32,12 @@ export function EducationSection({ entries = [], editable = false, onChange }) {
         );
         onChange?.(updated);
         setEditingIndex(null);
-        toast.success("Education entry updated — save to commit");
+        toast.success("تم تحديث التعليم — احفظ لتأكيد التغييرات");
     };
 
     const handleRemove = (index) => {
         onChange?.(entries.filter((_, i) => i !== index));
-        toast.success("Education entry removed — save to commit");
+        toast.success("تم حذف التعليم — احفظ لتأكيد التغييرات");
     };
 
     return (
@@ -45,12 +45,12 @@ export function EducationSection({ entries = [], editable = false, onChange }) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <GraduationCap size={18} />
-                    Education
+                    التعليم
                 </CardTitle>
                 {editable && !adding && editingIndex === null && (
                     <Button type="button" variant="outline" size="sm" onClick={() => setAdding(true)}>
-                        <Plus size={14} className="mr-1" />
-                        Add
+                        <Plus size={14} className="me-1" />
+                        إضافة
                     </Button>
                 )}
             </CardHeader>
@@ -72,7 +72,7 @@ export function EducationSection({ entries = [], editable = false, onChange }) {
                         />
                     ) : (
                         <div key={entry._key || idx} className="flex items-start gap-2">
-                            <div className="flex-1 border-l-2 border-green-300 pl-4">
+                            <div className="flex-1 border-r-2 border-green-300 pr-4">
                                 <h4 className="font-semibold">{entry.degree}</h4>
                                 <p className="text-sm text-muted-foreground">{entry.institution}</p>
                                 {entry.fieldOfStudy && (
@@ -84,7 +84,7 @@ export function EducationSection({ entries = [], editable = false, onChange }) {
                                 </p>
                                 {entry.grade && (
                                     <p className="text-xs text-muted-foreground/80 mt-0.5">
-                                        Grade: {entry.grade}
+                                        المعدل: {entry.grade}
                                     </p>
                                 )}
                             </div>
@@ -115,7 +115,7 @@ export function EducationSection({ entries = [], editable = false, onChange }) {
                 )}
 
                 {!adding && !entries.length && (
-                    <p className="text-sm text-muted-foreground">No education added yet.</p>
+                    <p className="text-sm text-muted-foreground">لا يوجد تعليم مضاف بعد.</p>
                 )}
             </CardContent>
         </Card>

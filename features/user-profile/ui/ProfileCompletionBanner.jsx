@@ -21,12 +21,12 @@ export function ProfileCompletionBanner() {
     if (loading || orgLoading || isComplete || hasOrgRequest) return null;
 
     return (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3 mb-6">
+        <div dir="rtl" className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3 mb-6">
             <AlertCircle size={20} className="text-blue-600 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-1">
                     <p className="text-sm font-medium text-blue-900">
-                        Profile {percentage}% complete
+                        اكتمال الملف الشخصي {percentage}%
                     </p>
                     <div className="flex-1 max-w-[200px] bg-blue-200 rounded-full h-2">
                         <div
@@ -37,14 +37,14 @@ export function ProfileCompletionBanner() {
                 </div>
                 {missingSections.length > 0 && (
                     <p className="text-xs text-blue-700">
-                        Missing: {missingSections.join(", ")}
+                        ناقص: {missingSections.join("، ")}
                     </p>
                 )}
                 <Link
                     href="/user/profile/edit"
                     className="text-sm text-blue-700 font-medium hover:underline mt-1 inline-block"
                 >
-                    Complete your profile →
+                    أكمل ملفك الشخصي ←
                 </Link>
             </div>
         </div>

@@ -4,6 +4,7 @@ import {
   getUserByClerkId,
   createUser,
   updateUser,
+  setAccountType,
 } from "@/features/auth/services/userService";
 import {
   getOrganizationByClerkOrgId,
@@ -91,6 +92,12 @@ export async function POST() {
     }
     if (Object.keys(updates).length > 0) {
       await updateUser(sanityUser._id, updates);
+    }
+
+    // Sync accountType from Clerk to Sanity if Clerk has it but Sanity doesn't
+    const clerkAccountType = user.publicMetadata?.accountType;
+    if (clerkAccountType && !sanityUser.accountType) {
+      await setAccountType(sanityUser._id, clerkAccountType);
     }
   }
 

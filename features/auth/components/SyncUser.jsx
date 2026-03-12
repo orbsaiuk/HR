@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useUser, useSession } from "@clerk/nextjs";
 import { AutoActivateOrg } from "./AutoActivateOrg";
+import { AccountTypeGuard } from "./AccountTypeGuard";
 
 export function SyncUser({ children }) {
   const { user, isLoaded } = useUser();
@@ -49,7 +50,7 @@ export function SyncUser({ children }) {
   return (
     <>
       <AutoActivateOrg />
-      {children}
+      <AccountTypeGuard>{children}</AccountTypeGuard>
     </>
   );
 }

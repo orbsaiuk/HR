@@ -7,12 +7,16 @@ export function useAuth() {
   const { user, isLoaded: isUserLoaded } = useUser();
 
   const role = user?.publicMetadata?.role;
+  const accountType = user?.publicMetadata?.accountType;
 
   return {
     ...clerkAuth,
     isUserLoaded,
     role,
+    accountType,
     isTeamMember: role === "teamMember",
     isUser: role === "user" || (clerkAuth.isSignedIn && !role),
+    isJobSeeker: accountType === "jobSeeker",
+    isFreelancer: accountType === "freelancer",
   };
 }

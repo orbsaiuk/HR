@@ -1,4 +1,6 @@
 import { AuthProvider } from "@/features/auth/components/AuthProvider.jsx";
+import { SyncUser } from "@/features/auth/components/SyncUser.jsx";
+import { AppShell } from "@/shared/components/layout/AppShell.jsx";
 import { Toaster } from "@/components/ui/sonner";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -25,7 +27,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <body className={`${tsDamas.variable} ${lamaSans.variable}`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <SyncUser>
+            <AppShell>{children}</AppShell>
+          </SyncUser>
+        </AuthProvider>
         <Toaster position="top-left" richColors />
       </body>
     </html>

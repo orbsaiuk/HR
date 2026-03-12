@@ -33,10 +33,12 @@ export const userProfileQueries = {
     headline,
     bio,
     location,
+    accountType,
     "hasResume": defined(resume) || defined(resumeUrl),
     "hasWorkExperience": count(workExperience) > 0,
     "hasEducation": count(education) > 0,
     "hasSkills": count(skills) > 0,
+    "hasPortfolio": defined(portfolioUrl),
     profileComplete
   }`,
 

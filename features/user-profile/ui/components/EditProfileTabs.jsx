@@ -33,36 +33,50 @@ export function EditProfileTabs({
     onFileStaged,
     onResumeRemove,
 }) {
+    const isFreelancer = profile?.accountType === "freelancer";
+
     return (
         <Tabs defaultValue="basic" className="w-full">
             <TabsList className="w-fit justify-start overflow-x-auto">
                 <TabsTrigger value="basic" className="gap-1.5">
                     <User size={14} />
-                    Basic Info
-                </TabsTrigger>
-                <TabsTrigger value="experience" className="gap-1.5">
-                    <Briefcase size={14} />
-                    Experience
-                </TabsTrigger>
-                <TabsTrigger value="education" className="gap-1.5">
-                    <GraduationCap size={14} />
-                    Education
+                    المعلومات الأساسية
                 </TabsTrigger>
                 <TabsTrigger value="skills" className="gap-1.5">
                     <Sparkles size={14} />
-                    Skills & Languages
+                    المهارات واللغات
                 </TabsTrigger>
-                <TabsTrigger value="resume" className="gap-1.5">
-                    <FileText size={14} />
-                    Resume
-                    {stagedResumeFile && (
-                        <span className="ml-1 h-2 w-2 rounded-full bg-amber-500 inline-block" />
-                    )}
+                {isFreelancer && (
+                    <TabsTrigger value="social" className="gap-1.5">
+                        <LinkIcon size={14} />
+                        معرض الأعمال والروابط
+                    </TabsTrigger>
+                )}
+                <TabsTrigger value="experience" className="gap-1.5">
+                    <Briefcase size={14} />
+                    الخبرات
                 </TabsTrigger>
-                <TabsTrigger value="social" className="gap-1.5">
-                    <LinkIcon size={14} />
-                    Links
-                </TabsTrigger>
+                {!isFreelancer && (
+                    <TabsTrigger value="education" className="gap-1.5">
+                        <GraduationCap size={14} />
+                        التعليم
+                    </TabsTrigger>
+                )}
+                {!isFreelancer && (
+                    <TabsTrigger value="resume" className="gap-1.5">
+                        <FileText size={14} />
+                        السيرة الذاتية
+                        {stagedResumeFile && (
+                            <span className="me-1 h-2 w-2 rounded-full bg-amber-500 inline-block" />
+                        )}
+                    </TabsTrigger>
+                )}
+                {!isFreelancer && (
+                    <TabsTrigger value="social" className="gap-1.5">
+                        <LinkIcon size={14} />
+                        الروابط
+                    </TabsTrigger>
+                )}
             </TabsList>
 
             <TabsContent value="basic" className="mt-4 space-y-4">

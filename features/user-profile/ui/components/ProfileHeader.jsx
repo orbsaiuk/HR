@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Mail, Phone, Calendar } from "lucide-react";
+import { MapPin, Mail, Phone } from "lucide-react";
 
 /**
  * Displays avatar, name, headline, location, and contact info.
@@ -27,14 +27,14 @@ export function ProfileHeader({ profile, compact = false }) {
                 </AvatarFallback>
             </Avatar>
 
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 mt-3">
                 <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className={`font-bold ${compact ? "text-lg" : "text-2xl"}`}>
+                    <h2 className={`${compact ? "text-lg" : "text-3xl"}`}>
                         {profile.name}
                     </h2>
                     {profile.profileComplete && (
                         <Badge variant="outline" className="text-xs text-green-600 border-green-200 bg-green-50">
-                            Complete
+                            مكتمل
                         </Badge>
                     )}
                 </div>

@@ -34,12 +34,12 @@ export function EducationEntryForm({ entry = {}, onSave, onCancel }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                     <Label htmlFor="edu-institution">
-                        Institution <span className="text-destructive">*</span>
+                        المؤسسة التعليمية <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="edu-institution"
                         {...register("institution")}
-                        placeholder="e.g. MIT"
+                        placeholder="مثال: جامعة القاهرة"
                     />
                     {errors.institution && (
                         <p className="text-xs text-destructive">{errors.institution.message}</p>
@@ -47,12 +47,12 @@ export function EducationEntryForm({ entry = {}, onSave, onCancel }) {
                 </div>
                 <div className="space-y-1.5">
                     <Label htmlFor="edu-degree">
-                        Degree <span className="text-destructive">*</span>
+                        الدرجة العلمية <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="edu-degree"
                         {...register("degree")}
-                        placeholder="e.g. Bachelor of Science"
+                        placeholder="مثال: بكالوريوس علوم"
                     />
                     {errors.degree && (
                         <p className="text-xs text-destructive">{errors.degree.message}</p>
@@ -61,17 +61,17 @@ export function EducationEntryForm({ entry = {}, onSave, onCancel }) {
             </div>
 
             <div className="space-y-1.5">
-                <Label htmlFor="edu-field">Field of Study</Label>
+                <Label htmlFor="edu-field">التخصص</Label>
                 <Input
                     id="edu-field"
                     {...register("fieldOfStudy")}
-                    placeholder="e.g. Computer Science"
+                    placeholder="مثال: علوم الحاسب"
                 />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
-                    <Label htmlFor="edu-start">Start Date</Label>
+                    <Label htmlFor="edu-start">تاريخ البداية</Label>
                     <Input
                         id="edu-start"
                         {...register("startDate")}
@@ -79,7 +79,7 @@ export function EducationEntryForm({ entry = {}, onSave, onCancel }) {
                     />
                 </div>
                 <div className="space-y-1.5">
-                    <Label htmlFor="edu-end">End Date</Label>
+                    <Label htmlFor="edu-end">تاريخ النهاية</Label>
                     <Input
                         id="edu-end"
                         {...register("endDate")}
@@ -87,21 +87,21 @@ export function EducationEntryForm({ entry = {}, onSave, onCancel }) {
                     />
                 </div>
                 <div className="space-y-1.5">
-                    <Label htmlFor="edu-grade">Grade / GPA</Label>
+                    <Label htmlFor="edu-grade">المعدل التراكمي</Label>
                     <Input
                         id="edu-grade"
                         {...register("grade")}
-                        placeholder="e.g. 3.8"
+                        placeholder="مثال: 3.8"
                     />
                 </div>
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-start gap-2">
                 <Button type="button" variant="outline" size="sm" onClick={onCancel}>
-                    Cancel
+                    إلغاء
                 </Button>
                 <Button type="button" size="sm" onClick={onInternalSubmit}>
-                    Save
+                    حفظ
                 </Button>
             </div>
         </div>

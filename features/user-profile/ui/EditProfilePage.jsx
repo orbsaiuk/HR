@@ -97,10 +97,10 @@ export function EditProfilePage() {
                     setPendingResumeRemoval(false);
                 }
 
-                toast.success("Profile updated successfully");
+                toast.success("تم تحديث الملف الشخصي بنجاح");
                 router.push("/user/profile");
             } catch (err) {
-                toast.error(err.message || "Failed to save profile");
+                toast.error(err.message || "فشل في حفظ الملف الشخصي");
             }
         },
         [updateProfile, uploadResume, removeResume, stagedResumeFile, pendingResumeRemoval]
@@ -115,6 +115,7 @@ export function EditProfilePage() {
         <FormProvider {...methods}>
             <form
                 onSubmit={handleSubmit(onSubmit)}
+                dir="rtl"
                 className="max-w-4xl mx-auto space-y-6"
             >
                 <EditProfileHeader saving={saving} isDirty={isDirty} />
@@ -139,12 +140,12 @@ export function EditProfilePage() {
                 <div className="flex items-center justify-between pb-8">
                     <Link href="/user/profile">
                         <Button type="button" variant="outline">
-                            Cancel
+                            إلغاء
                         </Button>
                     </Link>
                     <Button type="submit" disabled={saving} className="gap-1.5">
                         <Save size={14} />
-                        {saving ? "Saving..." : "Save Changes"}
+                        {saving ? "جارٍ الحفظ..." : "حفظ التغييرات"}
                     </Button>
                 </div>
             </form>

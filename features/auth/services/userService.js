@@ -57,10 +57,22 @@ export async function getLegacyTeacher(clerkId) {
   return client.fetch(userProfileQueries.getLegacyTeacher, { clerkId });
 }
 
+/**
+ * Set the account type for a user (one-time operation).
+ * This is separate from updateUser to enforce one-time-only semantics.
+ */
+export async function setAccountType(userId, accountType) {
+  return client
+    .patch(userId)
+    .set({ accountType, updatedAt: new Date().toISOString() })
+    .commit();
+}
+
 export const userService = {
   getUserByClerkId,
   createUser,
   updateUser,
+  setAccountType,
   getUserApplications,
   getUserApplication,
   getLegacyTeacher,

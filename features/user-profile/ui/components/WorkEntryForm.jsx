@@ -38,12 +38,12 @@ export function WorkEntryForm({ entry = {}, onSave, onCancel }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                     <Label htmlFor="work-title">
-                        Job Title <span className="text-destructive">*</span>
+                        المسمى الوظيفي <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="work-title"
                         {...register("title")}
-                        placeholder="e.g. Software Engineer"
+                        placeholder="مثال: مهندس برمجيات"
                     />
                     {errors.title && (
                         <p className="text-xs text-destructive">{errors.title.message}</p>
@@ -51,12 +51,12 @@ export function WorkEntryForm({ entry = {}, onSave, onCancel }) {
                 </div>
                 <div className="space-y-1.5">
                     <Label htmlFor="work-company">
-                        Company <span className="text-destructive">*</span>
+                        الشركة <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="work-company"
                         {...register("company")}
-                        placeholder="e.g. Google"
+                        placeholder="مثال: جوجل"
                     />
                     {errors.company && (
                         <p className="text-xs text-destructive">{errors.company.message}</p>
@@ -67,7 +67,7 @@ export function WorkEntryForm({ entry = {}, onSave, onCancel }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                     <Label htmlFor="work-start">
-                        Start Date <span className="text-destructive">*</span>
+                        تاريخ البداية <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="work-start"
@@ -79,7 +79,7 @@ export function WorkEntryForm({ entry = {}, onSave, onCancel }) {
                     )}
                 </div>
                 <div className="space-y-1.5">
-                    <Label htmlFor="work-end">End Date</Label>
+                    <Label htmlFor="work-end">تاريخ النهاية</Label>
                     <Input
                         id="work-end"
                         {...register("endDate")}
@@ -95,25 +95,25 @@ export function WorkEntryForm({ entry = {}, onSave, onCancel }) {
                     type="checkbox"
                     className="rounded border-input h-4 w-4"
                 />
-                I currently work here
+                أعمل هنا حالياً
             </label>
 
             <div className="space-y-1.5">
-                <Label htmlFor="work-desc">Description</Label>
+                <Label htmlFor="work-desc">الوصف</Label>
                 <Textarea
                     id="work-desc"
                     {...register("description")}
                     rows={3}
-                    placeholder="Describe your responsibilities and achievements..."
+                    placeholder="صف مسؤولياتك وإنجازاتك..."
                 />
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-start gap-2">
                 <Button type="button" variant="outline" size="sm" onClick={onCancel}>
-                    Cancel
+                    إلغاء
                 </Button>
                 <Button type="button" size="sm" onClick={onInternalSubmit}>
-                    Save
+                    حفظ
                 </Button>
             </div>
         </div>
