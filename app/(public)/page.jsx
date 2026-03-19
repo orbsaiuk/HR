@@ -3,6 +3,7 @@ import {
   LandingPage,
   CompanyLandingPage,
   UserLandingPage,
+  FreelancerLandingPage,
 } from "@/features/landing";
 
 export default async function HomePage() {
@@ -17,7 +18,11 @@ export default async function HomePage() {
       {isTeamMember ? (
         <CompanyLandingPage />
       ) : isSignedIn && hasAccountType ? (
-        <UserLandingPage />
+        accountType === "freelancer" ? (
+          <FreelancerLandingPage />
+        ) : (
+          <UserLandingPage />
+        )
       ) : (
         <LandingPage isTeamMember={false} isSignedIn={isSignedIn} />
       )}

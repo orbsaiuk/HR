@@ -1,5 +1,4 @@
 import { CategoriesSection } from "../shared/CategoriesSection";
-
 const RESUME_CATEGORIES = [
     {
         label: "برمجه",
@@ -35,11 +34,12 @@ const RESUME_CATEGORIES = [
     },
 ];
 
-export function BestResumesSection() {
+export function FreelancerCategoriesSection() {
     return (
         <CategoriesSection
-            title="قائمة افضل السير الذاتيه"
-            buttonTitle="عرض جميع السير الذاتيه"
+            title="اختر مجالك وابدأ التقديم على المشاريع المناسبة لك"
+            description="نظم مهاراتك، وسيظهر لك أفضل الفرص فورًا."
+            buttonTitle="استكشف كل المشاريع"
             categories={RESUME_CATEGORIES}
         />
     );

@@ -4,7 +4,7 @@ import { CompanyHeroSection } from "./company/CompanyHeroSection";
 import { BestResumesSection } from "./company/BestResumesSection";
 import { TopFreelancersSection } from "./company/TopFreelancersSection";
 import { TrustedCompaniesSection } from "./company/TrustedCompaniesSection";
-import { PlatformNewsSection } from "./company/PlatformNewsSection";
+import { NewsSection } from "./shared/NewsSection";
 import { CompanyCTASection } from "./company/CompanyCTASection";
 
 export function CompanyLandingPage() {
@@ -14,7 +14,7 @@ export function CompanyLandingPage() {
             <BestResumesSection />
             <TopFreelancersSection />
             <TrustedCompaniesSection />
-            <PlatformNewsSection />
+            <NewsSection />
             <CompanyCTASection />
         </>
     );

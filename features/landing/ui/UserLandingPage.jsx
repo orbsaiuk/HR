@@ -2,10 +2,10 @@
 
 import { UserHeroSection } from "./user/UserHeroSection";
 import { UserWhySection } from "./user/UserWhySection";
-import { LatestJobsSection } from "./user/LatestJobsSection";
+import { UserJobsSection } from "./user/UserJobsSection";
 import { FreelanceCTASection } from "./user/FreelanceCTASection";
 import { TopFreelancersSection } from "./company/TopFreelancersSection";
-import { PlatformNewsSection } from "./company/PlatformNewsSection";
+import { NewsSection } from "./shared/NewsSection";
 import { UserCTASection } from "./user/UserCTASection";
 
 export function UserLandingPage() {
@@ -13,10 +13,10 @@ export function UserLandingPage() {
     <>
       <UserHeroSection />
       <UserWhySection />
-      <LatestJobsSection />
+      <UserJobsSection />
       <FreelanceCTASection />
       <TopFreelancersSection />
-      <PlatformNewsSection />
+      <NewsSection />
       <UserCTASection />
     </>
   );
