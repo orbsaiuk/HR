@@ -1,4 +1,4 @@
-import { JobsSection } from "../shared/JobsSection";
+import { JobsSection } from "../../../../shared/components/sections/JobsSection";
 
 const FREELANCER_JOBS = [
     {

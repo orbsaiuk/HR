@@ -5,7 +5,7 @@ import { UserWhySection } from "./user/UserWhySection";
 import { UserJobsSection } from "./user/UserJobsSection";
 import { FreelanceCTASection } from "./user/FreelanceCTASection";
 import { TopFreelancersSection } from "./company/TopFreelancersSection";
-import { NewsSection } from "./shared/NewsSection";
+import { NewsSection } from "../../../shared/components/sections/NewsSection";
 import { UserCTASection } from "./user/UserCTASection";
 
 export function UserLandingPage() {

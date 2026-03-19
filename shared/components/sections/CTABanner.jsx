@@ -98,7 +98,6 @@ export function CTABanner({
           {description}
         </p>
         <Button
-          asChild
           className={`h-10 sm:h-11 md:h-12 px-8 sm:px-10 md:px-14 rounded-lg ${buttonColor} font-semibold text-sm sm:text-base w-full sm:w-auto max-w-xs sm:max-w-none`}
         >
           <Link href={buttonHref}>{buttonText}</Link>

@@ -1,4 +1,4 @@
-import { CategoriesSection } from "../shared/CategoriesSection";
+import { CategoriesSection } from "../../../../shared/components/sections/CategoriesSection";
 
 const RESUME_CATEGORIES = [
     {

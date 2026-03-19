@@ -1,6 +1,6 @@
 "use client";
 
-import { CTABanner } from "../shared/CTABanner";
+import { CTABanner } from "../../../../shared/components/sections/CTABanner";
 
 export function UserCTASection() {
   return (

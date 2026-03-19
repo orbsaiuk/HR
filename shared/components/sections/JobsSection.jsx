@@ -8,7 +8,7 @@ import {
     CarouselItem,
     CarouselDots,
 } from "@/components/ui/carousel";
-import { JobCard } from "../user/JobCard";
+import { JobCard } from "../../../features/landing/ui/user/JobCard";
 
 export function JobsSection({ title, description, buttonTitle, jobs }) {
     return (
