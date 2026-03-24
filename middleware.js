@@ -45,10 +45,6 @@ export default clerkMiddleware(async (auth, req) => {
   // /careers requires sign-in and jobSeeker account type
   // Org members (team members) should use dashboard instead
   if (isCareersRoute(req)) {
-    if (!userId) {
-      const signInUrl = new URL("/sign-in", req.url);
-      return NextResponse.redirect(signInUrl);
-    }
     if (accountType === "freelancer" || accountType === "orgMember") {
       return NextResponse.rewrite(new URL("/not-found", req.url));
     }

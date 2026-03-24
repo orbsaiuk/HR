@@ -16,139 +16,135 @@ import { EditProfileHeader } from "./components/EditProfileHeader";
 import { EditProfileTabs } from "./components/EditProfileTabs";
 import { Save } from "lucide-react";
 
-/**
- * Multi-section edit profile form.
- *
- * The CV/resume file is **staged locally** and only uploaded when the user
- * clicks "Save Changes". Toast notifications are used for feedback — no
- * page reloads occur.
- */
 export function EditProfilePage() {
-    const router = useRouter();
-    const {
-        profile,
-        loading,
-        error: profileError,
-        saving,
-        updateProfile,
-        uploadResume,
-        removeResume,
-    } = useUserProfile();
+  const router = useRouter();
+  const {
+    profile,
+    loading,
+    error: profileError,
+    saving,
+    updateProfile,
+    uploadResume,
+    removeResume,
+  } = useUserProfile();
 
-    const [stagedResumeFile, setStagedResumeFile] = useState(null);
-    const [pendingResumeRemoval, setPendingResumeRemoval] = useState(false);
+  const [stagedResumeFile, setStagedResumeFile] = useState(null);
+  const [pendingResumeRemoval, setPendingResumeRemoval] = useState(false);
 
-    const methods = useForm({
-        resolver: zodResolver(profileSchema),
-        defaultValues: profileDefaults,
-    });
+  const methods = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: profileDefaults,
+  });
 
-    const { reset, handleSubmit, setValue, watch, formState } = methods;
+  const { reset, handleSubmit, setValue, watch, formState } = methods;
 
-    // Populate form when profile loads
-    useEffect(() => {
-        if (profile) {
-            reset({
-                name: profile.name || "",
-                phone: profile.phone || "",
-                headline: profile.headline || "",
-                bio: profile.bio || "",
-                location: profile.location || "",
-                dateOfBirth: profile.dateOfBirth || "",
-                resumeUrl: profile.resumeUrl || "",
-                linkedinUrl: profile.linkedinUrl || "",
-                githubUrl: profile.githubUrl || "",
-                portfolioUrl: profile.portfolioUrl || "",
-                workExperience: profile.workExperience || [],
-                education: profile.education || [],
-                skills: profile.skills || [],
-                languages: profile.languages || [],
-            });
+  // Populate form when profile loads
+  useEffect(() => {
+    if (profile) {
+      reset({
+        name: profile.name || "",
+        phone: profile.phone || "",
+        headline: profile.headline || "",
+        bio: profile.bio || "",
+        location: profile.location || "",
+        dateOfBirth: profile.dateOfBirth || "",
+        resumeUrl: profile.resumeUrl || "",
+        linkedinUrl: profile.linkedinUrl || "",
+        githubUrl: profile.githubUrl || "",
+        portfolioUrl: profile.portfolioUrl || "",
+        workExperience: profile.workExperience || [],
+        education: profile.education || [],
+        skills: profile.skills || [],
+        languages: profile.languages || [],
+      });
+    }
+  }, [profile, reset]);
+
+  // Watch array fields for sub-components
+  const workExperience = watch("workExperience");
+  const education = watch("education");
+  const skills = watch("skills");
+  const languages = watch("languages");
+  const externalResumeUrl = watch("resumeUrl");
+
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        // 1. Save profile fields
+        await updateProfile(data);
+
+        // 2. Remove resume if user requested removal
+        if (pendingResumeRemoval && !stagedResumeFile) {
+          await removeResume();
+          setPendingResumeRemoval(false);
         }
-    }, [profile, reset]);
 
-    // Watch array fields for sub-components
-    const workExperience = watch("workExperience");
-    const education = watch("education");
-    const skills = watch("skills");
-    const languages = watch("languages");
-    const externalResumeUrl = watch("resumeUrl");
+        // 3. Upload staged resume file (if user selected one)
+        if (stagedResumeFile) {
+          await uploadResume(stagedResumeFile);
+          setStagedResumeFile(null);
+          setPendingResumeRemoval(false);
+        }
 
-    /**
-     * Submit handler — saves profile data first, then uploads the staged
-     * resume file (if any). Uses toast for feedback, no page reload.
-     */
-    const onSubmit = useCallback(
-        async (data) => {
-            try {
-                // 1. Save profile fields
-                await updateProfile(data);
+        toast.success("تم تحديث الملف الشخصي بنجاح");
+        router.push("/user/profile");
+      } catch (err) {
+        toast.error(err.message || "فشل في حفظ الملف الشخصي");
+      }
+    },
+    [
+      updateProfile,
+      uploadResume,
+      removeResume,
+      stagedResumeFile,
+      pendingResumeRemoval,
+    ],
+  );
 
-                // 2. Remove resume if user requested removal
-                if (pendingResumeRemoval && !stagedResumeFile) {
-                    await removeResume();
-                    setPendingResumeRemoval(false);
-                }
+  if (loading) return <Loading fullPage />;
+  if (profileError && !profile) return <Error message={profileError} />;
 
-                // 3. Upload staged resume file (if user selected one)
-                if (stagedResumeFile) {
-                    await uploadResume(stagedResumeFile);
-                    setStagedResumeFile(null);
-                    setPendingResumeRemoval(false);
-                }
+  const isDirty =
+    formState.isDirty || !!stagedResumeFile || pendingResumeRemoval;
 
-                toast.success("تم تحديث الملف الشخصي بنجاح");
-                router.push("/user/profile");
-            } catch (err) {
-                toast.error(err.message || "فشل في حفظ الملف الشخصي");
-            }
-        },
-        [updateProfile, uploadResume, removeResume, stagedResumeFile, pendingResumeRemoval]
-    );
+  return (
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        dir="rtl"
+        className="max-w-4xl mx-auto space-y-6"
+      >
+        <EditProfileHeader saving={saving} isDirty={isDirty} />
 
-    if (loading) return <Loading fullPage />;
-    if (profileError && !profile) return <Error message={profileError} />;
+        {/* Tabbed sections */}
+        <EditProfileTabs
+          profile={profile}
+          workExperience={workExperience}
+          education={education}
+          skills={skills}
+          languages={languages}
+          externalResumeUrl={externalResumeUrl}
+          stagedResumeFile={stagedResumeFile}
+          setValue={setValue}
+          onFileStaged={(file) => setStagedResumeFile(file)}
+          onResumeRemove={() => setPendingResumeRemoval(true)}
+        />
 
-    const isDirty = formState.isDirty || !!stagedResumeFile || pendingResumeRemoval;
+        <Separator />
 
-    return (
-        <FormProvider {...methods}>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                dir="rtl"
-                className="max-w-4xl mx-auto space-y-6"
-            >
-                <EditProfileHeader saving={saving} isDirty={isDirty} />
-
-                {/* Tabbed sections */}
-                <EditProfileTabs
-                    profile={profile}
-                    workExperience={workExperience}
-                    education={education}
-                    skills={skills}
-                    languages={languages}
-                    externalResumeUrl={externalResumeUrl}
-                    stagedResumeFile={stagedResumeFile}
-                    setValue={setValue}
-                    onFileStaged={(file) => setStagedResumeFile(file)}
-                    onResumeRemove={() => setPendingResumeRemoval(true)}
-                />
-
-                <Separator />
-
-                {/* Bottom actions */}
-                <div className="flex items-center justify-between pb-8">
-                    <Link href="/user/profile">
-                        <Button type="button" variant="outline">
-                            إلغاء
-                        </Button>
-                    </Link>
-                    <Button type="submit" disabled={saving} className="gap-1.5">
-                        <Save size={14} />
-                        {saving ? "جارٍ الحفظ..." : "حفظ التغييرات"}
-                    </Button>
-                </div>
-            </form>
-        </FormProvider>
-    );
+        {/* Bottom actions */}
+        <div className="flex items-center justify-between pb-8">
+          <Link href="/user/profile">
+            <Button type="button" variant="outline">
+              إلغاء
+            </Button>
+          </Link>
+          <Button type="submit" disabled={saving} className="gap-1.5">
+            <Save size={14} />
+            {saving ? "جارٍ الحفظ..." : "حفظ التغييرات"}
+          </Button>
+        </div>
+      </form>
+    </FormProvider>
+  );
 }
