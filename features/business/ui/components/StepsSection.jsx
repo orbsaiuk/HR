@@ -25,8 +25,8 @@ const steps = [
 
 export function StepsSection() {
     return (
-        <section className="bg-white py-8 sm:py-12">
-            <div className="container mx-auto px-4 sm:px-6">
+        <section className="bg-white py-8">
+            <div className="container mx-auto">
                 {/* Main heading */}
                 <div className="text-center">
                     <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl leading-[1.3] mb-4 sm:mb-6 ">
