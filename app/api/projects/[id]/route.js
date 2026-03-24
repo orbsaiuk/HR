@@ -77,10 +77,7 @@ export async function GET(request, { params }) {
     const project = MOCK_PROJECTS.find((p) => p._id === id);
 
     if (!project) {
-      return NextResponse.json(
-        { error: "المشروع غير موجود" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "المشروع غير موجود" }, { status: 404 });
     }
 
     // Generate consistent mock data based on project ID
@@ -117,7 +114,7 @@ export async function GET(request, { params }) {
     console.error("GET /api/projects/[id] error:", error);
     return NextResponse.json(
       { error: "فشل في تحميل المشروع" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

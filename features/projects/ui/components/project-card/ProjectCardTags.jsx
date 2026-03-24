@@ -72,14 +72,17 @@ export function ProjectCardTags({
 
   const durationText = formatDuration(duration);
   const budgetText =
-    formatBudget(budget, budgetMin, budgetMax, currency) || "الميزانية غير محددة";
+    formatBudget(budget, budgetMin, budgetMax, currency) ||
+    "الميزانية غير محددة";
   const offersNumber = Number(offersCount);
   const offersText = Number.isFinite(offersNumber)
     ? `${offersNumber.toLocaleString()} عروض`
     : "0 عروض";
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${textClass} text-gray-600`}>
+    <div
+      className={`flex flex-wrap items-center gap-2 ${textClass} text-gray-600`}
+    >
       {/* Budget as Badge */}
       {budgetText && (
         <Badge

@@ -2,7 +2,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export function ProjectDetailContent({ project }) {
-  const hasDescription = Boolean(project.description || project.shortDescription);
+  const hasDescription = Boolean(
+    project.description || project.shortDescription,
+  );
   const hasRequirements = Boolean(project.requirements?.length);
   const hasDeliverables = Boolean(project.deliverables?.length);
   const hasSkills = Boolean(project.skills?.length);

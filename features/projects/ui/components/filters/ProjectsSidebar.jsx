@@ -193,7 +193,14 @@ export function ProjectsSidebar({
     <aside className="w-full">
       <Accordion
         type="multiple"
-        defaultValue={["type", "industry", "tech", "status", "duration", "team"]}
+        defaultValue={[
+          "type",
+          "industry",
+          "tech",
+          "status",
+          "duration",
+          "team",
+        ]}
         className="w-full"
       >
         {/* Project Type */}

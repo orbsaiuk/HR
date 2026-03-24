@@ -86,7 +86,10 @@ export function ProjectDetailSkeleton() {
               <CardContent className="p-0">
                 <div className="divide-y divide-gray-100">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="flex items-center justify-between px-6 py-3">
+                    <div
+                      key={i}
+                      className="flex items-center justify-between px-6 py-3"
+                    >
                       <Skeleton className="h-4 w-24" />
                       <Skeleton className="h-4 w-20" />
                     </div>

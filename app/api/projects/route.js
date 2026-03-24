@@ -22,7 +22,7 @@ export async function GET(request) {
         (p) =>
           p.title?.toLowerCase().includes(q) ||
           p.shortDescription?.toLowerCase().includes(q) ||
-          p.clientName?.toLowerCase().includes(q)
+          p.clientName?.toLowerCase().includes(q),
       );
     }
 
@@ -36,7 +36,9 @@ export async function GET(request) {
 
     if (technology) {
       projects = projects.filter((p) =>
-        p.technologies?.some((t) => t.toLowerCase() === technology.toLowerCase())
+        p.technologies?.some(
+          (t) => t.toLowerCase() === technology.toLowerCase(),
+        ),
       );
     }
 
@@ -49,7 +51,7 @@ export async function GET(request) {
     console.error("GET /api/projects error:", error);
     return NextResponse.json(
       { error: "Failed to fetch projects" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

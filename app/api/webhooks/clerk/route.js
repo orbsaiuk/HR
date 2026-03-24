@@ -18,10 +18,7 @@ import {
 } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
-import {
-  getInviteByEmail,
-} from "@/features/team-member-management/services/teamMemberManagementService";
-
+import { getInviteByEmail } from "@/features/team-member-management/services/teamMemberManagementService";
 
 function mapClerkRoleToRoleKey(clerkRole) {
   switch (clerkRole) {
@@ -32,7 +29,6 @@ function mapClerkRoleToRoleKey(clerkRole) {
       return "viewer";
   }
 }
-
 
 async function verifyWebhook(req) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -158,11 +154,7 @@ async function handleMembershipCreated(data) {
 
   if (existingMember) {
     // Update role if needed
-    await updateTeamMemberRole(
-      organization._id,
-      existingMember._key,
-      roleKey,
-    );
+    await updateTeamMemberRole(organization._id, existingMember._key, roleKey);
 
     return {
       message: "Team member already exists, role updated",
@@ -171,13 +163,12 @@ async function handleMembershipCreated(data) {
   }
 
   // Add new member to the organization's embedded teamMembers array
-  await addTeamMemberToOrg(
-    organization._id,
-    userDoc._id,
-    roleKey,
-  );
+  await addTeamMemberToOrg(organization._id, userDoc._id, roleKey);
 
-  return { message: "Team member added to organization", orgId: organization._id };
+  return {
+    message: "Team member added to organization",
+    orgId: organization._id,
+  };
 }
 
 /**
@@ -245,7 +236,10 @@ async function handleMembershipDeleted(data) {
   // Remove the team member entry from the embedded array
   await removeTeamMemberFromOrg(organization._id, userDoc._id);
 
-  return { message: "Team member removed from organization", orgId: organization._id };
+  return {
+    message: "Team member removed from organization",
+    orgId: organization._id,
+  };
 }
 
 /**
@@ -255,7 +249,8 @@ async function handleMembershipDeleted(data) {
 async function handleUserCreated(data) {
   const clerkId = data.id;
   const email = data.email_addresses?.[0]?.email_address || "";
-  const name = [data.first_name, data.last_name].filter(Boolean).join(" ") || "";
+  const name =
+    [data.first_name, data.last_name].filter(Boolean).join(" ") || "";
   const avatar = data.image_url || undefined;
 
   // Check if user already exists (idempotency)
@@ -275,7 +270,8 @@ async function handleUserCreated(data) {
 async function handleUserUpdated(data) {
   const clerkId = data.id;
   const email = data.email_addresses?.[0]?.email_address || "";
-  const name = [data.first_name, data.last_name].filter(Boolean).join(" ") || "";
+  const name =
+    [data.first_name, data.last_name].filter(Boolean).join(" ") || "";
   const avatar = data.image_url || undefined;
 
   let userDoc = await getUserByClerkId(clerkId);
@@ -283,7 +279,10 @@ async function handleUserUpdated(data) {
   if (!userDoc) {
     // User doesn't exist yet — create it
     userDoc = await createUser({ clerkId, name, email, avatar });
-    return { message: "User created in Sanity (via user.updated)", id: userDoc._id };
+    return {
+      message: "User created in Sanity (via user.updated)",
+      id: userDoc._id,
+    };
   }
 
   // Update fields that have changed

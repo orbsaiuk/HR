@@ -42,14 +42,20 @@ export function ProjectCard({ project, viewMode = "list" }) {
           <div className="mb-4">
             <ProjectCardTags
               budget={project.budget}
-              budgetMin={project.budgetMin ?? project.minBudget ?? project.priceMin}
-              budgetMax={project.budgetMax ?? project.maxBudget ?? project.priceMax}
+              budgetMin={
+                project.budgetMin ?? project.minBudget ?? project.priceMin
+              }
+              budgetMax={
+                project.budgetMax ?? project.maxBudget ?? project.priceMax
+              }
               currency={project.currency}
               duration={project.duration}
               offersCount={
                 project.offersCount ??
                 project.offerCount ??
-                (Array.isArray(project.offers) ? project.offers.length : project.offers)
+                (Array.isArray(project.offers)
+                  ? project.offers.length
+                  : project.offers)
               }
               compact
             />
@@ -95,14 +101,20 @@ export function ProjectCard({ project, viewMode = "list" }) {
           {/* Tags row */}
           <ProjectCardTags
             budget={project.budget}
-            budgetMin={project.budgetMin ?? project.minBudget ?? project.priceMin}
-            budgetMax={project.budgetMax ?? project.maxBudget ?? project.priceMax}
+            budgetMin={
+              project.budgetMin ?? project.minBudget ?? project.priceMin
+            }
+            budgetMax={
+              project.budgetMax ?? project.maxBudget ?? project.priceMax
+            }
             currency={project.currency}
             duration={project.duration}
             offersCount={
               project.offersCount ??
               project.offerCount ??
-              (Array.isArray(project.offers) ? project.offers.length : project.offers)
+              (Array.isArray(project.offers)
+                ? project.offers.length
+                : project.offers)
             }
           />
         </div>

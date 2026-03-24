@@ -42,7 +42,7 @@ export function ProjectDetailSidebar({ project, projectId }) {
   const budget = formatBudget(
     project.budgetMin,
     project.budgetMax,
-    project.currency
+    project.currency,
   );
   const applicantsText = formatApplicants(project.applicantsCount);
 
@@ -59,12 +59,7 @@ export function ProjectDetailSidebar({ project, projectId }) {
             >
               <Link href={`/projects/${projectId}/apply`}>للتقديم الآن</Link>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full"
-              size="lg"
-            >
+            <Button asChild variant="outline" className="w-full" size="lg">
               <Link href={`/projects/${projectId}/message`}>مراسلة العميل</Link>
             </Button>
           </div>
@@ -95,7 +90,10 @@ export function ProjectDetailSidebar({ project, projectId }) {
               <DetailRow
                 icon={<Briefcase size={14} />}
                 label="مستوى الخبرة"
-                value={EXPERIENCE_LABELS[project.experienceLevel] || project.experienceLevel}
+                value={
+                  EXPERIENCE_LABELS[project.experienceLevel] ||
+                  project.experienceLevel
+                }
               />
             )}
 
@@ -126,12 +124,17 @@ export function ProjectDetailSidebar({ project, projectId }) {
 
               {/* Client Info */}
               <div className="flex-1">
-                <p className="font-medium text-gray-900">{project.client.name}</p>
+                <p className="font-medium text-gray-900">
+                  {project.client.name}
+                </p>
                 <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
                   {/* Rating */}
                   {project.client.rating && (
                     <span className="flex items-center gap-1">
-                      <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                      <Star
+                        size={14}
+                        className="text-yellow-400 fill-yellow-400"
+                      />
                       {project.client.rating}
                     </span>
                   )}

@@ -107,7 +107,7 @@ export function useProjectsList() {
           p.title?.toLowerCase().includes(q) ||
           p.shortDescription?.toLowerCase().includes(q) ||
           p.clientName?.toLowerCase().includes(q) ||
-          p.technologies?.some((t) => t.toLowerCase().includes(q))
+          p.technologies?.some((t) => t.toLowerCase().includes(q)),
       );
     }
 
@@ -124,7 +124,7 @@ export function useProjectsList() {
     // Technologies filter (multi-select) - array contains check
     if (selectedTechnologies.length > 0) {
       result = result.filter((p) =>
-        p.technologies?.some((t) => selectedTechnologies.includes(t))
+        p.technologies?.some((t) => selectedTechnologies.includes(t)),
       );
     }
 
@@ -152,12 +152,10 @@ export function useProjectsList() {
 
     // Sorting
     if (sortBy === "date") {
-      result.sort(
-        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-      );
+      result.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
     } else if (sortBy === "duration") {
       result.sort(
-        (a, b) => (b.duration?.value || 0) - (a.duration?.value || 0)
+        (a, b) => (b.duration?.value || 0) - (a.duration?.value || 0),
       );
     }
     // "relevance" keeps the default order
@@ -258,49 +256,37 @@ export function useProjectsList() {
   // Toggle helpers for multi-select
   const toggleType = useCallback((value) => {
     setSelectedTypes((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleIndustry = useCallback((value) => {
     setSelectedIndustries((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleTechnology = useCallback((value) => {
     setSelectedTechnologies((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleStatus = useCallback((value) => {
     setSelectedStatuses((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleDuration = useCallback((value) => {
     setSelectedDurations((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleTeamSize = useCallback((value) => {
     setSelectedTeamSizes((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 

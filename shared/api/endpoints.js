@@ -112,7 +112,9 @@ export const API_ENDPOINTS = {
   API_KEY_BY_ID: (id) => `/api/api-keys/${id}`,
 
   // Temporary Grants
-  TEMPORARY_GRANTS: (memberId) => `/api/team-members/${memberId}/temporary-grants`,
-  TEMPORARY_GRANT_BY_KEY: (memberId, grantKey) => `/api/team-members/${memberId}/temporary-grants/${grantKey}`,
+  TEMPORARY_GRANTS: (memberId) =>
+    `/api/team-members/${memberId}/temporary-grants`,
+  TEMPORARY_GRANT_BY_KEY: (memberId, grantKey) =>
+    `/api/team-members/${memberId}/temporary-grants/${grantKey}`,
   TEMPORARY_GRANTS_CLEANUP: "/api/team-members/temporary-grants/cleanup",
 };
