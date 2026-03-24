@@ -1,7 +1,7 @@
 import { client } from "@/sanity/client";
 import { clerkClient } from "@clerk/nextjs/server";
 import { getOrganizationByClerkOrgId, addTeamMemberToOrg } from "@/features/organizations/services/organizationService";
-import { getUserByClerkId } from "@/features/auth/services/userService";
+import { getUserByClerkId, setAccountType } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 import { sendOrgRequestApprovedEmail } from "@/shared/services/email/orgRequestEmailService";
@@ -103,6 +103,10 @@ async function addRequestingUserAsAdmin(request, sanityOrg) {
     const userDoc = await getUserByClerkId(request.requestedBy.clerkId);
     if (!userDoc) return;
 
+    if (userDoc.accountType !== "orgMember") {
+        await setAccountType(userDoc._id, "orgMember");
+    }
+
     // Uses the idempotent addTeamMemberToOrg which checks for existing membership
     await addTeamMemberToOrg(sanityOrg._id, userDoc._id, ADMIN_ROLE_KEY);
 }
@@ -110,8 +114,13 @@ async function addRequestingUserAsAdmin(request, sanityOrg) {
 async function updateUserClerkRole(clerkId) {
     if (!clerkId) return;
     const clerk = await clerkClient();
+    const clerkUser = await clerk.users.getUser(clerkId);
     await clerk.users.updateUserMetadata(clerkId, {
-        publicMetadata: { role: "teamMember" },
+        publicMetadata: {
+            ...(clerkUser.publicMetadata || {}),
+            role: "teamMember",
+            accountType: "orgMember",
+        },
     });
 }
 

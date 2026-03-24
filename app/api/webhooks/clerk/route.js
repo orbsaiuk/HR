@@ -135,6 +135,10 @@ async function handleMembershipCreated(data) {
     });
   }
 
+  if (userDoc.accountType !== "orgMember") {
+    await setAccountType(userDoc._id, "orgMember");
+  }
+
   // Determine the role: check for a pending invite first, then fall back to Clerk role mapping
   const userEmail = data.public_user_data?.identifier || userDoc?.email;
   let roleKey = mapClerkRoleToRoleKey(clerkRole);

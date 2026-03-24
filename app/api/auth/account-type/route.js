@@ -5,7 +5,7 @@ import {
   setAccountType,
 } from "@/features/auth/services/userService";
 
-const VALID_ACCOUNT_TYPES = ["jobSeeker", "freelancer"];
+const VALID_ACCOUNT_TYPES = ["jobSeeker", "freelancer", "orgMember"];
 
 export async function POST(req) {
   const user = await currentUser();
@@ -25,7 +25,10 @@ export async function POST(req) {
 
   if (!accountType || !VALID_ACCOUNT_TYPES.includes(accountType)) {
     return NextResponse.json(
-      { error: "Invalid accountType. Must be 'jobSeeker' or 'freelancer'." },
+      {
+        error:
+          "Invalid accountType. Must be 'jobSeeker', 'freelancer', or 'orgMember'.",
+      },
       { status: 400 },
     );
   }

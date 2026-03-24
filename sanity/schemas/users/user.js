@@ -63,6 +63,7 @@ export default {
         list: [
           { title: "Job Seeker", value: "jobSeeker" },
           { title: "Freelancer", value: "freelancer" },
+          { title: "Organization Member", value: "orgMember" },
         ],
       },
     },

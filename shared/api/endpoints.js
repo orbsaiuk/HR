@@ -62,6 +62,11 @@ export const API_ENDPOINTS = {
   CAREER_FILTERS: "/api/careers/filters",
   CAREER_APPLY: (id) => `/api/careers/${id}/apply`,
 
+  // Projects (public)
+  PROJECTS: "/api/projects",
+  PROJECT_BY_ID: (id) => `/api/projects/${id}`,
+  PROJECT_FILTERS: "/api/projects/filters",
+
   // Organizations
   ORGANIZATIONS: "/api/organizations",
   ORGANIZATION_BY_ID: (id) => `/api/organizations/${id}`,

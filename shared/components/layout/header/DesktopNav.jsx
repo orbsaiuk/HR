@@ -112,7 +112,7 @@ export function DesktopNav({
         <NavLink href="/" pathname={pathname}>
           الرئيسية
         </NavLink>
-        <NavLink href="/careers" pathname={pathname}>
+        <NavLink href={isFreelancer ? "/projects" : "/careers"} pathname={pathname}>
           {isFreelancer ? "المشاريع" : "الوظائف"}
         </NavLink>
         <NavLink href="#" pathname={pathname}>
