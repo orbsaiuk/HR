@@ -12,7 +12,12 @@ import {
 } from "@/shared/services/email/orgRequestEmailService";
 import { approveRequest } from "./orgApprovalService";
 
-export async function createRequest(userId, data, orgLogoAssetRef, requesterInfo) {
+export async function createRequest(
+  userId,
+  data,
+  orgLogoAssetRef,
+  requesterInfo,
+) {
   // Check for existing pending/approved request
   const pendingCount = await countActiveRequestsByUser(userId);
 
@@ -59,7 +64,10 @@ export async function createRequest(userId, data, orgLogoAssetRef, requesterInfo
         organizationName: data.orgName,
       });
     } catch (err) {
-      console.error("[OrgRequest] Failed to send submission confirmation email:", err.message);
+      console.error(
+        "[OrgRequest] Failed to send submission confirmation email:",
+        err.message,
+      );
     }
   }
 
@@ -101,7 +109,10 @@ export async function rejectRequest(id, reason, adminInfo) {
         reason,
       });
     } catch (err) {
-      console.error("[OrgRequest] Failed to send rejection email:", err.message);
+      console.error(
+        "[OrgRequest] Failed to send rejection email:",
+        err.message,
+      );
     }
   }
 
@@ -120,4 +131,3 @@ export const orgRequestService = {
   rejectRequest,
   getPendingRequests,
 };
-
