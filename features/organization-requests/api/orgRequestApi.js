@@ -17,6 +17,11 @@ export const orgRequestApi = {
                 formData.append(key, value);
                 return;
             }
+            // Handle objects (like socialLinks) by JSON stringifying
+            if (typeof value === "object" && value !== null) {
+                formData.append(key, JSON.stringify(value));
+                return;
+            }
             formData.append(key, String(value));
         });
 

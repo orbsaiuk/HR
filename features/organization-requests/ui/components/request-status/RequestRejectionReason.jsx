@@ -11,7 +11,7 @@ export function RequestRejectionReason({ reason }) {
                 <AlertTriangle size={18} className="text-red-500 mt-0.5 shrink-0" />
                 <div>
                     <h4 className="text-sm font-medium text-red-800">
-                        Rejection Reason
+                        سبب الرفض
                     </h4>
                     <p className="text-sm text-red-700 mt-1">{reason}</p>
                 </div>

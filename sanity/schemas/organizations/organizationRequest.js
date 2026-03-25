@@ -99,6 +99,42 @@ export default {
             },
         },
 
+        // Address (required)
+        {
+            name: "address",
+            title: "Address",
+            type: "text",
+            description: "Full organization address",
+            validation: (Rule) => Rule.required(),
+        },
+
+        // Social Media Links
+        {
+            name: "socialLinks",
+            title: "Social Media Links",
+            type: "object",
+            fields: [
+                { name: "facebook", title: "Facebook", type: "url" },
+                { name: "twitter", title: "Twitter", type: "url" },
+                { name: "linkedin", title: "LinkedIn", type: "url" },
+                { name: "instagram", title: "Instagram", type: "url" },
+            ],
+        },
+
+        // Legal Information
+        {
+            name: "registrationNumber",
+            title: "Registration Number",
+            type: "string",
+            description: "Commercial registration number",
+        },
+        {
+            name: "taxId",
+            title: "Tax Identification Number",
+            type: "string",
+            description: "VAT registration number",
+        },
+
         // Status & Review
         {
             name: "status",

@@ -39,6 +39,11 @@ export async function createRequest(userId, data, orgLogoAssetRef, requesterInfo
     orgLogo: orgLogoAssetRef
       ? { _type: "image", asset: { _type: "reference", _ref: orgLogoAssetRef } }
       : undefined,
+    // New fields
+    address: data.address || undefined,
+    socialLinks: data.socialLinks || undefined,
+    registrationNumber: data.registrationNumber || undefined,
+    taxId: data.taxId || undefined,
     status: "pending",
     createdAt: now,
     updatedAt: now,

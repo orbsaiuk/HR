@@ -18,6 +18,7 @@ export function DesktopNav({
   isUser,
   isUserLoaded,
   isTeamMember,
+  isMinimalHeaderMode,
   isNavReady,
   isFreelancer,
   unreadCount,
@@ -28,6 +29,34 @@ export function DesktopNav({
   navigateToDashboard,
   pathname,
 }) {
+  if (isMinimalHeaderMode) {
+    return (
+      <div className="hidden md:flex items-center gap-6 order-first">
+        <div className="flex items-center gap-3">
+          {/* Hide "Start as company" button if user already has a pending/approved request */}
+          {!hasOrgRequest && (
+            <Link href="/register-organization">
+              <Button className="rounded-full bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 text-sm">
+                ابدأ كشركة
+              </Button>
+            </Link>
+          )}
+          {/* Show pending request link instead */}
+          {hasPendingRequest && (
+            <Link
+              href="/user/organization-requests"
+              className="text-gray-700 hover:text-gray-900 transition-colors font-medium flex items-center gap-1"
+            >
+              <Clock size={16} />
+              طلب التسجيل
+            </Link>
+          )}
+          {isSignedIn && <UserButton />}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="hidden md:flex items-center gap-6 order-first">
       {/* CTA Buttons */}
@@ -94,7 +123,7 @@ export function DesktopNav({
                   className="text-gray-700 hover:text-gray-900 transition-colors font-medium flex items-center gap-1"
                 >
                   <Clock size={16} />
-                  طلب المنظمة
+                  طلب التسجيل
                 </Link>
               ) : null)}
 

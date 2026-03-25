@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Building2, Clock, CheckCircle2 } from "lucide-react";
+import { Building2, Loader2, Sparkles } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useOrgRequest } from "../model/useOrgRequest";
-import { OrgRegistrationForm } from "./components/registration-form/OrgRegistrationForm";
+import { OrgRegistrationWizard } from "./components/registration-form/OrgRegistrationWizard";
 
 /**
  * Orchestrator page for organization registration.
- * Thin wrapper — delegates form rendering to OrgRegistrationForm.
+ * Thin wrapper — delegates form rendering to OrgRegistrationWizard.
  * Note: Sign-in is required via middleware, so no auth check needed here.
  */
 export function RegisterOrgPage() {
@@ -28,10 +26,24 @@ export function RegisterOrgPage() {
     (r) => r.status === "pending" || r.status === "approved",
   );
 
-  if (!isLoaded || loading) {
+  // Redirect to status page if user already has a pending/approved request
+  useEffect(() => {
+    if (!loading && existingRequest) {
+      router.replace("/user/organization-requests");
+    }
+  }, [loading, existingRequest, router]);
+
+  // Show enhanced loading state while checking for existing request or redirecting
+  if (!isLoaded || loading || existingRequest) {
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="max-w-3xl mx-auto py-12 px-4">
+        <div className="flex flex-col items-center justify-center space-y-4 animate-in fade-in duration-500">
+          <div className="relative">
+            <Loader2 className="h-12 w-12 text-primary animate-spin" />
+            <div className="absolute inset-0 h-12 w-12 rounded-full bg-primary/20 animate-ping" />
+          </div>
+          <p className="text-muted-foreground">جاري التحميل...</p>
+        </div>
       </div>
     );
   }
@@ -49,58 +61,34 @@ export function RegisterOrgPage() {
     }
   };
 
-  // Show success message immediately after submission (before existingRequest check)
+  // Show enhanced success message with animation
   if (success) {
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-        <Card>
-          <CardContent className="pt-8 pb-8 flex flex-col items-center gap-4">
-            <Building2 size={48} className="text-green-500" />
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">
-                Request Submitted Successfully!
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Your organization registration request has been submitted. A
-                platform administrator will review it shortly. Redirecting...
-              </p>
+      <div className="max-w-3xl mx-auto py-12 px-4 text-center">
+        <Card className="border-green-200 shadow-lg animate-in zoom-in duration-500">
+          <CardContent className="pt-10 pb-10 flex flex-col items-center gap-6">
+            <div className="relative">
+              <div className="absolute inset-0 animate-ping">
+                <div className="h-20 w-20 rounded-full bg-green-500/20" />
+              </div>
+              <div className="relative bg-green-100 dark:bg-green-900/30 p-4 rounded-full">
+                <Building2 size={48} className="text-green-600 dark:text-green-500" />
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Block registration if user already has a pending or approved request
-  if (existingRequest) {
-    const isPending = existingRequest.status === "pending";
-    const StatusIcon = isPending ? Clock : CheckCircle2;
-
-    return (
-      <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-        <Card>
-          <CardContent className="pt-8 pb-8 flex flex-col items-center gap-4">
-            <StatusIcon
-              size={48}
-              className={isPending ? "text-yellow-500" : "text-green-500"}
-            />
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">
-                {isPending
-                  ? "Request Already Submitted"
-                  : "Organization Already Registered"}
+            <div className="space-y-3">
+              <h2 className="text-2xl font-bold text-green-900 dark:text-green-100 flex items-center justify-center gap-2">
+                <Sparkles size={24} className="text-green-600" />
+                تم إرسال الطلب بنجاح!
               </h2>
-              <p className="text-sm text-muted-foreground">
-                {isPending
-                  ? `Your organization "${existingRequest.orgName}" registration request is pending review by an administrator.`
-                  : `Your organization "${existingRequest.orgName}" has been approved.`}
+              <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+                تم استلام طلب تسجيل مؤسستك. سيقوم مسؤول المنصة بمراجعته قريباً
+                وسنرسل لك إشعاراً عند اتخاذ القرار.
               </p>
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
+                <Loader2 size={14} className="animate-spin" />
+                <span>جاري التوجيه إلى صفحة الحالة...</span>
+              </div>
             </div>
-            <Button asChild variant="outline">
-              <Link href="/user/organization-requests">
-                View Request Status
-              </Link>
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -108,23 +96,36 @@ export function RegisterOrgPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Register Your Organization</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Submit a request to register your organization on the platform. Once
-          approved, you&apos;ll be able to manage your team, post job positions,
-          and more.
+    <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Enhanced header with gradient and better typography */}
+      <div className="mb-10 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-primary/10 rounded-lg">
+            <Building2 className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              تسجيل مؤسسة جديدة
+            </h1>
+          </div>
+        </div>
+        <p className="text-muted-foreground leading-relaxed max-w-2xl">
+          قدم طلباً لتسجيل مؤسستك على المنصة. بعد الموافقة ستتمكن من إدارة فريقك
+          ونشر الوظائف والمزيد. املأ النموذج أدناه بعناية.
         </p>
       </div>
 
+      {/* Enhanced error alert with animation */}
       {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertDescription>{error}</AlertDescription>
+        <Alert
+          variant="destructive"
+          className="mb-6 animate-in slide-in-from-top-2 duration-500 border-l-4"
+        >
+          <AlertDescription className="font-medium">{error}</AlertDescription>
         </Alert>
       )}
 
-      <OrgRegistrationForm onSubmit={handleSubmit} submitting={submitting} />
+      <OrgRegistrationWizard onSubmit={handleSubmit} submitting={submitting} />
     </div>
   );
 }

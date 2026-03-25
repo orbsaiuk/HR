@@ -32,6 +32,8 @@ export default clerkMiddleware(async (auth, req) => {
   // Register organization requires sign-in
   if (isRegisterOrgRoute(req) && !userId) {
     const signInUrl = new URL("/sign-in", req.url);
+    const redirectTarget = `${req.nextUrl.pathname}${req.nextUrl.search}`;
+    signInUrl.searchParams.set("redirect_url", redirectTarget);
     return NextResponse.redirect(signInUrl);
   }
 

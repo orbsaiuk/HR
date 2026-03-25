@@ -41,11 +41,11 @@ export function RequestApprovedActions() {
                 <CheckCircle size={18} className="text-green-500 mt-0.5 shrink-0" />
                 <div>
                     <h4 className="text-sm font-medium text-green-800">
-                        Your organization has been approved!
+                        تمت الموافقة على مؤسستك!
                     </h4>
                     <p className="text-sm text-green-700 mt-1">
-                        You can now access your organization dashboard to start
-                        managing your team, job positions, and more.
+                        يمكنك الآن الوصول إلى لوحة تحكم مؤسستك لبدء
+                        إدارة فريقك والوظائف والمزيد.
                     </p>
                     <Button
                         size="sm"
@@ -55,13 +55,13 @@ export function RequestApprovedActions() {
                     >
                         {activating ? (
                             <>
-                                <Loader2 size={14} className="mr-2 animate-spin" />
-                                Activating...
+                                <Loader2 size={14} className="ml-2 animate-spin" />
+                                جاري التنشيط...
                             </>
                         ) : (
                             <>
-                                Go to Dashboard
-                                <ArrowRight size={14} className="ml-2" />
+                                الذهاب للوحة التحكم
+                                <ArrowRight size={14} className="mr-2 rotate-180" />
                             </>
                         )}
                     </Button>

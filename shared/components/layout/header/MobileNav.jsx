@@ -20,6 +20,7 @@ export function MobileNav({
   isUser,
   isUserLoaded,
   isTeamMember,
+  isMinimalHeaderMode,
   isFreelancer,
   unreadCount,
   hasOrgRequest,
@@ -28,9 +29,49 @@ export function MobileNav({
   navigateToDashboard,
   pathname,
 }) {
+  if (isMinimalHeaderMode) {
+    return (
+      <div
+        className={`md:hidden fixed inset-x-0 top-13 sm:top-15 bottom-0 bg-white z-40 transition-all duration-300 ease-in-out ${
+          isOpen
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-4 pointer-events-none"
+        }`}
+      >
+        <div className="px-4 py-6 space-y-1 overflow-y-auto max-h-full">
+          {/* Hide "Start as company" button if user already has a pending/approved request */}
+          {!hasOrgRequest && (
+            <Link href="/register-organization">
+              <Button className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white h-11">
+                ابدأ كشركة
+              </Button>
+            </Link>
+          )}
+
+          {/* Show pending request link instead */}
+          {hasPendingRequest && (
+            <Link
+              href="/user/organization-requests"
+              className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+            >
+              <Clock size={16} />
+              طلب التسجيل
+            </Link>
+          )}
+
+          {isSignedIn && (
+            <div className="pt-4 border-t border-gray-100 mt-3 px-3">
+              <UserButton />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`md:hidden fixed inset-x-0 top-[52px] sm:top-[60px] bottom-0 bg-white z-40 transition-all duration-300 ease-in-out ${
+      className={`md:hidden fixed inset-x-0 top-13 sm:top-15 bottom-0 bg-white z-40 transition-all duration-300 ease-in-out ${
         isOpen
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 -translate-y-4 pointer-events-none"
@@ -90,7 +131,7 @@ export function MobileNav({
                 className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
               >
                 <Clock size={16} />
-                طلب المنظمة
+                طلب التسجيل
               </Link>
             )}
           </>

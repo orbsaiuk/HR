@@ -26,6 +26,7 @@ export function Header() {
           isUser={state.isUser}
           isUserLoaded={state.isUserLoaded}
           isTeamMember={state.isTeamMember}
+          isMinimalHeaderMode={state.isMinimalHeaderMode}
           isNavReady={state.isNavReady}
           isFreelancer={state.isFreelancer}
           unreadCount={state.unreadCount}
@@ -56,6 +57,7 @@ export function Header() {
         isUser={state.isUser}
         isUserLoaded={state.isUserLoaded}
         isTeamMember={state.isTeamMember}
+        isMinimalHeaderMode={state.isMinimalHeaderMode}
         isFreelancer={state.isFreelancer}
         unreadCount={state.unreadCount}
         hasOrgRequest={state.hasOrgRequest}

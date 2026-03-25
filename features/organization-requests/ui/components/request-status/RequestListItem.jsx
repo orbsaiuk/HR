@@ -1,38 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, ChevronRight } from "lucide-react";
+import { Building2, ChevronLeft } from "lucide-react";
 import { RequestStatusBadge } from "./RequestStatusBadge";
 import Image from "next/image";
 
 
 export function RequestListItem({ request }) {
     return (
-        <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+        <div className="group flex items-center justify-between p-5 border rounded-xl hover:shadow-md hover:border-primary/30 transition-all duration-300 bg-background cursor-pointer">
+            <div className="flex items-center gap-4 flex-1">
+                <div className="w-12 h-12 rounded-lg bg-muted/50 flex items-center justify-center ring-2 ring-muted group-hover:ring-primary/20 transition-all">
                     {request.orgLogoUrl ? (
                         <Image
                             src={request.orgLogoUrl}
                             alt={request.orgName}
-                            className="w-10 h-10 rounded-lg object-cover"
+                            width={48}
+                            height={48}
+                            className="w-12 h-12 rounded-lg object-cover"
                         />
                     ) : (
-                        <Building2 size={18} className="text-gray-400" />
+                        <Building2 size={20} className="text-muted-foreground group-hover:text-primary transition-colors" />
                     )}
                 </div>
-                <div>
-                    <h3 className="text-sm font-medium text-gray-900">
+                <div className="flex-1">
+                    <h3 className="text-sm font-semibold mb-1 group-hover:text-primary transition-colors">
                         {request.orgName}
                     </h3>
-                    <p className="text-xs text-gray-500">
-                        {new Date(request.createdAt).toLocaleDateString()}
+                    <p className="text-xs text-muted-foreground">
+                        {new Date(request.createdAt).toLocaleDateString("ar-SA", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric"
+                        })}
                     </p>
                 </div>
             </div>
             <div className="flex items-center gap-3">
                 <RequestStatusBadge status={request.status} />
-                <ChevronRight size={16} className="text-gray-400" />
+                <ChevronLeft size={18} className="text-muted-foreground group-hover:text-primary group-hover:translate-x-[-2px] transition-all" />
             </div>
         </div>
     );

@@ -15,8 +15,9 @@ export function useHeaderState() {
   const { isSignedIn, isTeamMember, isUser, isUserLoaded, accountType, isJobSeeker, isFreelancer } = useAuth();
   const { unreadCount } = useUnreadCount(Boolean(isSignedIn && isUser));
   const showOrgLink = isSignedIn && isUserLoaded && isUser && !isTeamMember;
+  // Fetch org requests for ALL signed-in users (including untyped users in minimal mode)
   const { requests, loading: orgRequestLoading } = useOrgRequest(
-    Boolean(isSignedIn && isUserLoaded && isUser),
+    Boolean(isSignedIn && isUserLoaded),
   );
   const { organization } = useOrganization();
   const {
@@ -26,11 +27,16 @@ export function useHeaderState() {
   } = useOrganizationList({ userMemberships: { infinite: true } });
   const router = useRouter();
   const pathname = usePathname();
+  const isOrgFlowPath =
+    pathname.startsWith("/register-organization") ||
+    pathname.startsWith("/user/organization-requests");
+  const isUntypedSignedInUser =
+    Boolean(isSignedIn && isUserLoaded && !isTeamMember && !accountType);
+  const isMinimalHeaderMode = isUntypedSignedInUser;
 
-  const hasPendingRequest =
-    showOrgLink && requests.some((r) => r.status === "pending");
-  const hasApprovedRequest =
-    showOrgLink && requests.some((r) => r.status === "approved");
+  // Check if user has any pending/approved org request (for all signed-in users)
+  const hasPendingRequest = requests.some((r) => r.status === "pending");
+  const hasApprovedRequest = requests.some((r) => r.status === "approved");
   const hasOrgRequest = hasPendingRequest || hasApprovedRequest;
   // Nav is ready immediately for unauthenticated users.
   // For signed-in users, wait only until user and org-request data are loaded.
@@ -80,6 +86,7 @@ export function useHeaderState() {
     accountType,
     isJobSeeker,
     isFreelancer,
+    isMinimalHeaderMode,
     unreadCount,
     showOrgLink,
     hasPendingRequest,

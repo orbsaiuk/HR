@@ -50,6 +50,15 @@ export async function POST(request) {
             // Remove the file entry from data
             delete data.orgLogo;
 
+            // Parse socialLinks JSON if present
+            if (data.socialLinks && typeof data.socialLinks === "string") {
+                try {
+                    data.socialLinks = JSON.parse(data.socialLinks);
+                } catch {
+                    data.socialLinks = undefined;
+                }
+            }
+
             // Cast empty string values to undefined
             Object.keys(data).forEach((key) => {
                 if (data[key] === "") data[key] = undefined;
@@ -59,9 +68,9 @@ export async function POST(request) {
         }
 
         // Validate required fields
-        if (!data.orgName || !data.contactEmail) {
+        if (!data.orgName || !data.contactEmail || !data.address) {
             return NextResponse.json(
-                { error: "Organization name and contact email are required" },
+                { error: "Organization name, contact email, and address are required" },
                 { status: 400 },
             );
         }
