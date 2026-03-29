@@ -3,14 +3,41 @@
 import { useState, useEffect } from 'react';
 import { dashboardApi } from '../api/dashboardApi';
 
+const EMPTY_DASHBOARD_STATS = {
+    header: {
+        companyName: '',
+        greeting: '',
+        subtitle: '',
+    },
+    metrics: [],
+    applicantsSummary: {
+        total: 0,
+        label: '',
+        segments: [],
+    },
+    jobsOverview: {
+        rangeLabel: '',
+        summary: {
+            views: {
+                value: 0,
+                delta: 0,
+            },
+            applications: {
+                value: 0,
+                delta: 0,
+            },
+        },
+        charts: {
+            week: [],
+            month: [],
+            year: [],
+        },
+    },
+    latestJobs: [],
+};
+
 export function useDashboardStats() {
-    const [stats, setStats] = useState({
-        totalForms: 0,
-        publishedForms: 0,
-        draftForms: 0,
-        totalResponses: 0,
-        recentActivity: [],
-    });
+    const [stats, setStats] = useState(EMPTY_DASHBOARD_STATS);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 

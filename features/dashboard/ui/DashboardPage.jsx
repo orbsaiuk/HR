@@ -6,10 +6,10 @@
 'use client';
 
 import { useDashboardStats } from '../model/useDashboardStats';
-import { StatsCards } from './StatsCards';
-import { QuickActions } from './QuickActions';
-import { RecentActivity } from './RecentActivity';
-import { GettingStarted } from './GettingStarted';
+import { DashboardStatCards } from './DashboardStatCards';
+import { DashboardApplicantsSummary } from './DashboardApplicantsSummary';
+import { DashboardJobsChart } from './DashboardJobsChart';
+import { DashboardLatestJobs } from './DashboardLatestJobs';
 import { Loading } from '@/shared/components/feedback/Loading';
 import { Error } from '@/shared/components/feedback/Error';
 
@@ -25,26 +25,31 @@ export function DashboardPage() {
     }
 
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600 mt-1">
-                    Welcome back! Here's an overview of your forms and activity.
+        <div className="space-y-6">
+            <div className="rounded-2xl border border-slate-200 bg-linear-to-l from-white via-indigo-50/30 to-white px-5 py-6 shadow-sm">
+                <p className="text-sm text-slate-500">
+                    {stats.header.companyName}
+                </p>
+                <h1 className="mt-1 text-3xl font-bold text-slate-900">
+                    {stats.header.greeting}
+                </h1>
+                <p className="mt-2 text-slate-600">
+                    {stats.header.subtitle}
                 </p>
             </div>
 
-            {/* Stats Cards */}
-            <StatsCards stats={stats} />
+            <DashboardStatCards metrics={stats.metrics} />
 
-            {/* Quick Actions */}
-            <QuickActions />
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+                <div className="xl:col-span-1">
+                    <DashboardApplicantsSummary summary={stats.applicantsSummary} />
+                </div>
+                <div className="xl:col-span-2">
+                    <DashboardJobsChart overview={stats.jobsOverview} />
+                </div>
+            </div>
 
-            {/* Recent Activity */}
-            <RecentActivity activities={stats.recentActivity} />
-
-            {/* Getting Started (shown when no forms) */}
-            {stats.totalForms === 0 && <GettingStarted />}
+            <DashboardLatestJobs jobs={stats.latestJobs} />
         </div>
     );
 }
