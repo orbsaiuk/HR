@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Plus, Briefcase } from "lucide-react";
+import { Briefcase, Plus } from "lucide-react";
 import { useJobPositionsList } from "../model/useJobPositionsList";
 import { useJobPositionActions } from "../model/useJobPositionActions";
-import { JobPositionsTable } from "./JobPositionsTable";
-import { JobPositionsStats } from "./JobPositionsStats";
+import { useJobPositionsFilters } from "../model/useJobPositionsFilters";
+import { MOCK_POSITION_CARDS } from "../lib/mockPositions";
+import { JobPositionCard } from "./JobPositionCard";
+import { JobPositionsFilters, JobPositionsPagination } from "./components";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
-import { EmptyState } from "@/shared/components/feedback/EmptyState";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
 import { Button } from "@/components/ui/button";
@@ -23,26 +25,79 @@ export function JobPositionsListPage() {
   const { toast, showToast, hideToast } = useToast();
   const { hasPermission } = usePermissions();
   const canManagePositions = hasPermission(PERMISSIONS.MANAGE_POSITIONS);
+  const [mockPositions, setMockPositions] = useState(() =>
+    MOCK_POSITION_CARDS.map((position) => ({ ...position })),
+  );
+
+  const getPositionKey = (position) => position._id || position.id;
+
+  const isUsingMockData = positions.length === 0;
+  const displayedPositions = isUsingMockData ? mockPositions : positions;
+
+  const {
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    typeFilter,
+    setTypeFilter,
+    sortBy,
+    setSortBy,
+    pageSize,
+    handlePageSizeChange,
+    currentPage,
+    totalPages,
+    pageNumbers,
+    paginatedPositions,
+    filteredCount,
+    resetFilters,
+    goToPreviousPage,
+    goToNextPage,
+    goToPage,
+  } = useJobPositionsFilters(displayedPositions);
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this job position?")) return;
+    if (!confirm("هل أنت متأكد من حذف هذه الوظيفة؟")) return;
+
+    if (isUsingMockData) {
+      setMockPositions((prev) =>
+        prev.filter((position) => getPositionKey(position) !== id),
+      );
+      showToast("تم حذف الوظيفة بنجاح", "success");
+      return;
+    }
+
     const result = await deletePosition(id);
+
     if (result.success) {
       setPositions(positions.filter((p) => p._id !== id));
-      showToast("Position deleted", "success");
-    } else {
-      showToast(result.error, "error");
+      showToast("تم حذف الوظيفة بنجاح", "success");
+      return;
     }
+
+    showToast(result.error, "error");
   };
 
   const handleStatusChange = async (id, status) => {
+    if (isUsingMockData) {
+      setMockPositions((prev) =>
+        prev.map((position) =>
+          getPositionKey(position) === id ? { ...position, status } : position,
+        ),
+      );
+      showToast("تم تحديث حالة الوظيفة", "success");
+      return;
+    }
+
     const result = await updateStatus(id, status);
+
     if (result.success) {
       setPositions(positions.map((p) => (p._id === id ? { ...p, status } : p)));
-      showToast(`Position ${status === "open" ? "opened" : status}`, "success");
-    } else {
-      showToast(result.error, "error");
+      showToast("تم تحديث حالة الوظيفة", "success");
+      return;
     }
+
+    showToast(result.error, "error");
   };
 
   if (loading) return <Loading />;
@@ -50,53 +105,72 @@ export function JobPositionsListPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
             <Briefcase className="text-blue-600" size={24} />
-            <h1 className="text-2xl font-bold text-gray-900">Job Positions</h1>
+            <h1 className="text-2xl font-bold text-gray-900">الوظائف</h1>
           </div>
-          <p className="text-gray-500 mt-1">
-            Manage your open positions and track applications.
+          <p className="mt-1 text-gray-500">
+            إدارة الوظائف المفتوحة ومتابعة طلبات التقديم.
           </p>
         </div>
+
         <PermissionGate permission={PERMISSIONS.MANAGE_POSITIONS}>
           <Button asChild>
-            <Link href="/dashboard/positions/create">
+            <Link href="/company/positions/create">
               <Plus size={18} />
-              New Position
+              إضافة وظيفة
             </Link>
           </Button>
         </PermissionGate>
       </div>
 
-      {/* Stats */}
-      <JobPositionsStats positions={positions} />
+      <div className="space-y-5">
+        <JobPositionsFilters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+          typeFilter={typeFilter}
+          onTypeChange={setTypeFilter}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          resultCount={filteredCount}
+          onReset={resetFilters}
+        />
 
-      {/* Content */}
-      {positions.length === 0 ? (
-        <EmptyState
-          icon={Briefcase}
-          title="No job positions yet"
-          description="Create your first job position to start receiving applications."
-          action={
-            canManagePositions
-              ? {
-                href: "/dashboard/positions/create",
-                label: "Create Position",
-                icon: Plus,
-              }
-              : null
-          }
+        {paginatedPositions.length > 0 ? (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {paginatedPositions.map((position) => (
+              <JobPositionCard
+                key={position._id || position.id}
+                position={position}
+                showActions={canManagePositions}
+                onDelete={handleDelete}
+                onStatusChange={handleStatusChange}
+                detailsHref={isUsingMockData ? "/company/positions" : undefined}
+                editHref={isUsingMockData ? "/company/positions" : undefined}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">
+            لا توجد وظائف مطابقة للفلاتر المحددة.
+          </div>
+        )}
+
+        <JobPositionsPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageNumbers={pageNumbers}
+          onPrevious={goToPreviousPage}
+          onNext={goToNextPage}
+          onPageChange={goToPage}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
         />
-      ) : (
-        <JobPositionsTable
-          positions={positions}
-          onDelete={handleDelete}
-          onStatusChange={handleStatusChange}
-        />
-      )}
+      </div>
 
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
@@ -104,4 +178,3 @@ export function JobPositionsListPage() {
     </div>
   );
 }
-

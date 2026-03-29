@@ -100,15 +100,17 @@ export function ApplicationsTable({
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${isActive
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${
+                  isActive
                     ? "bg-gray-900 text-white border-gray-900"
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                  }`}
+                }`}
               >
                 {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
                 <span
-                  className={`text-[10px] font-bold ${isActive ? "text-gray-300" : "text-muted-foreground"
-                    }`}
+                  className={`text-[10px] font-bold ${
+                    isActive ? "text-gray-300" : "text-muted-foreground"
+                  }`}
                 >
                   {count}
                 </span>
@@ -160,8 +162,8 @@ export function ApplicationsTable({
                   <TableCell className="text-sm text-muted-foreground">
                     {app.appliedAt
                       ? formatDistanceToNow(new Date(app.appliedAt), {
-                        addSuffix: true,
-                      })
+                          addSuffix: true,
+                        })
                       : "—"}
                   </TableCell>
                   <TableCell>
@@ -174,7 +176,7 @@ export function ApplicationsTable({
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
                           <Link
-                            href={`/dashboard/positions/${positionId}/applications/${app._id}`}
+                            href={`/company/positions/${positionId}/applications/${app._id}`}
                           >
                             <Eye size={14} className="mr-2" />
                             View Details
@@ -189,7 +191,8 @@ export function ApplicationsTable({
                                   key={s}
                                   onClick={() => onStatusChange(app._id, s)}
                                 >
-                                  Move to {s.charAt(0).toUpperCase() + s.slice(1)}
+                                  Move to{" "}
+                                  {s.charAt(0).toUpperCase() + s.slice(1)}
                                 </DropdownMenuItem>
                               ),
                             )}
@@ -219,4 +222,3 @@ export function ApplicationsTable({
     </div>
   );
 }
-

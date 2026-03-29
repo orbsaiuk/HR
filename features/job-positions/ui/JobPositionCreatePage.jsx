@@ -55,8 +55,6 @@ export function JobPositionCreatePage() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-
-
   const handleNext = () => {
     if (currentStep === 0 && !formData.title.trim()) {
       showToast("Job title is required", "error");
@@ -110,7 +108,7 @@ export function JobPositionCreatePage() {
       const result = await createPosition(payload);
       if (result.success) {
         showToast("Position created!", "success");
-        router.push("/dashboard/positions");
+        router.push("/company/positions");
       } else {
         showToast(result.error, "error");
       }
@@ -125,7 +123,7 @@ export function JobPositionCreatePage() {
     <div className="max-w-7xl mx-auto space-y-6">
       <PositionFormHeader
         title="Create Job Position"
-        backHref="/dashboard/positions"
+        backHref="/company/positions"
       />
 
       <PositionStepProgress currentStep={currentStep} steps={steps} />
@@ -136,7 +134,10 @@ export function JobPositionCreatePage() {
         )}
 
         {currentStep === 1 && (
-          <PositionCompensationCard formData={formData} onChange={setFormData} />
+          <PositionCompensationCard
+            formData={formData}
+            onChange={setFormData}
+          />
         )}
 
         {currentStep === 2 && (
@@ -150,27 +151,27 @@ export function JobPositionCreatePage() {
 
             {(formData.applicationMethod === "form" ||
               formData.applicationMethod === "both") && (
-                <ApplicationFormSection
-                  formId={formData.formId}
-                  onFormIdChange={(id) =>
-                    setFormData((prev) => ({ ...prev, formId: id }))
-                  }
-                  newForm={newForm}
-                  onNewFormChange={setNewForm}
-                  mode={formMode}
-                  onModeChange={setFormMode}
-                  deadline={formData.deadline}
-                  onDeadlineChange={(val) =>
-                    setFormData((prev) => ({ ...prev, deadline: val }))
-                  }
-                />
-              )}
+              <ApplicationFormSection
+                formId={formData.formId}
+                onFormIdChange={(id) =>
+                  setFormData((prev) => ({ ...prev, formId: id }))
+                }
+                newForm={newForm}
+                onNewFormChange={setNewForm}
+                mode={formMode}
+                onModeChange={setFormMode}
+                deadline={formData.deadline}
+                onDeadlineChange={(val) =>
+                  setFormData((prev) => ({ ...prev, deadline: val }))
+                }
+              />
+            )}
 
             {formData.applicationMethod === "profile" && (
               <div className="rounded-lg border border-dashed border-gray-300 p-6 bg-gray-50/50 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Applicants will submit their user profile when applying.
-                  No application form is needed.
+                  Applicants will submit their user profile when applying. No
+                  application form is needed.
                 </p>
               </div>
             )}
@@ -187,7 +188,7 @@ export function JobPositionCreatePage() {
           onSubmit={handleSubmit}
           isLoading={actionLoading || submitting}
           submitText="Create Position"
-          cancelHref="/dashboard/positions"
+          cancelHref="/company/positions"
         />
       </form>
 

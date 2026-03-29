@@ -7,18 +7,13 @@ import { Footer } from "@/features/landing/ui/Footer";
 /**
  * Persistent shell rendered in the root layout.
  * Renders Header and Footer on every route except those that have
- * their own chrome (dashboard, studio, auth pages).
+ * their own chrome (company area, studio, auth pages).
  *
  * Because this lives in the root layout it is NEVER unmounted during
  * client-side navigation, preventing the header/footer flicker that
  * occurs when they are duplicated across sibling route-group layouts.
  */
-const SHELL_EXCLUDED_PREFIXES = [
-  "/dashboard",
-  "/studio",
-  "/sign-in",
-  "/sign-up",
-];
+const SHELL_EXCLUDED_PREFIXES = ["/company", "/studio", "/sign-in", "/sign-up"];
 
 export function AppShell({ children }) {
   const pathname = usePathname();

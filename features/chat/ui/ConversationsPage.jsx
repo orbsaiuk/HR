@@ -64,7 +64,7 @@ export function ConversationsPage() {
               conversation={conversation}
               participant={conversation.user}
               onClick={() =>
-                router.push(`/dashboard/messages/${conversation._id}`)
+                router.push(`/company/messages/${conversation._id}`)
               }
             />
           ))}

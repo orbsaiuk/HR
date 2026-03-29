@@ -11,3 +11,6 @@ export { PositionStepProgress } from "./PositionStepProgress";
 export { PositionStepActions } from "./PositionStepActions";
 export { PositionReviewSummary } from "./PositionReviewSummary";
 export { ApplicationMethodSelector } from "./ApplicationMethodSelector";
+export { JobPositionsFilters } from "./JobPositionsFilters";
+export { JobPositionsPagination } from "./JobPositionsPagination";
+export { JobPositionCardHeader } from "./JobPositionCardHeader";

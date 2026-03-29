@@ -69,7 +69,7 @@ export function FormsListPage() {
         </div>
         <PermissionGate permission={PERMISSIONS.MANAGE_FORMS}>
           <Link
-            href="/dashboard/forms/create"
+            href="/company/forms/create"
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus size={20} />
@@ -100,10 +100,10 @@ export function FormsListPage() {
           action={
             !hasFilters && canManageForms
               ? {
-                label: "Create Form",
-                href: "/dashboard/forms/create",
-                icon: Plus,
-              }
+                  label: "Create Form",
+                  href: "/company/forms/create",
+                  icon: Plus,
+                }
               : null
           }
         />
@@ -111,4 +111,3 @@ export function FormsListPage() {
     </div>
   );
 }
-

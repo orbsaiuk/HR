@@ -12,7 +12,15 @@ import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequ
  * needed by the public Header.
  */
 export function useHeaderState() {
-  const { isSignedIn, isTeamMember, isUser, isUserLoaded, accountType, isJobSeeker, isFreelancer } = useAuth();
+  const {
+    isSignedIn,
+    isTeamMember,
+    isUser,
+    isUserLoaded,
+    accountType,
+    isJobSeeker,
+    isFreelancer,
+  } = useAuth();
   const { unreadCount } = useUnreadCount(Boolean(isSignedIn && isUser));
   const showOrgLink = isSignedIn && isUserLoaded && isUser && !isTeamMember;
   // Fetch org requests for ALL signed-in users (including untyped users in minimal mode)
@@ -30,8 +38,9 @@ export function useHeaderState() {
   const isOrgFlowPath =
     pathname.startsWith("/register-organization") ||
     pathname.startsWith("/user/organization-requests");
-  const isUntypedSignedInUser =
-    Boolean(isSignedIn && isUserLoaded && !isTeamMember && !accountType);
+  const isUntypedSignedInUser = Boolean(
+    isSignedIn && isUserLoaded && !isTeamMember && !accountType,
+  );
   const isMinimalHeaderMode = isUntypedSignedInUser;
 
   // Check if user has any pending/approved org request (for all signed-in users)
@@ -60,8 +69,10 @@ export function useHeaderState() {
 
   /* ── dashboard navigation helper ── */
   async function navigateToDashboard() {
+    const companyDashboardPath = "/company";
+
     if (organization) {
-      router.push("/dashboard");
+      router.push(companyDashboardPath);
       return;
     }
     if (isOrgListLoaded && setActive && userMemberships?.data?.length) {
@@ -69,12 +80,12 @@ export function useHeaderState() {
         await setActive({
           organization: userMemberships.data[0].organization.id,
         });
-        window.location.href = "/dashboard";
+        window.location.href = companyDashboardPath;
       } catch {
-        router.push("/dashboard");
+        router.push(companyDashboardPath);
       }
     } else {
-      router.push("/dashboard");
+      router.push(companyDashboardPath);
     }
   }
 

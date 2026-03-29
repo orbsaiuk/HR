@@ -69,14 +69,14 @@ export function FormDetailPage({ formId }) {
         {canManageForms && (
           <div className="flex items-center gap-3">
             <Link
-              href={`/dashboard/forms/${form._id}/edit`}
+              href={`/company/forms/${form._id}/edit`}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <Edit size={20} />
               Edit
             </Link>
             <Link
-              href={`/dashboard/forms/${form._id}/share`}
+              href={`/company/forms/${form._id}/share`}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <Share2 size={20} />
@@ -127,7 +127,7 @@ export function FormDetailPage({ formId }) {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link
-          href={`/dashboard/forms/${form._id}/responses`}
+          href={`/company/forms/${form._id}/responses`}
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-colors"
         >
           <div className="flex items-center justify-between">
@@ -142,7 +142,7 @@ export function FormDetailPage({ formId }) {
         </Link>
 
         <Link
-          href={`/dashboard/forms/${form._id}/analytics`}
+          href={`/company/forms/${form._id}/analytics`}
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition-colors"
         >
           <div className="flex items-center justify-between">

@@ -14,37 +14,37 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 export const NAV_ITEMS = [
   {
     name: "نظرة عامة",
-    href: "/dashboard",
+    href: "/company",
     icon: LayoutDashboard,
     permission: null,
   },
   {
     name: "الوظائف",
-    href: "/dashboard/positions",
+    href: "/company/positions",
     icon: Briefcase,
     permission: PERMISSIONS.VIEW_POSITIONS,
   },
   {
     name: "النماذج",
-    href: "/dashboard/forms",
+    href: "/company/forms",
     icon: ClipboardList,
     permission: PERMISSIONS.VIEW_FORMS,
   },
   {
     name: "الرسائل",
-    href: "/dashboard/messages",
+    href: "/company/messages",
     icon: MessageSquare,
     permission: PERMISSIONS.VIEW_MESSAGES,
   },
   {
     name: "أعضاء الفريق",
-    href: "/dashboard/team-members",
+    href: "/company/team-members",
     icon: Users,
     permission: PERMISSIONS.MANAGE_TEAM,
   },
   {
     name: "الإعدادات",
-    href: "/dashboard/settings",
+    href: "/company/settings",
     icon: Settings,
     permission: PERMISSIONS.MANAGE_SETTINGS,
   },
@@ -54,6 +54,6 @@ export const NAV_ITEMS = [
  * Returns true when `pathname` matches the given nav `href`.
  */
 export function isNavActive(href, pathname) {
-  if (href === "/dashboard") return pathname === "/dashboard";
+  if (href === "/company") return pathname === "/company";
   return pathname.startsWith(href);
 }

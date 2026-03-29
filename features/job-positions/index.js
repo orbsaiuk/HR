@@ -1,4 +1,5 @@
 export { JobPositionsListPage } from "./ui/JobPositionsListPage";
+export { JobPositionCard } from "./ui/JobPositionCard";
 export { JobPositionCreatePage } from "./ui/JobPositionCreatePage";
 export { JobPositionEditPage } from "./ui/JobPositionEditPage";
 export { JobPositionDetailPage } from "./ui/JobPositionDetailPage";

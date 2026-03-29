@@ -8,7 +8,7 @@ export function ApplicationsPageHeader({ positionId, totalApplications }) {
   return (
     <div className="flex items-center gap-3">
       <Button variant="ghost" size="icon" asChild>
-        <Link href={`/dashboard/positions/${positionId}`}>
+        <Link href={`/company/positions/${positionId}`}>
           <ArrowLeft size={20} />
         </Link>
       </Button>

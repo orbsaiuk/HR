@@ -76,7 +76,7 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
     const result = await deleteApplication(applicationId);
     if (result.success) {
       showToast("Application deleted", "success");
-      router.push(`/dashboard/positions/${positionId}`);
+      router.push(`/company/positions/${positionId}`);
     } else {
       showToast(result.error, "error");
     }
@@ -86,8 +86,14 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
   if (error) return <Error message={error} />;
   if (!application) return <Error message="Application not found" />;
 
-  const { applicant, jobPosition, answers, profileSnapshot, status, appliedAt } =
-    application;
+  const {
+    applicant,
+    jobPosition,
+    answers,
+    profileSnapshot,
+    status,
+    appliedAt,
+  } = application;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">

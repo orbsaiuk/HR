@@ -53,7 +53,7 @@ export function PositionDetailHeader({
     <div className="flex items-start justify-between">
       <div className="flex items-start gap-3">
         <Button variant="ghost" size="icon" asChild className="mt-0.5">
-          <Link href="/dashboard/positions">
+          <Link href="/company/positions">
             <ArrowLeft size={20} />
           </Link>
         </Button>
@@ -118,7 +118,7 @@ export function PositionDetailHeader({
             </Button>
           )}
           <Button variant="outline" size="sm" asChild>
-            <Link href={`/dashboard/positions/${positionId}/edit`}>
+            <Link href={`/company/positions/${positionId}/edit`}>
               <Edit size={14} />
               Edit
             </Link>

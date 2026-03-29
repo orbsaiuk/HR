@@ -44,7 +44,7 @@ export function FormActionsMenu({ form, onAction }) {
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem asChild>
           <Link
-            href={`/dashboard/forms/${form._id}`}
+            href={`/company/forms/${form._id}`}
             className="flex items-center"
           >
             <Eye className="mr-2 h-4 w-4" />
@@ -54,7 +54,7 @@ export function FormActionsMenu({ form, onAction }) {
         {canManageForms && (
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/forms/${form._id}/edit`}
+              href={`/company/forms/${form._id}/edit`}
               className="flex items-center"
             >
               <Edit className="mr-2 h-4 w-4" />
@@ -64,7 +64,7 @@ export function FormActionsMenu({ form, onAction }) {
         )}
         <DropdownMenuItem asChild>
           <Link
-            href={`/dashboard/forms/${form._id}/responses`}
+            href={`/company/forms/${form._id}/responses`}
             className="flex items-center"
           >
             <MessageSquare className="mr-2 h-4 w-4" />
@@ -73,7 +73,7 @@ export function FormActionsMenu({ form, onAction }) {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            href={`/dashboard/forms/${form._id}/analytics`}
+            href={`/company/forms/${form._id}/analytics`}
             className="flex items-center"
           >
             <TrendingUp className="mr-2 h-4 w-4" />
@@ -83,7 +83,7 @@ export function FormActionsMenu({ form, onAction }) {
         {canManageForms && (
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/forms/${form._id}/share`}
+              href={`/company/forms/${form._id}/share`}
               className="flex items-center"
             >
               <Share2 className="mr-2 h-4 w-4" />

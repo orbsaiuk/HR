@@ -35,7 +35,7 @@ export function PositionInfoCard({ position }) {
         )}
         {position && (
           <Button variant="outline" size="sm" className="w-full mt-2" asChild>
-            <Link href={`/dashboard/positions/${position._id}`}>
+            <Link href={`/company/positions/${position._id}`}>
               View Position
             </Link>
           </Button>

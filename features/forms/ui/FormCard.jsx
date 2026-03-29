@@ -20,7 +20,7 @@ export function FormCard({ form, onAction }) {
   return (
     <TableRow>
       <TableCell>
-        <Link href={`/dashboard/forms/${form._id}`} className="block">
+        <Link href={`/company/forms/${form._id}`} className="block">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
               <FileText className="text-blue-600" size={20} />

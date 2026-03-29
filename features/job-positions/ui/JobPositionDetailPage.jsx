@@ -45,7 +45,7 @@ export function JobPositionDetailPage({ positionId }) {
     if (!confirm("Are you sure you want to delete this position?")) return;
     const result = await deletePosition(positionId);
     if (result.success) {
-      router.push("/dashboard/positions");
+      router.push("/company/positions");
     } else {
       showToast(result.error, "error");
     }

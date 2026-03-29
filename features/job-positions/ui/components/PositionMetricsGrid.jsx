@@ -21,7 +21,7 @@ export function PositionMetricsGrid({ position, positionId }) {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <Link href={`/dashboard/positions/${positionId}/applications`}>
+      <Link href={`/company/positions/${positionId}/applications`}>
         <Card className="hover:border-blue-300 transition-colors h-full">
           <CardContent className="p-4 text-center">
             <Users size={20} className="text-blue-500 mx-auto mb-1" />
@@ -60,7 +60,7 @@ export function PositionMetricsGrid({ position, positionId }) {
         </Card>
       )}
       {position.form && (
-        <Link href={`/dashboard/forms/${position.form._id}`}>
+        <Link href={`/company/forms/${position.form._id}`}>
           <Card className="hover:border-blue-300 transition-colors h-full">
             <CardContent className="p-4 text-center">
               <FileText size={20} className="text-purple-500 mx-auto mb-1" />

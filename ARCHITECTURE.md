@@ -8,7 +8,7 @@
 │                                                              │
 │  app/                                                        │
 │  └── (dashboard)/                                           │
-│      └── dashboard/                                         │
+│      └── company/                                         │
 │          ├── page.jsx (5 lines - orchestration only)       │
 │          └── forms/                                         │
 │              └── page.jsx (5 lines - orchestration only)   │
@@ -19,7 +19,7 @@
 │                    APPLICATION LAYER                         │
 │                                                              │
 │  features/                                                   │
-│  ├── dashboard/                                             │
+│  ├── company/                                             │
 │  │   ├── ui/                                                │
 │  │   │   ├── DashboardPage.jsx (45 lines)                  │
 │  │   │   ├── StatsCards.jsx                                │
@@ -47,7 +47,7 @@
 │                      DOMAIN LAYER                            │
 │                                                              │
 │  features/                                                   │
-│  ├── dashboard/                                             │
+│  ├── company/                                             │
 │  │   └── lib/                                               │
 │  │       └── dateUtils.js (business logic)                 │
 │  │                                                           │
@@ -61,7 +61,7 @@
 │                  INFRASTRUCTURE LAYER                        │
 │                                                              │
 │  features/                                                   │
-│  ├── dashboard/                                             │
+│  ├── company/                                             │
 │  │   └── api/                                               │
 │  │       └── dashboardApi.js (API calls)                   │
 │  │                                                           │
@@ -84,19 +84,19 @@
 ```
 1. User visits /dashboard
    ↓
-2. app/(dashboard)/dashboard/page.jsx
+2. app/(dashboard)/company/page.jsx
    - Imports DashboardPage from feature
    - Renders: <DashboardPage />
    ↓
-3. features/dashboard/ui/DashboardPage.jsx
+3. features/company/ui/DashboardPage.jsx
    - Calls: useDashboardStats()
    - Renders: <StatsCards />, <QuickActions />, etc.
    ↓
-4. features/dashboard/model/useDashboardStats.js
+4. features/company/model/useDashboardStats.js
    - Calls: dashboardApi.getStats()
    - Manages: loading, error, data states
    ↓
-5. features/dashboard/api/dashboardApi.js
+5. features/company/api/dashboardApi.js
    - Calls: apiClient.get(API_ENDPOINTS.FORMS)
    - Transforms: raw data → stats
    ↓
@@ -115,7 +115,7 @@
 ### Dashboard Feature
 
 ```
-features/dashboard/
+features/company/
 │
 ├── api/                    # Infrastructure Layer
 │   └── dashboardApi.js     # External API calls
@@ -210,7 +210,7 @@ import { dashboardApi } from "../api/dashboardApi";
 import { apiClient } from "@/shared/api/client";
 
 // ❌ Bad: Page directly calls API
-import { dashboardApi } from "@/features/dashboard/api/dashboardApi";
+import { dashboardApi } from "@/features/company/api/dashboardApi";
 
 // ❌ Bad: Component directly calls API
 const data = await fetch("/api/forms");

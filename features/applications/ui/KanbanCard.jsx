@@ -54,7 +54,7 @@ export function KanbanCard({ application, positionId, onDelete, overlay }) {
     // Only navigate if the pointer didn't move (wasn't a drag)
     if (!pointerStart.current) return;
     router.push(
-      `/dashboard/positions/${positionId}/applications/${application._id}`,
+      `/company/positions/${positionId}/applications/${application._id}`,
     );
   };
 

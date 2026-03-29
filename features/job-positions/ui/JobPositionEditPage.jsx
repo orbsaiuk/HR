@@ -138,7 +138,7 @@ export function JobPositionEditPage({ positionId }) {
       const result = await updatePosition(positionId, payload);
       if (result.success) {
         showToast("Position updated!", "success");
-        router.push(`/dashboard/positions/${positionId}`);
+        router.push(`/company/positions/${positionId}`);
       } else {
         showToast(result.error, "error");
       }
@@ -157,7 +157,7 @@ export function JobPositionEditPage({ positionId }) {
     <div className="max-w-7xl mx-auto space-y-6">
       <PositionFormHeader
         title="Edit Position"
-        backHref={`/dashboard/positions/${positionId}`}
+        backHref={`/company/positions/${positionId}`}
       />
 
       <PositionStepProgress currentStep={currentStep} steps={steps} />
@@ -193,27 +193,27 @@ export function JobPositionEditPage({ positionId }) {
 
             {(formData.applicationMethod === "form" ||
               formData.applicationMethod === "both") && (
-                <ApplicationFormSection
-                  formId={formData.formId}
-                  onFormIdChange={(id) =>
-                    setFormData((prev) => ({ ...prev, formId: id }))
-                  }
-                  newForm={newForm}
-                  onNewFormChange={setNewForm}
-                  mode={formMode}
-                  onModeChange={setFormMode}
-                  deadline={formData.deadline}
-                  onDeadlineChange={(val) =>
-                    setFormData((prev) => ({ ...prev, deadline: val }))
-                  }
-                />
-              )}
+              <ApplicationFormSection
+                formId={formData.formId}
+                onFormIdChange={(id) =>
+                  setFormData((prev) => ({ ...prev, formId: id }))
+                }
+                newForm={newForm}
+                onNewFormChange={setNewForm}
+                mode={formMode}
+                onModeChange={setFormMode}
+                deadline={formData.deadline}
+                onDeadlineChange={(val) =>
+                  setFormData((prev) => ({ ...prev, deadline: val }))
+                }
+              />
+            )}
 
             {formData.applicationMethod === "profile" && (
               <div className="rounded-lg border border-dashed border-gray-300 p-6 bg-gray-50/50 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Applicants will submit their user profile when applying.
-                  No application form is needed.
+                  Applicants will submit their user profile when applying. No
+                  application form is needed.
                 </p>
               </div>
             )}
@@ -230,7 +230,7 @@ export function JobPositionEditPage({ positionId }) {
           onSubmit={handleSubmit}
           isLoading={actionLoading || submitting}
           submitText="Save Changes"
-          cancelHref={`/dashboard/positions/${positionId}`}
+          cancelHref={`/company/positions/${positionId}`}
         />
       </form>
 

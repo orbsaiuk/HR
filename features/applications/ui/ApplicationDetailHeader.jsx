@@ -20,7 +20,7 @@ export function ApplicationDetailHeader({
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
-          <Link href={`/dashboard/positions/${positionId}/applications`}>
+          <Link href={`/company/positions/${positionId}/applications`}>
             <ArrowLeft size={20} />
           </Link>
         </Button>
