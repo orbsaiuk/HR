@@ -22,7 +22,7 @@ export function SidebarDesktop({
 
       <aside
         className={cn(
-          "hidden fixed inset-y-0 end-0 z-30 h-screen border-s border-slate-200 bg-white transition-[width] duration-300 lg:flex lg:flex-col print:hidden",
+          "hidden fixed inset-y-0 z-30 h-screen border-s border-slate-200 bg-white transition-[width] duration-300 lg:flex lg:flex-col print:hidden",
           isCollapsed ? "w-20" : "w-72",
         )}
       >
