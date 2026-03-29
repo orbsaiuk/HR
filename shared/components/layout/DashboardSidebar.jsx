@@ -8,10 +8,7 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
 import { urlFor } from "@/shared/lib/sanityImage";
 import { NAV_ITEMS } from "./dashboard-sidebar/navConfig";
-import {
-  SidebarDesktop,
-  SidebarMobileDrawer,
-} from "./dashboard-sidebar";
+import { SidebarDesktop, SidebarMobileDrawer } from "./dashboard-sidebar";
 
 export function DashboardSidebar({ isMobileOpen, onClose }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -29,8 +26,8 @@ export function DashboardSidebar({ isMobileOpen, onClose }) {
   const navItems = permissionsLoading
     ? []
     : NAV_ITEMS.filter(
-      (item) => !item.permission || hasPermission(item.permission),
-    );
+        (item) => !item.permission || hasPermission(item.permission),
+      );
 
   const sidebarProps = {
     logoUrl,
