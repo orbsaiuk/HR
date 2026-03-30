@@ -59,14 +59,18 @@ export function Step1BasicInfo() {
           البيانات الأساسية
         </h2>
         <p className="text-muted-foreground leading-relaxed">
-          أدخل المعلومات الأساسية عن مؤسستك. هذه البيانات ستظهر في ملفك التعريفي.
+          أدخل المعلومات الأساسية عن مؤسستك. هذه البيانات ستظهر في ملفك
+          التعريفي.
         </p>
       </div>
 
       <div className="space-y-6">
         {/* Organization Name */}
         <div className="space-y-3 p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors">
-          <Label htmlFor="orgName" className="text-base font-semibold flex items-center gap-2">
+          <Label
+            htmlFor="orgName"
+            className="text-base font-semibold flex items-center gap-2"
+          >
             <Building2 size={16} className="text-primary" />
             اسم المؤسسة <span className="text-destructive">*</span>
           </Label>
@@ -79,9 +83,14 @@ export function Step1BasicInfo() {
             aria-invalid={errors.orgName ? "true" : "false"}
           />
           {!errors.orgName && (
-            <p id="orgName-help" className="text-xs text-muted-foreground flex items-start gap-1.5">
+            <p
+              id="orgName-help"
+              className="text-xs text-muted-foreground flex items-start gap-1.5"
+            >
               <span className="inline-block mt-0.5">💡</span>
-              <span>استخدم الاسم الرسمي الكامل للمؤسسة كما هو موجود في السجل التجاري</span>
+              <span>
+                استخدم الاسم الرسمي الكامل للمؤسسة كما هو موجود في السجل التجاري
+              </span>
             </p>
           )}
           {errors.orgName && (
@@ -105,9 +114,10 @@ export function Step1BasicInfo() {
             <Controller
               name="orgSize"
               control={control}
+              defaultValue=""
               render={({ field }) => (
                 <Select
-                  value={field.value}
+                  value={field.value || undefined}
                   onValueChange={field.onChange}
                   dir="rtl"
                 >
@@ -142,9 +152,10 @@ export function Step1BasicInfo() {
             <Controller
               name="orgIndustry"
               control={control}
+              defaultValue=""
               render={({ field }) => (
                 <Select
-                  value={field.value}
+                  value={field.value || undefined}
                   onValueChange={field.onChange}
                   dir="rtl"
                 >
@@ -178,11 +189,16 @@ export function Step1BasicInfo() {
         {/* Description with character counter */}
         <div className="space-y-3 p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors">
           <div className="flex items-center justify-between">
-            <Label htmlFor="orgDescription" className="text-base font-semibold flex items-center gap-2">
+            <Label
+              htmlFor="orgDescription"
+              className="text-base font-semibold flex items-center gap-2"
+            >
               <FileText size={16} className="text-primary" />
               وصف المؤسسة <span className="text-destructive">*</span>
             </Label>
-            <span className={`text-xs font-medium ${description.length > maxDescriptionLength ? "text-destructive" : "text-muted-foreground"}`}>
+            <span
+              className={`text-xs font-medium ${description.length > maxDescriptionLength ? "text-destructive" : "text-muted-foreground"}`}
+            >
               {description.length} / {maxDescriptionLength}
             </span>
           </div>
@@ -194,14 +210,22 @@ export function Step1BasicInfo() {
             placeholder="اكتب نبذة مختصرة عن مؤسستك، أنشطتها الرئيسية، ورؤيتها المستقبلية..."
             className="text-base resize-none"
             aria-describedby={
-              errors.orgDescription ? "orgDescription-error" : "orgDescription-help"
+              errors.orgDescription
+                ? "orgDescription-error"
+                : "orgDescription-help"
             }
             aria-invalid={errors.orgDescription ? "true" : "false"}
           />
           {!errors.orgDescription && (
-            <p id="orgDescription-help" className="text-xs text-muted-foreground flex items-start gap-1.5">
+            <p
+              id="orgDescription-help"
+              className="text-xs text-muted-foreground flex items-start gap-1.5"
+            >
               <span className="inline-block mt-0.5">💡</span>
-              <span>قدم وصفاً واضحاً يعكس طبيعة عملك وخدماتك. سيساعد هذا في جذب المواهب المناسبة.</span>
+              <span>
+                قدم وصفاً واضحاً يعكس طبيعة عملك وخدماتك. سيساعد هذا في جذب
+                المواهب المناسبة.
+              </span>
             </p>
           )}
           {errors.orgDescription && (

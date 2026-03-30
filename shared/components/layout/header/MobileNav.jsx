@@ -26,9 +26,18 @@ export function MobileNav({
   hasOrgRequest,
   hasPendingRequest,
   hasApprovedRequest,
+  hasOrgRegistrationDraft,
   navigateToDashboard,
   pathname,
 }) {
+  const showContinueRegistration = Boolean(
+    isSignedIn &&
+      isUserLoaded &&
+      isUser &&
+      !hasOrgRequest &&
+      hasOrgRegistrationDraft,
+  );
+
   if (isMinimalHeaderMode) {
     return (
       <div
@@ -43,7 +52,7 @@ export function MobileNav({
           {!hasOrgRequest && (
             <Link href="/register-organization">
               <Button className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white h-11">
-                ابدأ كشركة
+                {hasOrgRegistrationDraft ? "اكمل التسجيل" : "ابدأ كشركة"}
               </Button>
             </Link>
           )}
@@ -52,7 +61,12 @@ export function MobileNav({
           {hasPendingRequest && (
             <Link
               href="/user/organization-requests"
-              className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+              className={cn(
+                "flex items-center gap-2 font-medium py-3 px-3 rounded-lg transition-colors",
+                isNavActive("/user/organization-requests", pathname)
+                  ? "text-blue-700 bg-blue-50"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+              )}
             >
               <Clock size={16} />
               طلب التسجيل
@@ -61,7 +75,9 @@ export function MobileNav({
 
           {isSignedIn && (
             <div className="pt-4 border-t border-gray-100 mt-3 px-3">
-              <UserButton />
+              <HeaderUserButton
+                showContinueRegistration={showContinueRegistration}
+              />
             </div>
           )}
         </div>
@@ -96,9 +112,16 @@ export function MobileNav({
         {isSignedIn && isUserLoaded && isUser && (
           <>
             <Divider />
-            <NavLink href="/user/profile" pathname={pathname}>
-              الملف الشخصي
-            </NavLink>
+            {!hasOrgRequest && hasOrgRegistrationDraft && (
+              <NavLink href="/register-organization" pathname={pathname}>
+                اكمل التسجيل
+              </NavLink>
+            )}
+            {!hasOrgRequest && (
+              <NavLink href="/user/profile" pathname={pathname}>
+                الملف الشخصي
+              </NavLink>
+            )}
             <NavLink href="/my-applications" pathname={pathname}>
               طلباتي
             </NavLink>
@@ -128,7 +151,12 @@ export function MobileNav({
             {hasPendingRequest && !hasApprovedRequest && (
               <Link
                 href="/user/organization-requests"
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium py-3 px-3 rounded-lg transition-colors"
+                className={cn(
+                  "flex items-center gap-2 font-medium py-3 px-3 rounded-lg transition-colors",
+                  isNavActive("/user/organization-requests", pathname)
+                    ? "text-blue-700 bg-blue-50"
+                    : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+                )}
               >
                 <Clock size={16} />
                 طلب التسجيل
@@ -171,7 +199,9 @@ export function MobileNav({
         {/* User button */}
         {isSignedIn && (
           <div className="pt-4 border-t border-gray-100 mt-3 px-3">
-            <UserButton />
+            <HeaderUserButton
+              showContinueRegistration={showContinueRegistration}
+            />
           </div>
         )}
       </div>
@@ -200,4 +230,26 @@ function NavLink({ href, pathname, children }) {
 
 function Divider() {
   return <div className="border-t border-gray-100 my-3" />;
+}
+
+function HeaderUserButton({ showContinueRegistration }) {
+  return (
+    <UserButton
+      key={
+        showContinueRegistration
+          ? "mobile-user-button-with-continue-registration"
+          : "mobile-user-button-default"
+      }
+    >
+      {showContinueRegistration && (
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label="اكمل التسجيل"
+            href="/register-organization"
+            labelIcon={<Clock size={16} />}
+          />
+        </UserButton.MenuItems>
+      )}
+    </UserButton>
+  );
 }

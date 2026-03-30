@@ -22,7 +22,7 @@ import {
  * Multi-step organization registration wizard.
  * 4 steps: Basic Info → Social & Contact → Legal Info → Review
  */
-export function OrgRegistrationWizard({ onSubmit, submitting }) {
+export function OrgRegistrationWizard({ onSubmit, submitting, userId }) {
   const [currentStep, setCurrentStep] = useState(0);
 
   const methods = useForm({
@@ -34,7 +34,12 @@ export function OrgRegistrationWizard({ onSubmit, submitting }) {
   const { trigger, handleSubmit, getValues } = methods;
 
   // Enable localStorage persistence
-  const { clearSavedData } = useOrgFormPersistence(methods);
+  const { clearSavedData } = useOrgFormPersistence(methods, {
+    userId,
+    currentStep,
+    maxStep: STEPS.length - 1,
+    onRestoreStep: setCurrentStep,
+  });
 
   // Validate current step fields before advancing
   const validateCurrentStep = useCallback(async () => {

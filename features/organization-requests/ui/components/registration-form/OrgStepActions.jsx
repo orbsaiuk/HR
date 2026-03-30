@@ -56,7 +56,6 @@ export function OrgStepActions({
             </>
           ) : (
             <>
-              <CheckCircle2 size={18} />
               <span className="font-medium">إرسال الطلب</span>
               <Send size={16} />
             </>

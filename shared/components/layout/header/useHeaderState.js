@@ -6,6 +6,8 @@ import { useAuth } from "@/features/auth/hooks/useAuth.js";
 import { useOrganizationList, useOrganization } from "@clerk/nextjs";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
 import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequest";
+import { useHasDraft } from "@/features/organization-requests/model/useHasDraft";
+import { ORG_REGISTRATION_FORM_ID } from "@/features/organization-requests/model/orgDraftStorage";
 
 /**
  * Encapsulates all auth, organization, and mobile-menu state
@@ -14,6 +16,7 @@ import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequ
 export function useHeaderState() {
   const {
     isSignedIn,
+    userId,
     isTeamMember,
     isUser,
     isUserLoaded,
@@ -47,6 +50,11 @@ export function useHeaderState() {
   const hasPendingRequest = requests.some((r) => r.status === "pending");
   const hasApprovedRequest = requests.some((r) => r.status === "approved");
   const hasOrgRequest = hasPendingRequest || hasApprovedRequest;
+  const { hasDraft: hasOrgRegistrationDraft } = useHasDraft({
+    formId: ORG_REGISTRATION_FORM_ID,
+    userId,
+    enabled: Boolean(isSignedIn && isUserLoaded && !isTeamMember),
+  });
   // Nav is ready immediately for unauthenticated users.
   // For signed-in users, wait only until user and org-request data are loaded.
   const isNavReady = !isSignedIn || (!orgRequestLoading && isUserLoaded);
@@ -91,6 +99,7 @@ export function useHeaderState() {
 
   return {
     isSignedIn,
+    userId,
     isTeamMember,
     isUser,
     isUserLoaded,
@@ -103,6 +112,7 @@ export function useHeaderState() {
     hasPendingRequest,
     hasApprovedRequest,
     hasOrgRequest,
+    hasOrgRegistrationDraft,
     isNavReady,
     mobileMenuOpen,
     setMobileMenuOpen,

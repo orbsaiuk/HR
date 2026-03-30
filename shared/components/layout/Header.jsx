@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useHeaderState } from "./header/useHeaderState";
 import { DesktopNav } from "./header/DesktopNav";
 import { MobileNav } from "./header/MobileNav";
+import { ContinueRegistrationBanner } from "./header/ContinueRegistrationBanner";
 
 export function Header() {
   const state = useHeaderState();
@@ -34,6 +35,7 @@ export function Header() {
           hasPendingRequest={state.hasPendingRequest}
           hasApprovedRequest={state.hasApprovedRequest}
           hasOrgRequest={state.hasOrgRequest}
+          hasOrgRegistrationDraft={state.hasOrgRegistrationDraft}
           navigateToDashboard={state.navigateToDashboard}
           pathname={state.pathname}
         />
@@ -63,8 +65,17 @@ export function Header() {
         hasOrgRequest={state.hasOrgRequest}
         hasPendingRequest={state.hasPendingRequest}
         hasApprovedRequest={state.hasApprovedRequest}
+        hasOrgRegistrationDraft={state.hasOrgRegistrationDraft}
         navigateToDashboard={state.navigateToDashboard}
         pathname={state.pathname}
+      />
+
+      <ContinueRegistrationBanner
+        userId={state.userId}
+        isSignedIn={state.isSignedIn}
+        isUserLoaded={state.isUserLoaded}
+        isTeamMember={state.isTeamMember}
+        hasOrgRequest={state.hasOrgRequest}
       />
     </header>
   );

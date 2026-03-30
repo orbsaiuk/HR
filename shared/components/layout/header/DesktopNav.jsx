@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { UserButton, SignUpButton } from "@clerk/nextjs";
-import { Clock, MessageSquare, User } from "lucide-react";
+import { Clock, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardLink } from "./DashboardLink";
 import { cn } from "@/lib/utils";
@@ -26,9 +26,18 @@ export function DesktopNav({
   hasPendingRequest,
   hasApprovedRequest,
   hasOrgRequest,
+  hasOrgRegistrationDraft,
   navigateToDashboard,
   pathname,
 }) {
+  const showContinueRegistration = Boolean(
+    isSignedIn &&
+      isUserLoaded &&
+      isUser &&
+      !hasOrgRequest &&
+      hasOrgRegistrationDraft,
+  );
+
   if (isMinimalHeaderMode) {
     return (
       <div className="hidden md:flex items-center gap-6 order-first">
@@ -37,7 +46,7 @@ export function DesktopNav({
           {!hasOrgRequest && (
             <Link href="/register-organization">
               <Button className="rounded-full bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 text-sm">
-                ابدأ كشركة
+                {hasOrgRegistrationDraft ? "اكمل التسجيل" : "ابدأ كشركة"}
               </Button>
             </Link>
           )}
@@ -45,13 +54,22 @@ export function DesktopNav({
           {hasPendingRequest && (
             <Link
               href="/user/organization-requests"
-              className="text-gray-700 hover:text-gray-900 transition-colors font-medium flex items-center gap-1"
+              className={cn(
+                "transition-colors font-medium flex items-center gap-1",
+                isNavActive("/user/organization-requests", pathname)
+                  ? "text-[#5286A5]"
+                  : "text-gray-700 hover:text-gray-900",
+              )}
             >
               <Clock size={16} />
               طلب التسجيل
             </Link>
           )}
-          {isSignedIn && <UserButton />}
+          {isSignedIn && (
+            <HeaderUserButton
+              showContinueRegistration={showContinueRegistration}
+            />
+          )}
         </div>
       </div>
     );
@@ -79,7 +97,9 @@ export function DesktopNav({
           </>
         )}
 
-        {isSignedIn && <UserButton />}
+        {isSignedIn && (
+          <HeaderUserButton showContinueRegistration={showContinueRegistration} />
+        )}
       </div>
 
       {/* Navigation Links */}
@@ -90,6 +110,11 @@ export function DesktopNav({
             {/* User profile & messages */}
             {isSignedIn && isUserLoaded && isUser && (
               <>
+                {!hasOrgRequest && hasOrgRegistrationDraft && (
+                  <NavLink href="/register-organization" pathname={pathname}>
+                    اكمل التسجيل
+                  </NavLink>
+                )}
                 {!hasOrgRequest && (
                   <Link
                     href="/messages"
@@ -104,9 +129,11 @@ export function DesktopNav({
                     )}
                   </Link>
                 )}
-                <NavLink href="/user/profile" pathname={pathname}>
-                  الملف الشخصي
-                </NavLink>
+                {!hasOrgRequest && (
+                  <NavLink href="/user/profile" pathname={pathname}>
+                    الملف الشخصي
+                  </NavLink>
+                )}
               </>
             )}
 
@@ -120,7 +147,12 @@ export function DesktopNav({
               ) : hasPendingRequest ? (
                 <Link
                   href="/user/organization-requests"
-                  className="text-gray-700 hover:text-gray-900 transition-colors font-medium flex items-center gap-1"
+                  className={cn(
+                    "transition-colors font-medium flex items-center gap-1",
+                    isNavActive("/user/organization-requests", pathname)
+                      ? "text-[#5286A5]"
+                      : "text-gray-700 hover:text-gray-900",
+                  )}
                 >
                   <Clock size={16} />
                   طلب التسجيل
@@ -169,5 +201,27 @@ function NavLink({ href, pathname, children }) {
     >
       {children}
     </Link>
+  );
+}
+
+function HeaderUserButton({ showContinueRegistration }) {
+  return (
+    <UserButton
+      key={
+        showContinueRegistration
+          ? "user-button-with-continue-registration"
+          : "user-button-default"
+      }
+    >
+      {showContinueRegistration && (
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label="اكمل التسجيل"
+            href="/register-organization"
+            labelIcon={<Clock size={16} />}
+          />
+        </UserButton.MenuItems>
+      )}
+    </UserButton>
   );
 }

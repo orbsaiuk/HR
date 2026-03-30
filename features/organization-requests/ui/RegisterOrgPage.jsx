@@ -16,7 +16,7 @@ import { OrgRegistrationWizard } from "./components/registration-form/OrgRegistr
  */
 export function RegisterOrgPage() {
   const router = useRouter();
-  const { isLoaded } = useUser();
+  const { user, isLoaded } = useUser();
   const { requests, loading, submitRequest, submitting, error } =
     useOrgRequest();
   const [success, setSuccess] = useState(false);
@@ -125,7 +125,11 @@ export function RegisterOrgPage() {
         </Alert>
       )}
 
-      <OrgRegistrationWizard onSubmit={handleSubmit} submitting={submitting} />
+      <OrgRegistrationWizard
+        onSubmit={handleSubmit}
+        submitting={submitting}
+        userId={user?.id}
+      />
     </div>
   );
 }

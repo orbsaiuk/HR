@@ -1,21 +1,24 @@
-"use client";
-
-import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequest";
-import { OrgProfilePage } from "@/features/organization-requests";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { UserProfilePage } from "@/features/user-profile";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { getUserByClerkId } from "@/features/auth/services/userService";
+import { countActiveRequestsByUser } from "@/features/organization-requests/repositories/orgRequestRepository";
 
-export default function Page() {
-    const { requests, loading } = useOrgRequest();
+export default async function Page() {
+    const { userId } = await auth();
 
-    if (loading) return <Loading fullPage />;
-
-    const hasOrgRequest = requests.some(
-        (r) => r.status === "pending" || r.status === "approved"
-    );
-
-    if (hasOrgRequest) {
-        return <OrgProfilePage />;
+    if (userId) {
+        try {
+            const sanityUser = await getUserByClerkId(userId);
+            if (sanityUser?._id) {
+                const activeRequestsCount = await countActiveRequestsByUser(sanityUser._id);
+                if (activeRequestsCount > 0) {
+                    redirect("/");
+                }
+            }
+        } catch (error) {
+            console.error("[UserProfilePage] Failed to load organization request status", error);
+        }
     }
 
     return <UserProfilePage />;

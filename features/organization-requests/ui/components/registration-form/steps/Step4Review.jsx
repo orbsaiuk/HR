@@ -16,7 +16,6 @@ import {
   Linkedin,
   Instagram,
   Pencil,
-  CheckCircle2,
 } from "lucide-react";
 /* eslint-disable @next/next/no-img-element */
 
@@ -87,23 +86,6 @@ export function Step4Review({ onEditStep }) {
         <p className="text-sm text-muted-foreground">
           تأكد من صحة البيانات قبل إرسال الطلب
         </p>
-      </div>
-
-      <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-900">
-        <div className="flex items-start gap-3">
-          <CheckCircle2
-            className="text-green-600 dark:text-green-500 shrink-0 mt-0.5"
-            size={20}
-          />
-          <div className="text-sm">
-            <p className="font-medium text-green-800 dark:text-green-400 mb-1">
-              جميع الحقول المطلوبة مكتملة
-            </p>
-            <p className="text-green-700 dark:text-green-500">
-              راجع البيانات أدناه ثم اضغط على "إرسال الطلب" لإتمام التسجيل
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Section 1: Basic Info */}
