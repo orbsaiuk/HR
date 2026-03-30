@@ -32,10 +32,10 @@ export function MobileNav({
 }) {
   const showContinueRegistration = Boolean(
     isSignedIn &&
-      isUserLoaded &&
-      isUser &&
-      !hasOrgRequest &&
-      hasOrgRegistrationDraft,
+    isUserLoaded &&
+    isUser &&
+    !hasOrgRequest &&
+    hasOrgRegistrationDraft,
   );
 
   if (isMinimalHeaderMode) {

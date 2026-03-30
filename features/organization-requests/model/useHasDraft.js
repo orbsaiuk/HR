@@ -75,7 +75,10 @@ export function useHasDraft({
       if (!event.key) return;
 
       // Ignore unrelated storage writes to avoid unnecessary renders.
-      if (!event.key.includes(formId) && !event.key.includes("org-registration-draft")) {
+      if (
+        !event.key.includes(formId) &&
+        !event.key.includes("org-registration-draft")
+      ) {
         return;
       }
 

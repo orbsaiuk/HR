@@ -37,13 +37,13 @@ const INDUSTRY_ALIASES = {
   finance: "finance",
   "الخدمات المالية": "finance",
   education: "education",
-  "التعليم": "education",
+  التعليم: "education",
   retail: "retail",
-  "التجزئة": "retail",
+  التجزئة: "retail",
   manufacturing: "manufacturing",
-  "التصنيع": "manufacturing",
+  التصنيع: "manufacturing",
   consulting: "consulting",
-  "الاستشارات": "consulting",
+  الاستشارات: "consulting",
   media: "media",
   "media & entertainment": "media",
   "الإعلام والترفيه": "media",
@@ -51,9 +51,9 @@ const INDUSTRY_ALIASES = {
   "non-profit": "nonprofit",
   "غير ربحي": "nonprofit",
   government: "government",
-  "حكومي": "government",
+  حكومي: "government",
   other: "other",
-  "أخرى": "other",
+  أخرى: "other",
 };
 
 const SIZE_VALUES = new Set(["1-10", "11-50", "51-200", "201-500", "500+"]);
@@ -394,7 +394,11 @@ export function useOrgFormPersistence(methods, optionsOrEnabled = true) {
 
   // Save step changes even when no field value changed (e.g., clicking Next/Previous).
   useEffect(() => {
-    if (!isEnabled || !initialLoadDone.current || !Number.isFinite(currentStep)) {
+    if (
+      !isEnabled ||
+      !initialLoadDone.current ||
+      !Number.isFinite(currentStep)
+    ) {
       return;
     }
 

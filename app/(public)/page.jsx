@@ -26,7 +26,10 @@ export default async function HomePage() {
         hasActiveOrgRequest = activeRequestsCount > 0;
       }
     } catch (error) {
-      console.error("[HomePage] Failed to load organization request status", error);
+      console.error(
+        "[HomePage] Failed to load organization request status",
+        error,
+      );
     }
   }
 

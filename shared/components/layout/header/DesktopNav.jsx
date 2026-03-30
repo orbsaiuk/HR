@@ -32,10 +32,10 @@ export function DesktopNav({
 }) {
   const showContinueRegistration = Boolean(
     isSignedIn &&
-      isUserLoaded &&
-      isUser &&
-      !hasOrgRequest &&
-      hasOrgRegistrationDraft,
+    isUserLoaded &&
+    isUser &&
+    !hasOrgRequest &&
+    hasOrgRegistrationDraft,
   );
 
   if (isMinimalHeaderMode) {
@@ -98,7 +98,9 @@ export function DesktopNav({
         )}
 
         {isSignedIn && (
-          <HeaderUserButton showContinueRegistration={showContinueRegistration} />
+          <HeaderUserButton
+            showContinueRegistration={showContinueRegistration}
+          />
         )}
       </div>
 

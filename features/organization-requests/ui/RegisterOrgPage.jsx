@@ -72,7 +72,10 @@ export function RegisterOrgPage() {
                 <div className="h-20 w-20 rounded-full bg-green-500/20" />
               </div>
               <div className="relative bg-green-100 dark:bg-green-900/30 p-4 rounded-full">
-                <Building2 size={48} className="text-green-600 dark:text-green-500" />
+                <Building2
+                  size={48}
+                  className="text-green-600 dark:text-green-500"
+                />
               </div>
             </div>
             <div className="space-y-3">
