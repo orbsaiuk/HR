@@ -15,7 +15,7 @@ export function DashboardShell({ children }) {
           type="button"
           variant="ghost"
           size="icon"
-          className="fixed start-4 top-4 z-40 rounded-lg border border-slate-200 bg-white lg:hidden print:hidden"
+          className="fixed end-4 top-4 z-40 rounded-lg border border-slate-200 bg-white lg:hidden print:hidden"
           onClick={() => setIsSidebarOpen((prev) => !prev)}
           aria-label="فتح القائمة"
         >

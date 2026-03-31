@@ -5,6 +5,7 @@ import {
   MessageSquare,
   Users,
   Settings,
+  CalendarDays,
 } from "lucide-react";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
@@ -29,6 +30,12 @@ export const NAV_ITEMS = [
     href: "/company/forms",
     icon: ClipboardList,
     permission: PERMISSIONS.VIEW_FORMS,
+  },
+  {
+    name: "التقويم",
+    href: "/company/calendar",
+    icon: CalendarDays,
+    permission: null,
   },
   {
     name: "الرسائل",

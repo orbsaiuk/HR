@@ -104,11 +104,10 @@ export function JobPositionsListPage() {
   if (error) return <Error message={error} onRetry={refetch} />;
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 md:p-8">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <Briefcase className="text-blue-600" size={24} />
             <h1 className="text-2xl font-bold text-gray-900">الوظائف</h1>
           </div>
           <p className="mt-1 text-gray-500">
@@ -117,7 +116,7 @@ export function JobPositionsListPage() {
         </div>
 
         <PermissionGate permission={PERMISSIONS.MANAGE_POSITIONS}>
-          <Button asChild>
+          <Button asChild className="bg-[#5338D5] hover:bg-[#462EA8]">
             <Link href="/company/positions/create">
               <Plus size={18} />
               إضافة وظيفة
@@ -126,7 +125,7 @@ export function JobPositionsListPage() {
         </PermissionGate>
       </div>
 
-      <div className="space-y-5">
+      <div className="mt-6 flex min-h-[80vh] flex-col space-y-5">
         <JobPositionsFilters
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -160,16 +159,18 @@ export function JobPositionsListPage() {
           </div>
         )}
 
-        <JobPositionsPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          pageNumbers={pageNumbers}
-          onPrevious={goToPreviousPage}
-          onNext={goToNextPage}
-          onPageChange={goToPage}
-          pageSize={pageSize}
-          onPageSizeChange={handlePageSizeChange}
-        />
+        <div className="mt-auto">
+          <JobPositionsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageNumbers={pageNumbers}
+            onPrevious={goToPreviousPage}
+            onNext={goToNextPage}
+            onPageChange={goToPage}
+            pageSize={pageSize}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        </div>
       </div>
 
       {toast && (

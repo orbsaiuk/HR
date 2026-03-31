@@ -22,16 +22,16 @@ module.exports = {
                     900: '#1e3a8a',
                 },
                 secondary: {
-                    50: '#f5f3ff',
-                    100: '#ede9fe',
-                    200: '#ddd6fe',
-                    300: '#c4b5fd',
-                    400: '#a78bfa',
-                    500: '#8b5cf6',
-                    600: '#7c3aed',
-                    700: '#6d28d9',
-                    800: '#5b21b6',
-                    900: '#4c1d95',
+                    50: '#f6f5ff',
+                    100: '#efebff',
+                    200: '#e1daff',
+                    300: '#cdbeff',
+                    400: '#b49bff',
+                    500: '#9b71ff',
+                    600: '#8b5cf6', // Keeping fallback, but 700 is main brand purple in image
+                    700: '#5338D5', // The vibrant purple from the image (buttons, active states)
+                    800: '#462ea8',
+                    900: '#392683',
                 },
                 success: {
                     50: '#f0fdf4',
