@@ -29,10 +29,10 @@ export function JobPositionEditPage({ positionId }) {
   const [initialized, setInitialized] = useState(false);
 
   const steps = [
-    { id: "basic", label: "Basic Info" },
-    { id: "compensation", label: "Compensation" },
-    { id: "application", label: "Application Form" },
-    { id: "review", label: "Review" },
+    { id: "basic", label: "المعلومات الأساسية" },
+    { id: "salary", label: "الراتب" },
+    { id: "application", label: "نموذج التقديم" },
+    { id: "review", label: "المراجعة" },
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -87,7 +87,7 @@ export function JobPositionEditPage({ positionId }) {
 
   const handleNext = () => {
     if (currentStep === 0 && !formData.title.trim()) {
-      showToast("Job title is required", "error");
+      showToast("المسمى الوظيفي مطلوب", "error");
       return;
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
@@ -103,7 +103,7 @@ export function JobPositionEditPage({ positionId }) {
     }
 
     if (!formData.title.trim()) {
-      showToast("Job title is required", "error");
+      showToast("المسمى الوظيفي مطلوب", "error");
       return;
     }
 
@@ -115,7 +115,7 @@ export function JobPositionEditPage({ positionId }) {
       // If user built a new form inline, create it first
       if (formMode === "create" && newForm.fields.length > 0) {
         if (!newForm.title.trim()) {
-          showToast("Please enter a title for the application form", "error");
+          showToast("الرجاء إدخال عنوان لنموذج التقديم", "error");
           setSubmitting(false);
           return;
         }
@@ -137,13 +137,13 @@ export function JobPositionEditPage({ positionId }) {
 
       const result = await updatePosition(positionId, payload);
       if (result.success) {
-        showToast("Position updated!", "success");
+        showToast("تم تحديث المنصب!", "success");
         router.push(`/company/positions/${positionId}`);
       } else {
         showToast(result.error, "error");
       }
     } catch (err) {
-      showToast(err.message || "Something went wrong", "error");
+      showToast(err.message || "حدث خطأ ما", "error");
     } finally {
       setSubmitting(false);
     }
@@ -151,12 +151,12 @@ export function JobPositionEditPage({ positionId }) {
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} />;
-  if (!position) return <Error message="Position not found" />;
+  if (!position) return <Error message="المنصب غير موجود" />;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <PositionFormHeader
-        title="Edit Position"
+        title="تعديل الوظيفة"
         backHref={`/company/positions/${positionId}`}
       />
 
@@ -212,8 +212,8 @@ export function JobPositionEditPage({ positionId }) {
             {formData.applicationMethod === "profile" && (
               <div className="rounded-lg border border-dashed border-gray-300 p-6 bg-gray-50/50 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Applicants will submit their user profile when applying. No
-                  application form is needed.
+                  سيقوم المتقدمون بإرسال ملفهم الشخصي عند التقديم. لا حاجة
+                  لنموذج تقديم.
                 </p>
               </div>
             )}
@@ -229,7 +229,7 @@ export function JobPositionEditPage({ positionId }) {
           onNext={handleNext}
           onSubmit={handleSubmit}
           isLoading={actionLoading || submitting}
-          submitText="Save Changes"
+          submitText="حفظ التغييرات"
           cancelHref={`/company/positions/${positionId}`}
         />
       </form>

@@ -6,100 +6,98 @@
 
 import { sendEmail } from "./sendEmail";
 import {
-    buildOrgRequestSubmittedEmailHtml,
-    buildOrgRequestSubmittedEmailText,
-    buildOrgRequestApprovedEmailHtml,
-    buildOrgRequestApprovedEmailText,
-    buildOrgRequestRejectedEmailHtml,
-    buildOrgRequestRejectedEmailText,
+  buildOrgRequestSubmittedEmailHtml,
+  buildOrgRequestSubmittedEmailText,
+  buildOrgRequestApprovedEmailHtml,
+  buildOrgRequestApprovedEmailText,
+  buildOrgRequestRejectedEmailHtml,
+  buildOrgRequestRejectedEmailText,
 } from "./orgRequestTemplates";
 
-
 export async function sendOrgRequestSubmittedEmail({
-    recipientEmail,
+  recipientEmail,
+  requesterName,
+  organizationName,
+}) {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const requestStatusUrl = `${appUrl}/user/organization-requests`;
+
+  const templateParams = {
     requesterName,
     organizationName,
-}) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const requestStatusUrl = `${appUrl}/user/organization-requests`;
+    requestStatusUrl,
+  };
 
-    const templateParams = {
-        requesterName,
-        organizationName,
-        requestStatusUrl,
-    };
-
-    try {
-        return await sendEmail({
-            to: recipientEmail,
-            subject: `Request received — ${organizationName}`,
-            html: buildOrgRequestSubmittedEmailHtml(templateParams),
-            text: buildOrgRequestSubmittedEmailText(templateParams),
-        });
-    } catch (error) {
-        console.error(
-            "[OrgRequestEmail] Failed to send submission confirmation email:",
-            error.message,
-        );
-        return false;
-    }
+  try {
+    return await sendEmail({
+      to: recipientEmail,
+      subject: `Request received — ${organizationName}`,
+      html: buildOrgRequestSubmittedEmailHtml(templateParams),
+      text: buildOrgRequestSubmittedEmailText(templateParams),
+    });
+  } catch (error) {
+    console.error(
+      "[OrgRequestEmail] Failed to send submission confirmation email:",
+      error.message,
+    );
+    return false;
+  }
 }
 
-
 export async function sendOrgRequestApprovedEmail({
-    recipientEmail,
+  recipientEmail,
+  requesterName,
+  organizationName,
+}) {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const dashboardUrl = `${appUrl}/company`;
+
+  const templateParams = {
     requesterName,
     organizationName,
-}) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const dashboardUrl = `${appUrl}/dashboard`;
+    dashboardUrl,
+  };
 
-    const templateParams = {
-        requesterName,
-        organizationName,
-        dashboardUrl,
-    };
-
-    try {
-        return await sendEmail({
-            to: recipientEmail,
-            subject: `Your organization "${organizationName}" has been approved!`,
-            html: buildOrgRequestApprovedEmailHtml(templateParams),
-            text: buildOrgRequestApprovedEmailText(templateParams),
-        });
-    } catch (error) {
-        console.error(
-            "[OrgRequestEmail] Failed to send approval email:",
-            error.message,
-        );
-        return false;
-    }
+  try {
+    return await sendEmail({
+      to: recipientEmail,
+      subject: `Your organization "${organizationName}" has been approved!`,
+      html: buildOrgRequestApprovedEmailHtml(templateParams),
+      text: buildOrgRequestApprovedEmailText(templateParams),
+    });
+  } catch (error) {
+    console.error(
+      "[OrgRequestEmail] Failed to send approval email:",
+      error.message,
+    );
+    return false;
+  }
 }
 
 export async function sendOrgRequestRejectedEmail({
-    recipientEmail,
+  recipientEmail,
+  requesterName,
+  organizationName,
+  reason,
+}) {
+  const templateParams = {
     requesterName,
     organizationName,
     reason,
-}) {
-    const templateParams = {
-        requesterName,
-        organizationName,
-        reason,
-    };
+  };
 
-    try {
-        return await sendEmail({
-            to: recipientEmail,
-            subject: `Organization request update — ${organizationName}`,
-            html: buildOrgRequestRejectedEmailHtml(templateParams),
-            text: buildOrgRequestRejectedEmailText(templateParams),
-        });
-    } catch (error) {
-        console.error(
-            "[OrgRequestEmail] Failed to send rejection email:",
-            error.message,
-        );
-        return false;
-    }
+  try {
+    return await sendEmail({
+      to: recipientEmail,
+      subject: `Organization request update — ${organizationName}`,
+      html: buildOrgRequestRejectedEmailHtml(templateParams),
+      text: buildOrgRequestRejectedEmailText(templateParams),
+    });
+  } catch (error) {
+    console.error(
+      "[OrgRequestEmail] Failed to send rejection email:",
+      error.message,
+    );
+    return false;
+  }
 }

@@ -13,18 +13,17 @@ export function PositionStepProgress({ currentStep, steps }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Lightbulb className="text-blue-600" size={18} />
-          <p className="font-medium text-blue-900">Form Progress</p>
+          <p className="font-medium text-blue-900">تقدم النموذج</p>
         </div>
-        <span className="text-sm font-semibold text-blue-700">
-          {percent}% Complete
-        </span>
       </div>
-      <Progress value={percent} className="h-2" />
+      <div dir="ltr" className="rotate-180">
+        <Progress value={percent} className="h-2" />
+      </div>
       <div className="flex items-center justify-between text-xs text-blue-700">
-        <span>
-          Step {currentStep + 1} of {totalSteps}
-        </span>
         <span>{stepLabel}</span>
+        <span>
+          الخطوة {currentStep + 1} من {totalSteps}
+        </span>
       </div>
     </div>
   );

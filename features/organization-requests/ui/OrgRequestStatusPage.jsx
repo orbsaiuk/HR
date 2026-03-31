@@ -38,10 +38,10 @@ export function OrgRequestStatusPage() {
         if (membership && setActive) {
           await setActive({ organization: membership.organization.id });
         }
-        window.location.href = "/dashboard";
+        window.location.href = "/company";
       } catch (err) {
         console.error("Failed to activate organization:", err);
-        window.location.href = "/dashboard";
+        window.location.href = "/company";
       }
     }
 

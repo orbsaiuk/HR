@@ -9,7 +9,7 @@ export function PositionDescriptionSection({ description }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Description</CardTitle>
+        <CardTitle>الوصف الوظيفي</CardTitle>
       </CardHeader>
       <CardContent>
         <MarkdownContent

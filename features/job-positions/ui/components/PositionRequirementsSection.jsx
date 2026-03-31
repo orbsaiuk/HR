@@ -9,7 +9,7 @@ export function PositionRequirementsSection({ requirements }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Requirements</CardTitle>
+        <CardTitle>المتطلبات</CardTitle>
       </CardHeader>
       <CardContent>
         <MarkdownContent

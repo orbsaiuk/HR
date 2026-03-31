@@ -13,12 +13,12 @@ export function PositionCompensationCard({ formData, onChange }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Compensation</CardTitle>
+        <CardTitle>الراتب (اختياري)</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="salaryMin">Min Salary</Label>
+            <Label htmlFor="salaryMin">الحد الأدنى للراتب</Label>
             <Input
               id="salaryMin"
               type="number"
@@ -29,7 +29,7 @@ export function PositionCompensationCard({ formData, onChange }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="salaryMax">Max Salary</Label>
+            <Label htmlFor="salaryMax">الحد الأقصى للراتب</Label>
             <Input
               id="salaryMax"
               type="number"
@@ -40,13 +40,13 @@ export function PositionCompensationCard({ formData, onChange }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="currency">Currency</Label>
+            <Label htmlFor="currency">العملة</Label>
             <Input
               id="currency"
               name="currency"
               value={formData.currency}
               onChange={handleChange}
-              placeholder="USD"
+              placeholder="USD / SAR"
             />
           </div>
         </div>

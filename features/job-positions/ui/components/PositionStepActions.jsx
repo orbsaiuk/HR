@@ -18,7 +18,7 @@ export function PositionStepActions({
   return (
     <div className="flex items-center justify-between gap-3">
       <Button variant="outline" asChild>
-        <Link href={cancelHref}>Cancel</Link>
+        <Link href={cancelHref}>إلغاء</Link>
       </Button>
       <div className="flex items-center gap-2">
         <Button
@@ -27,15 +27,15 @@ export function PositionStepActions({
           onClick={onBack}
           disabled={currentStep === 0}
         >
-          Back
+          السابق
         </Button>
         {isLastStep ? (
           <Button type="button" onClick={onSubmit} disabled={isLoading}>
-            {isLoading ? "Saving..." : submitText}
+            {isLoading ? "جاري الحفظ..." : submitText}
           </Button>
         ) : (
           <Button type="button" onClick={onNext}>
-            Next
+            التالي
           </Button>
         )}
       </div>

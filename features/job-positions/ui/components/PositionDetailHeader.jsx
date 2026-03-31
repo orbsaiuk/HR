@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {
-  ArrowLeft,
+  ArrowRight,
   Briefcase,
   MapPin,
   Edit,
@@ -24,18 +24,18 @@ const STATUS_VARIANT = {
 };
 
 const STATUS_LABELS = {
-  draft: "Draft",
-  open: "Open",
-  "on-hold": "On Hold",
-  closed: "Closed",
+  draft: "مسودة",
+  open: "مفتوح",
+  "on-hold": "قيد الانتظار",
+  closed: "مغلق",
 };
 
 const TYPE_LABELS = {
-  "full-time": "Full-time",
-  "part-time": "Part-time",
-  contract: "Contract",
-  internship: "Internship",
-  remote: "Remote",
+  "full-time": "دوام كامل",
+  "part-time": "دوام جزئي",
+  contract: "عقد",
+  internship: "تدريب",
+  remote: "عن بعد",
 };
 
 export function PositionDetailHeader({
@@ -54,7 +54,7 @@ export function PositionDetailHeader({
       <div className="flex items-start gap-3">
         <Button variant="ghost" size="icon" asChild className="mt-0.5">
           <Link href="/company/positions">
-            <ArrowLeft size={20} />
+            <ArrowRight size={20} />
           </Link>
         </Button>
         <div>
@@ -91,8 +91,8 @@ export function PositionDetailHeader({
               onClick={() => onStatusChange("open")}
               className="text-green-600 border-green-200 hover:bg-green-50 hover:text-green-600"
             >
-              <Play size={14} />
-              Open
+              <Play size={14} className="ml-2" />
+              فتح المنصب
             </Button>
           )}
           {position.status === "open" && (
@@ -102,8 +102,8 @@ export function PositionDetailHeader({
               onClick={() => onStatusChange("on-hold")}
               className="text-yellow-600 border-yellow-200 hover:bg-yellow-50 hover:text-yellow-600"
             >
-              <Pause size={14} />
-              Hold
+              <Pause size={14} className="ml-2" />
+              تعليق
             </Button>
           )}
           {position.status !== "closed" && (
@@ -113,19 +113,19 @@ export function PositionDetailHeader({
               onClick={() => onStatusChange("closed")}
               className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-600"
             >
-              <XCircle size={14} />
-              Close
+              <XCircle size={14} className="ml-2" />
+              إغلاق
             </Button>
           )}
           <Button variant="outline" size="sm" asChild>
             <Link href={`/company/positions/${positionId}/edit`}>
-              <Edit size={14} />
-              Edit
+              <Edit size={14} className="ml-2" />
+              تعديل
             </Link>
           </Button>
           <Button variant="destructive" size="sm" onClick={onDelete}>
-            <Trash2 size={14} />
-            Delete
+            <Trash2 size={14} className="ml-2" />
+            حذف
           </Button>
         </div>
       )}

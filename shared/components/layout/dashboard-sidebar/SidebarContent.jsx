@@ -44,7 +44,7 @@ export function SidebarContent({
           )}
         >
           <Link
-            href="/dashboard"
+            href="/company"
             onClick={onNavigate}
             title={isCollapsed ? orgName || "اسم الشركة" : undefined}
             className={cn(

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function ApplicationFormSection({
   formId,
@@ -63,7 +64,7 @@ export function ApplicationFormSection({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <FileText size={20} />
-            Application Form
+            نموذج التقديم
           </CardTitle>
           {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </div>
@@ -79,7 +80,7 @@ export function ApplicationFormSection({
               variant={mode === "select" ? "default" : "outline"}
               onClick={() => handleModeSwitch("select")}
             >
-              Use Existing Form
+              استخدام نموذج موجود
             </Button>
             <Button
               type="button"
@@ -88,18 +89,18 @@ export function ApplicationFormSection({
               onClick={() => handleModeSwitch("create")}
             >
               <Plus size={16} className="mr-1" />
-              Create New Form
+              إنشاء نموذج جديد
             </Button>
             {(formId || newForm.fields.length > 0) && (
               <Button
                 type="button"
                 size="sm"
                 variant="ghost"
-                className="text-destructive ml-auto"
+                className="text-destructive mr-auto"
                 onClick={handleRemoveForm}
               >
-                <Trash2 size={16} className="mr-1" />
-                Remove Form
+                <Trash2 size={16} className="ml-1" />
+                إزالة النموذج
               </Button>
             )}
           </div>
@@ -107,25 +108,25 @@ export function ApplicationFormSection({
           {/* Existing form selector */}
           {mode === "select" && (
             <div className="space-y-2">
-              <Label htmlFor="formId">Select a Form</Label>
-              <select
-                id="formId"
-                value={formId}
-                onChange={(e) => onFormIdChange(e.target.value)}
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
-                <option value="">No form linked</option>
-                {loadingForms && <option disabled>Loading forms…</option>}
-                {forms.map((form) => (
-                  <option key={form._id} value={form._id}>
-                    {form.title}
-                  </option>
-                ))}
-              </select>
+              <Label htmlFor="formId">اختر نموذجاً</Label>
+              <Select value={formId || undefined} onValueChange={(val) => onFormIdChange(val === "none" ? "" : val)} dir="rtl">
+                <SelectTrigger id="formId" className="w-full">
+                  <SelectValue placeholder="لا يوجد نموذج مرتبط" />
+                </SelectTrigger>
+                <SelectContent dir="rtl">
+                  {loadingForms && <SelectItem value="loading" disabled>جاري التحميل...</SelectItem>}
+                  <SelectItem value="none">لا يوجد نموذج مرتبط</SelectItem>
+                  {forms.map((form) => (
+                    <SelectItem key={form._id} value={form._id}>
+                      {form.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {selectedForm && (
                 <p className="text-xs text-muted-foreground">
                   &quot;{selectedForm.title}&quot; —{" "}
-                  {selectedForm.fields?.length || 0} field(s)
+                  {selectedForm.fields?.length || 0} حقل/حقول
                 </p>
               )}
             </div>
@@ -135,8 +136,7 @@ export function ApplicationFormSection({
           {mode === "create" && (
             <div className="space-y-4 rounded-lg border border-dashed border-gray-300 p-4 bg-gray-50/50">
               <p className="text-sm text-muted-foreground">
-                Build the application form that candidates will fill out when
-                applying to this position.
+                قم ببناء النموذج الذي سيملأه المتقدمون عند التقديم لهذا المنصب.
               </p>
               <FormBuilder
                 title={newForm.title}
@@ -157,7 +157,7 @@ export function ApplicationFormSection({
 
           {/* Deadline */}
           <div className="space-y-2 pt-2 border-t">
-            <Label htmlFor="deadline">Application Deadline</Label>
+            <Label htmlFor="deadline">الموعد النهائي للتقديم</Label>
             <Input
               id="deadline"
               type="datetime-local"

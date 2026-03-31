@@ -39,10 +39,10 @@ export function JobPositionDetailPage({ positionId }) {
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={refetch} />;
-  if (!position) return <Error message="Position not found" />;
+  if (!position) return <Error message="المنصب الوظيفي غير موجود" />;
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this position?")) return;
+    if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنصب؟")) return;
     const result = await deletePosition(positionId);
     if (result.success) {
       router.push("/company/positions");
@@ -55,10 +55,8 @@ export function JobPositionDetailPage({ positionId }) {
     const result = await updateStatus(positionId, newStatus);
     if (result.success) {
       refetch();
-      showToast(
-        `Position ${newStatus === "open" ? "opened" : newStatus}`,
-        "success",
-      );
+      const statusMessage = newStatus === "open" ? "تم فتح المنصب" : newStatus === "closed" ? "تم إغلاق المنصب" : newStatus === "draft" ? "تم تحويل المنصب إلى مسودة" : "تم تحديث حالة المنصب";
+      showToast(statusMessage, "success");
     } else {
       showToast(result.error, "error");
     }

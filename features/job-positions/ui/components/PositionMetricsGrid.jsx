@@ -12,7 +12,7 @@ export function PositionMetricsGrid({ position, positionId }) {
     if (salaryMin && salaryMax)
       return `${currency || "USD"} ${fmt(salaryMin)} - ${fmt(salaryMax)}`;
     if (salaryMin) return `${currency || "USD"} ${fmt(salaryMin)}+`;
-    return `Up to ${currency || "USD"} ${fmt(salaryMax)}`;
+    return `يصل إلى ${currency || "USD"} ${fmt(salaryMax)}`;
   };
 
   const salary = formatSalary();
@@ -25,10 +25,10 @@ export function PositionMetricsGrid({ position, positionId }) {
         <Card className="hover:border-blue-300 transition-colors h-full">
           <CardContent className="p-4 text-center">
             <Users size={20} className="text-blue-500 mx-auto mb-1" />
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-sm md:text-xl font-bold text-gray-900">
               {position.applicationCount || 0}
             </p>
-            <p className="text-xs text-muted-foreground">Applications</p>
+            <p className="text-muted-foreground">المتقدمين</p>
           </CardContent>
         </Card>
       </Link>
@@ -36,8 +36,10 @@ export function PositionMetricsGrid({ position, positionId }) {
         <Card>
           <CardContent className="p-4 text-center">
             <DollarSign size={20} className="text-green-500 mx-auto mb-1" />
-            <p className="text-sm font-bold text-gray-900">{salary}</p>
-            <p className="text-xs text-muted-foreground">Salary Range</p>
+            <p className="text-sm md:text-xl font-bold text-gray-900">
+              {salary}
+            </p>
+            <p className="text-muted-foreground">نطاق الراتب</p>
           </CardContent>
         </Card>
       )}
@@ -51,10 +53,10 @@ export function PositionMetricsGrid({ position, positionId }) {
             <p
               className={`text-sm font-bold ${deadlinePassed ? "text-destructive" : "text-gray-900"}`}
             >
-              {new Date(position.deadline).toLocaleDateString()}
+              {new Date(position.deadline).toLocaleDateString("ar-SA")}
             </p>
             <p className="text-xs text-muted-foreground">
-              {deadlinePassed ? "Deadline Passed" : "Deadline"}
+              {deadlinePassed ? "انتهى الموعد النهائي" : "الموعد النهائي"}
             </p>
           </CardContent>
         </Card>
@@ -67,7 +69,7 @@ export function PositionMetricsGrid({ position, positionId }) {
               <p className="text-sm font-bold text-gray-900 truncate">
                 {position.form.title}
               </p>
-              <p className="text-xs text-muted-foreground">Application Form</p>
+              <p className="text-xs text-muted-foreground">نموذج التقديم</p>
             </CardContent>
           </Card>
         </Link>

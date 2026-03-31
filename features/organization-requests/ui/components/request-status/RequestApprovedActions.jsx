@@ -28,10 +28,10 @@ export function RequestApprovedActions() {
         await setActive({ organization: membership.organization.id });
       }
       // Use full page navigation to ensure server-side auth picks up the active org
-      window.location.href = "/dashboard";
+      window.location.href = "/company";
     } catch (err) {
       console.error("Failed to set active organization:", err);
-      window.location.href = "/dashboard";
+      window.location.href = "/company";
     }
   }
 
