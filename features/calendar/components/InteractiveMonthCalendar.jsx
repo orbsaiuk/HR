@@ -28,14 +28,13 @@ export function InteractiveMonthCalendar({ date, setDate }) {
           months: "w-full flex-col relative",
           month: "w-full flex flex-col gap-4",
           month_caption: "flex items-center mb-5 h-8 relative w-full pr-1",
-          caption_label:
-            "text-lg font-semibold text-[#2F3646] tracking-wide",
+          caption_label: "text-lg font-semibold text-[#2F3646] tracking-wide",
           // Force LTR on nav container to keep arrows [prev, next] matched to image logic
-          nav: "absolute left-2 top-0 flex flex-row items-center gap-1 z-20 [direction:ltr]", 
+          nav: "absolute left-2 top-0 flex flex-row items-center gap-1 z-20 [direction:ltr]",
           button_previous:
-            "inline-flex items-center justify-center h-8 w-8 rounded-md border-0 bg-transparent text-[#6D7488] opacity-70 hover:opacity-100 hover:bg-white transition-all cursor-pointer [&_svg]:!rotate-0", 
+            "inline-flex items-center justify-center h-8 w-8 rounded-md border-0 bg-transparent text-[#6D7488] opacity-70 hover:opacity-100 hover:bg-white transition-all cursor-pointer [&_svg]:!rotate-0",
           button_next:
-            "inline-flex items-center justify-center h-8 w-8 rounded-md border-0 bg-transparent text-[#6D7488] opacity-70 hover:opacity-100 hover:bg-white transition-all cursor-pointer [&_svg]:!rotate-0", 
+            "inline-flex items-center justify-center h-8 w-8 rounded-md border-0 bg-transparent text-[#6D7488] opacity-70 hover:opacity-100 hover:bg-white transition-all cursor-pointer [&_svg]:!rotate-0",
           table: "w-full border-collapse mt-1",
           weekdays: "flex w-full justify-between mb-2 px-0",
           weekday:
