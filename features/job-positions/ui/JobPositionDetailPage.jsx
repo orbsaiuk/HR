@@ -55,7 +55,14 @@ export function JobPositionDetailPage({ positionId }) {
     const result = await updateStatus(positionId, newStatus);
     if (result.success) {
       refetch();
-      const statusMessage = newStatus === "open" ? "تم فتح المنصب" : newStatus === "closed" ? "تم إغلاق المنصب" : newStatus === "draft" ? "تم تحويل المنصب إلى مسودة" : "تم تحديث حالة المنصب";
+      const statusMessage =
+        newStatus === "open"
+          ? "تم فتح المنصب"
+          : newStatus === "closed"
+            ? "تم إغلاق المنصب"
+            : newStatus === "draft"
+              ? "تم تحويل المنصب إلى مسودة"
+              : "تم تحديث حالة المنصب";
       showToast(statusMessage, "success");
     } else {
       showToast(result.error, "error");

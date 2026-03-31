@@ -8,7 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ApplicationFormSection({
   formId,
@@ -109,12 +115,22 @@ export function ApplicationFormSection({
           {mode === "select" && (
             <div className="space-y-2">
               <Label htmlFor="formId">اختر نموذجاً</Label>
-              <Select value={formId || undefined} onValueChange={(val) => onFormIdChange(val === "none" ? "" : val)} dir="rtl">
+              <Select
+                value={formId || undefined}
+                onValueChange={(val) =>
+                  onFormIdChange(val === "none" ? "" : val)
+                }
+                dir="rtl"
+              >
                 <SelectTrigger id="formId" className="w-full">
                   <SelectValue placeholder="لا يوجد نموذج مرتبط" />
                 </SelectTrigger>
                 <SelectContent dir="rtl">
-                  {loadingForms && <SelectItem value="loading" disabled>جاري التحميل...</SelectItem>}
+                  {loadingForms && (
+                    <SelectItem value="loading" disabled>
+                      جاري التحميل...
+                    </SelectItem>
+                  )}
                   <SelectItem value="none">لا يوجد نموذج مرتبط</SelectItem>
                   {forms.map((form) => (
                     <SelectItem key={form._id} value={form._id}>
