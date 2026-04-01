@@ -16,7 +16,7 @@ export function useScorecards(applicationId) {
       const data = await scorecardsApi.getByApplication(applicationId);
       setScorecards(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch scorecards");
+      setError(err.message || "فشل في جلب التقييمات");
     } finally {
       setLoading(false);
     }

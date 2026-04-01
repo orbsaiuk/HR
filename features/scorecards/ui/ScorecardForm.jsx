@@ -62,7 +62,7 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
     const unscored = criteria.filter((c) => !c.score || c.score === 0);
     if (unscored.length > 0) {
       showToast(
-        `Please rate all criteria. Missing: ${unscored.map((c) => c.name).join(", ")}`,
+        `يرجى تقييم جميع المعايير. الناقص: ${unscored.map((c) => c.name).join("، ")}`,
         "error",
       );
       return;
@@ -77,7 +77,7 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
 
     if (result.success) {
       showToast(
-        existingScorecard ? "Scorecard updated" : "Scorecard submitted",
+        existingScorecard ? "تم تحديث التقييم" : "تم إرسال التقييم",
         "success",
       );
       onSaved?.(result.data);
@@ -93,12 +93,10 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
               <span>
-                {existingScorecard
-                  ? "Edit Your Scorecard"
-                  : "Submit Evaluation"}
+                {existingScorecard ? "تعديل تقييمك" : "إرسال التقييم"}
               </span>
               <span className="text-sm font-normal text-muted-foreground">
-                Overall: {overallScore > 0 ? `${overallScore}/5` : "—"}
+                الإجمالي: {overallScore > 0 ? `${overallScore}/5` : "—"}
               </span>
             </CardTitle>
           </CardHeader>
@@ -117,7 +115,7 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
                     />
                   </div>
                   <Textarea
-                    placeholder={`Comments on ${criterion.name.toLowerCase()}...`}
+                    placeholder={`ملاحظات حول ${criterion.name}...`}
                     value={criterion.comment || ""}
                     onChange={(e) =>
                       handleCriterionChange(idx, "comment", e.target.value)
@@ -131,7 +129,7 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
 
             {/* Recommendation */}
             <div className="space-y-2">
-              <Label className="font-medium">Recommendation</Label>
+              <Label className="font-medium">التوصية</Label>
               <div className="flex flex-wrap gap-2">
                 {RECOMMENDATION_OPTIONS.map((opt) => (
                   <button
@@ -156,9 +154,9 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
 
             {/* Summary */}
             <div className="space-y-2">
-              <Label className="font-medium">Summary Notes</Label>
+              <Label className="font-medium">ملاحظات الملخص</Label>
               <Textarea
-                placeholder="Overall evaluation summary..."
+                placeholder="ملخص التقييم العام..."
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
                 rows={3}
@@ -168,11 +166,11 @@ export function ScorecardForm({ applicationId, existingScorecard, onSaved }) {
             {/* Submit */}
             <Button type="submit" disabled={actionLoading} className="w-full">
               {actionLoading ? (
-                <Loader2 size={16} className="mr-2 animate-spin" />
+                <Loader2 size={16} className="ml-2 animate-spin" />
               ) : (
-                <Save size={16} className="mr-2" />
+                <Save size={16} className="ml-2" />
               )}
-              {existingScorecard ? "Update Scorecard" : "Submit Scorecard"}
+              {existingScorecard ? "تحديث التقييم" : "إرسال التقييم"}
             </Button>
           </CardContent>
         </Card>

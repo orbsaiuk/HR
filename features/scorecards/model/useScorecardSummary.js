@@ -16,7 +16,7 @@ export function useScorecardSummary(applicationId) {
       const data = await scorecardsApi.getSummary(applicationId);
       setSummary(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch scorecard summary");
+      setError(err.message || "فشل في جلب ملخص التقييم");
     } finally {
       setLoading(false);
     }

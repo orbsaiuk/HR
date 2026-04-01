@@ -3,32 +3,32 @@
 import { Star } from "lucide-react";
 
 const DEFAULT_CRITERIA = [
-  { name: "Technical Skills", score: 0, comment: "" },
-  { name: "Communication", score: 0, comment: "" },
-  { name: "Culture Fit", score: 0, comment: "" },
-  { name: "Problem Solving", score: 0, comment: "" },
-  { name: "Experience Relevance", score: 0, comment: "" },
+  { name: "المهارات التقنية", score: 0, comment: "" },
+  { name: "التواصل", score: 0, comment: "" },
+  { name: "الملاءمة الثقافية", score: 0, comment: "" },
+  { name: "حل المشكلات", score: 0, comment: "" },
+  { name: "مدى ارتباط الخبرة", score: 0, comment: "" },
 ];
 
 const RECOMMENDATION_OPTIONS = [
   {
     value: "strong-hire",
-    label: "Strong Hire",
+    label: "توظيف قوي",
     color: "bg-green-100 text-green-800 border-green-300",
   },
   {
     value: "hire",
-    label: "Hire",
+    label: "توظيف",
     color: "bg-emerald-100 text-emerald-800 border-emerald-300",
   },
   {
     value: "no-hire",
-    label: "No Hire",
+    label: "عدم توظيف",
     color: "bg-orange-100 text-orange-800 border-orange-300",
   },
   {
     value: "strong-no-hire",
-    label: "Strong No Hire",
+    label: "عدم توظيف نهائي",
     color: "bg-red-100 text-red-800 border-red-300",
   },
 ];

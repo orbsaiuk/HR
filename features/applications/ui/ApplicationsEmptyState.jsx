@@ -11,11 +11,11 @@ export function ApplicationsEmptyState() {
           <Inbox size={32} className="text-muted-foreground" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-1">
-          No applications yet
+          لا توجد طلبات تقديم حتى الآن
         </h3>
         <p className="text-sm text-muted-foreground max-w-sm">
-          Candidates will appear here when they apply to this position. Share
-          the job listing to start receiving applications.
+          ستظهر الطلبات هنا عند تقديم المرشحين على هذه الوظيفة. شارك رابط
+          الوظيفة لبدء استقبال الطلبات.
         </p>
       </CardContent>
     </Card>

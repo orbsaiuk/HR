@@ -47,8 +47,8 @@ export function ScorecardPanel({ applicationId }) {
           size="sm"
           onClick={() => setTab("all")}
         >
-          <List size={14} className="mr-1.5" />
-          All Evaluations
+          <List size={14} className="ml-1.5" />
+          كل التقييمات
         </Button>
         {canManageApplications && (
           <Button
@@ -56,8 +56,8 @@ export function ScorecardPanel({ applicationId }) {
             size="sm"
             onClick={() => setTab("mine")}
           >
-            <ClipboardCheck size={14} className="mr-1.5" />
-            {myScorecard ? "Edit My Evaluation" : "Add My Evaluation"}
+            <ClipboardCheck size={14} className="ml-1.5" />
+            {myScorecard ? "تعديل تقييمي" : "إضافة تقييمي"}
           </Button>
         )}
       </div>

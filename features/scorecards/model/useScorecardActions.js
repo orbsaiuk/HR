@@ -14,7 +14,7 @@ export function useScorecardActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to submit scorecard",
+        error: err.message || "فشل في إرسال التقييم",
       };
     } finally {
       setActionLoading(false);
@@ -29,7 +29,7 @@ export function useScorecardActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to delete scorecard",
+        error: err.message || "فشل في حذف التقييم",
       };
     } finally {
       setActionLoading(false);

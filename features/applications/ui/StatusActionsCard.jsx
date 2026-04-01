@@ -14,6 +14,15 @@ const STATUS_OPTIONS = [
   "rejected",
 ];
 
+const STATUS_LABELS = {
+  new: "جديد",
+  screening: "فرز أولي",
+  interview: "مقابلة",
+  offered: "عرض وظيفي",
+  hired: "تم التوظيف",
+  rejected: "مرفوض",
+};
+
 export function StatusActionsCard({ status, onStatusChange, isLoading }) {
   const { hasPermission } = usePermissions();
   const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
@@ -23,7 +32,7 @@ export function StatusActionsCard({ status, onStatusChange, isLoading }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Update Status</CardTitle>
+        <CardTitle className="text-base">تحديث الحالة</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="grid grid-cols-2 gap-2">
@@ -35,9 +44,9 @@ export function StatusActionsCard({ status, onStatusChange, isLoading }) {
               variant={status === s ? "default" : "outline"}
               disabled={isLoading}
               onClick={() => onStatusChange(s)}
-              className="capitalize text-xs"
+              className="text-xs"
             >
-              {s}
+              {STATUS_LABELS[s] || s}
             </Button>
           ))}
         </div>

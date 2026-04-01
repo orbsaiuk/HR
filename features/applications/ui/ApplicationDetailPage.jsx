@@ -16,6 +16,25 @@ import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+const STATUS_LABELS = {
+  new: "جديد",
+  screening: "فرز أولي",
+  interview: "مقابلة",
+  offered: "عرض وظيفي",
+  hired: "تم التوظيف",
+  rejected: "مرفوض",
+};
 
 export function ApplicationDetailPage({ applicationId, positionId }) {
   const router = useRouter();
@@ -28,6 +47,7 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
   const [notes, setNotes] = useState("");
   const [rating, setRating] = useState(0);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     if (application) {
@@ -43,6 +63,21 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
     extra.notes = notes;
     extra.rating = rating;
 
+    if (application?.isMock) {
+      setApplication({
+        ...application,
+        status: newStatus,
+        notes,
+        rating,
+        rejectionReason,
+      });
+      showToast(
+        `تم تحديث الحالة إلى ${STATUS_LABELS[newStatus] || newStatus}`,
+        "success",
+      );
+      return;
+    }
+
     const result = await updateStatus(applicationId, newStatus, extra);
     if (result.success) {
       setApplication({
@@ -52,30 +87,51 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
         rating,
         rejectionReason,
       });
-      showToast(`Status changed to ${newStatus}`, "success");
+      showToast(
+        `تم تحديث الحالة إلى ${STATUS_LABELS[newStatus] || newStatus}`,
+        "success",
+      );
     } else {
       showToast(result.error, "error");
     }
   };
 
   const handleSaveNotes = async () => {
+    if (application?.isMock) {
+      setApplication({
+        ...application,
+        notes,
+        rating,
+        rejectionReason,
+      });
+      showToast("تم حفظ الملاحظات", "success");
+      return;
+    }
+
     const result = await updateApplication(applicationId, {
       notes,
       rating,
       rejectionReason,
     });
     if (result.success) {
-      showToast("Notes saved", "success");
+      showToast("تم حفظ الملاحظات", "success");
     } else {
       showToast(result.error, "error");
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this application?")) return;
+  const executeDelete = async () => {
+    setIsDeleteDialogOpen(false);
+
+    if (application?.isMock) {
+      showToast("تم حذف طلب التقديم", "success");
+      router.push(`/company/positions/${positionId}/applications`);
+      return;
+    }
+
     const result = await deleteApplication(applicationId);
     if (result.success) {
-      showToast("Application deleted", "success");
+      showToast("تم حذف طلب التقديم", "success");
       router.push(`/company/positions/${positionId}`);
     } else {
       showToast(result.error, "error");
@@ -84,7 +140,7 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} />;
-  if (!application) return <Error message="Application not found" />;
+  if (!application) return <Error message="لم يتم العثور على طلب التقديم" />;
 
   const {
     applicant,
@@ -96,14 +152,14 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
   } = application;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className=" mx-auto space-y-6" dir="rtl">
       <ApplicationDetailHeader
         applicantName={applicant?.name}
         positionTitle={jobPosition?.title}
         appliedAt={appliedAt}
         status={status}
         positionId={positionId}
-        onDelete={handleDelete}
+        onDelete={() => setIsDeleteDialogOpen(true)}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -124,7 +180,7 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
           {/* Evaluation Scorecards */}
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              Evaluation Scorecards
+              بطاقات التقييم
             </h2>
             <ScorecardPanel applicationId={applicationId} />
           </div>
@@ -155,6 +211,33 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              هل أنت متأكد من حذف طلب التقديم؟
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              لا يمكن التراجع عن هذا الإجراء. سيتم حذف طلب التقديم نهائيا من
+              النظام.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex sm:justify-start gap-2">
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeDelete}
+              disabled={actionLoading}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {actionLoading ? "جاري الحذف..." : "حذف"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

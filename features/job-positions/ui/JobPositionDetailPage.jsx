@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -29,6 +30,16 @@ import {
   PositionRequirementsSection,
   PositionDetailsCard,
 } from "./components";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export function JobPositionDetailPage({ positionId }) {
   const router = useRouter();
@@ -36,13 +47,14 @@ export function JobPositionDetailPage({ positionId }) {
     useJobPositionDetail(positionId);
   const { deletePosition, updateStatus } = useJobPositionActions();
   const { toast, showToast, hideToast } = useToast();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={refetch} />;
   if (!position) return <Error message="المنصب الوظيفي غير موجود" />;
 
-  const handleDelete = async () => {
-    if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنصب؟")) return;
+  const executeDelete = async () => {
+    setIsDeleteDialogOpen(false);
     const result = await deletePosition(positionId);
     if (result.success) {
       router.push("/company/positions");
@@ -75,7 +87,7 @@ export function JobPositionDetailPage({ positionId }) {
         position={position}
         positionId={positionId}
         onStatusChange={handleStatusChange}
-        onDelete={handleDelete}
+        onDelete={() => setIsDeleteDialogOpen(true)}
       />
 
       <PositionMetricsGrid position={position} positionId={positionId} />
@@ -89,6 +101,23 @@ export function JobPositionDetailPage({ positionId }) {
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>هل أنت متأكد أنك تريد حذف هذا المنصب؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              لا يمكن التراجع عن هذا الإجراء. سيتم حذف المنصب الوظيفي نهائياً وإزالة جميع طلبات التقديم والبيانات المرتبطة به.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex sm:justify-start gap-2">
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction onClick={executeDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              حذف
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

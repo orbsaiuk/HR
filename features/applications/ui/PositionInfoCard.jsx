@@ -6,13 +6,21 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
+const TYPE_LABELS = {
+  "full-time": "دوام كامل",
+  "part-time": "دوام جزئي",
+  contract: "عقد",
+  internship: "تدريب",
+  remote: "عن بعد",
+};
+
 export function PositionInfoCard({ position }) {
   if (!position) return null;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Position</CardTitle>
+        <CardTitle className="text-base">الوظيفة</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2 text-sm">
         <p className="font-medium">{position.title || "—"}</p>
@@ -30,14 +38,12 @@ export function PositionInfoCard({ position }) {
         )}
         {position.type && (
           <Badge variant="outline" className="capitalize">
-            {position.type}
+            {TYPE_LABELS[position.type] || position.type}
           </Badge>
         )}
         {position && (
           <Button variant="outline" size="sm" className="w-full mt-2" asChild>
-            <Link href={`/company/positions/${position._id}`}>
-              View Position
-            </Link>
+            <Link href={`/company/positions/${position._id}`}>عرض الوظيفة</Link>
           </Button>
         )}
       </CardContent>

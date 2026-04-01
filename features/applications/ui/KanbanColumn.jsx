@@ -47,7 +47,9 @@ export function KanbanColumn({
                 : "border-gray-200 text-muted-foreground"
             }`}
           >
-            <span>{isOver ? "Drop to move here" : "No candidates"}</span>
+            <span>
+              {isOver ? "أفلت لنقل الطلب إلى هنا" : "لا يوجد متقدمون"}
+            </span>
           </div>
         ) : (
           items.map((app) => (

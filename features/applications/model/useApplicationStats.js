@@ -14,7 +14,7 @@ export function useApplicationStats() {
       const data = await applicationsApi.getStats();
       setStats(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch stats");
+      setError(err.message || "فشل في جلب الإحصائيات");
     } finally {
       setLoading(false);
     }

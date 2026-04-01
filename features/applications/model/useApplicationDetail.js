@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { applicationsApi } from "../api/applicationsApi";
+import { getMockApplicationById } from "@/features/job-positions/lib/mockPositions";
 
 export function useApplicationDetail(id) {
   const [application, setApplication] = useState(null);
@@ -13,10 +14,17 @@ export function useApplicationDetail(id) {
     try {
       setLoading(true);
       setError(null);
+
+      const mockApplication = getMockApplicationById(id);
+      if (mockApplication) {
+        setApplication(mockApplication);
+        return;
+      }
+
       const data = await applicationsApi.getById(id);
       setApplication(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch application");
+      setError(err.message || "فشل في جلب تفاصيل الطلب");
     } finally {
       setLoading(false);
     }

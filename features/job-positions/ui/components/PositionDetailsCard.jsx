@@ -14,7 +14,7 @@ export function PositionDetailsCard({ position }) {
             <dt className="text-muted-foreground mb-2">تاريخ الإنشاء</dt>
             <dd className="text-gray-900 font-medium">
               {position.createdAt
-                ? new Date(position.createdAt).toLocaleDateString()
+                ? new Date(position.createdAt).toLocaleDateString("ar-SA")
                 : "—"}
             </dd>
           </div>
@@ -22,7 +22,7 @@ export function PositionDetailsCard({ position }) {
             <dt className="text-muted-foreground mb-2">آخر تحديث</dt>
             <dd className="text-gray-900 font-medium">
               {position.updatedAt
-                ? new Date(position.updatedAt).toLocaleDateString()
+                ? new Date(position.updatedAt).toLocaleDateString("ar-SA")
                 : "—"}
             </dd>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { jobPositionsApi } from "../api/jobPositionsApi";
+import { MOCK_POSITION_CARDS } from "../lib/mockPositions";
 
 export function useJobPositionDetail(id) {
   const [position, setPosition] = useState(null);
@@ -13,10 +14,19 @@ export function useJobPositionDetail(id) {
     try {
       setLoading(true);
       setError(null);
+
+      const mockPosition = MOCK_POSITION_CARDS.find(
+        (item) => item._id === id || item.id === id || item.slug === id,
+      );
+      if (mockPosition) {
+        setPosition({ ...mockPosition });
+        return;
+      }
+
       const data = await jobPositionsApi.getById(id);
       setPosition(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch job position");
+      setError(err.message || "فشل في جلب تفاصيل الوظيفة");
     } finally {
       setLoading(false);
     }

@@ -15,7 +15,7 @@ export function useJobPositionsList() {
       const data = await jobPositionsApi.getAll();
       setPositions(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch job positions");
+      setError(err.message || "فشل في جلب الوظائف");
     } finally {
       setLoading(false);
     }

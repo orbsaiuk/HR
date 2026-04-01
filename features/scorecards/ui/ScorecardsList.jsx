@@ -5,6 +5,7 @@ import { StarRating, RecommendationBadge } from "./ScorecardHelpers";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { formatDistanceToNow } from "date-fns";
+import { ar } from "date-fns/locale";
 import { User, ClipboardCheck } from "lucide-react";
 
 export function ScorecardsList({ applicationId }) {
@@ -17,7 +18,7 @@ export function ScorecardsList({ applicationId }) {
       <Card>
         <CardContent className="py-8 text-center text-muted-foreground">
           <ClipboardCheck size={32} className="mx-auto mb-2 opacity-40" />
-          <p>No evaluations submitted yet.</p>
+          <p>لا توجد تقييمات مقدمة حتى الآن.</p>
         </CardContent>
       </Card>
     );
@@ -36,11 +37,11 @@ export function ScorecardsList({ applicationId }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">
-                {scorecards.length} evaluation{scorecards.length !== 1 && "s"}
+                {scorecards.length} تقييم
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Average:</span>
+              <span className="text-sm text-muted-foreground">المتوسط:</span>
               <span className="font-semibold">
                 {Math.round(avgScore * 10) / 10}/5
               </span>
@@ -61,12 +62,13 @@ export function ScorecardsList({ applicationId }) {
                 </div>
                 <div>
                   <CardTitle className="text-sm font-medium">
-                    {scorecard.evaluator?.name || "Unknown"}
+                    {scorecard.evaluator?.name || "غير معروف"}
                   </CardTitle>
                   <p className="text-xs text-muted-foreground">
                     {scorecard.createdAt &&
                       formatDistanceToNow(new Date(scorecard.createdAt), {
                         addSuffix: true,
+                        locale: ar,
                       })}
                   </p>
                 </div>

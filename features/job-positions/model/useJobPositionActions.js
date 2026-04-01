@@ -14,7 +14,7 @@ export function useJobPositionActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to create position",
+        error: err.message || "فشل في إنشاء الوظيفة",
       };
     } finally {
       setActionLoading(false);
@@ -29,7 +29,7 @@ export function useJobPositionActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to update position",
+        error: err.message || "فشل في تحديث الوظيفة",
       };
     } finally {
       setActionLoading(false);
@@ -44,7 +44,7 @@ export function useJobPositionActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to delete position",
+        error: err.message || "فشل في حذف الوظيفة",
       };
     } finally {
       setActionLoading(false);
@@ -59,7 +59,7 @@ export function useJobPositionActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to update status",
+        error: err.message || "فشل في تحديث الحالة",
       };
     } finally {
       setActionLoading(false);

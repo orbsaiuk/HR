@@ -3,12 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 
 const statusConfig = {
-  new: { label: "New", variant: "default" },
-  screening: { label: "Screening", variant: "secondary" },
-  interview: { label: "Interview", variant: "outline" },
-  offered: { label: "Offered", variant: "default" },
-  hired: { label: "Hired", variant: "default" },
-  rejected: { label: "Rejected", variant: "destructive" },
+  new: { label: "جديد", variant: "default" },
+  screening: { label: "فرز أولي", variant: "secondary" },
+  interview: { label: "مقابلة", variant: "outline" },
+  offered: { label: "عرض وظيفي", variant: "default" },
+  hired: { label: "تم التوظيف", variant: "default" },
+  rejected: { label: "مرفوض", variant: "destructive" },
 };
 
 const statusColors = {

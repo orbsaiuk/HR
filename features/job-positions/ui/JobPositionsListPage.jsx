@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Briefcase, Plus } from "lucide-react";
 import { useJobPositionsList } from "../model/useJobPositionsList";
 import { useJobPositionActions } from "../model/useJobPositionActions";
 import { useJobPositionsFilters } from "../model/useJobPositionsFilters";
@@ -17,6 +16,17 @@ import { Button } from "@/components/ui/button";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { usePermissions } from "@/features/team-member-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Plus } from "lucide-react";
 
 export function JobPositionsListPage() {
   const { positions, loading, error, refetch, setPositions } =
@@ -28,8 +38,11 @@ export function JobPositionsListPage() {
   const [mockPositions, setMockPositions] = useState(() =>
     MOCK_POSITION_CARDS.map((position) => ({ ...position })),
   );
+  const [positionToDelete, setPositionToDelete] = useState(null);
 
   const getPositionKey = (position) => position._id || position.id;
+  const getPositionSlug = (position) =>
+    position.slug || position._id || position.id;
 
   const isUsingMockData = positions.length === 0;
   const displayedPositions = isUsingMockData ? mockPositions : positions;
@@ -56,8 +69,14 @@ export function JobPositionsListPage() {
     goToPage,
   } = useJobPositionsFilters(displayedPositions);
 
-  const handleDelete = async (id) => {
-    if (!confirm("هل أنت متأكد من حذف هذه الوظيفة؟")) return;
+  const handleDeleteConfirm = (id) => {
+    setPositionToDelete(id);
+  };
+
+  const executeDelete = async () => {
+    if (!positionToDelete) return;
+    const id = positionToDelete;
+    setPositionToDelete(null);
 
     if (isUsingMockData) {
       setMockPositions((prev) =>
@@ -146,9 +165,13 @@ export function JobPositionsListPage() {
                 key={position._id || position.id}
                 position={position}
                 showActions={canManagePositions}
-                onDelete={handleDelete}
+                onDelete={handleDeleteConfirm}
                 onStatusChange={handleStatusChange}
-                detailsHref={isUsingMockData ? "/company/positions" : undefined}
+                detailsHref={
+                  isUsingMockData
+                    ? `/company/positions/${getPositionSlug(position)}`
+                    : undefined
+                }
                 editHref={isUsingMockData ? "/company/positions" : undefined}
               />
             ))}
@@ -176,6 +199,32 @@ export function JobPositionsListPage() {
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
+
+      <AlertDialog
+        open={!!positionToDelete}
+        onOpenChange={(open) => !open && setPositionToDelete(null)}
+      >
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              هل أنت متأكد من حذف هذه الوظيفة؟
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              لا يمكن التراجع عن هذا الإجراء. سيتم حذف الوظيفة نهائياً وإزالة
+              جميع البيانات المرتبطة بها.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex sm:justify-start gap-2">
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              حذف
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

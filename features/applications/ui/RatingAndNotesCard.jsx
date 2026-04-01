@@ -20,11 +20,11 @@ export function RatingAndNotesCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Recruiter Notes & Rating</CardTitle>
+        <CardTitle className="text-base">ملاحظات المقيم والتقييم</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <Label className="text-xs mb-2 block">Rating</Label>
+          <Label className="text-xs mb-2 block">التقييم</Label>
           <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
@@ -47,23 +47,23 @@ export function RatingAndNotesCard({
         </div>
 
         <div>
-          <Label className="text-xs mb-1 block">Notes</Label>
+          <Label className="text-xs mb-1 block">ملاحظات</Label>
           <Textarea
             value={notes}
             onChange={(e) => onNotesChange(e.target.value)}
             rows={4}
-            placeholder="Add internal notes about this candidate..."
+            placeholder="أضف ملاحظات داخلية عن هذا المتقدم..."
           />
         </div>
 
         {(status === "rejected" || rejectionReason) && (
           <div className="space-y-1">
-            <Label className="text-xs">Rejection Reason</Label>
+            <Label className="text-xs">سبب الرفض</Label>
             <Textarea
               value={rejectionReason}
               onChange={(e) => onRejectionReasonChange(e.target.value)}
               rows={2}
-              placeholder="Reason for rejection (optional)..."
+              placeholder="سبب الرفض (اختياري)..."
             />
           </div>
         )}
@@ -75,8 +75,8 @@ export function RatingAndNotesCard({
           disabled={isLoading}
           onClick={onSave}
         >
-          <Save size={14} className="mr-1" />
-          {isLoading ? "Saving..." : "Save Notes"}
+          <Save size={14} className="ml-1" />
+          {isLoading ? "جاري الحفظ..." : "حفظ الملاحظات"}
         </Button>
       </CardContent>
     </Card>

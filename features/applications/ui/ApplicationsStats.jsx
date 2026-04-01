@@ -23,28 +23,28 @@ export function ApplicationsStats() {
 
   const cards = [
     {
-      label: "Total",
+      label: "الإجمالي",
       value: stats.total,
       icon: Users,
       color: "text-gray-700",
       bg: "bg-gray-50",
     },
     {
-      label: "New",
+      label: "جديد",
       value: stats.new,
       icon: Clock,
       color: "text-blue-700",
       bg: "bg-blue-50",
     },
     {
-      label: "In Progress",
+      label: "قيد المعالجة",
       value: stats.screening + stats.interview,
       icon: Star,
       color: "text-purple-700",
       bg: "bg-purple-50",
     },
     {
-      label: "Hired",
+      label: "تم التوظيف",
       value: stats.hired,
       icon: UserCheck,
       color: "text-green-700",

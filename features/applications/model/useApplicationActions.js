@@ -14,7 +14,7 @@ export function useApplicationActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to update status",
+        error: err.message || "فشل في تحديث الحالة",
       };
     } finally {
       setActionLoading(false);
@@ -29,7 +29,7 @@ export function useApplicationActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to update application",
+        error: err.message || "فشل في تحديث الطلب",
       };
     } finally {
       setActionLoading(false);
@@ -44,7 +44,7 @@ export function useApplicationActions() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to delete application",
+        error: err.message || "فشل في حذف الطلب",
       };
     } finally {
       setActionLoading(false);

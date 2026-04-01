@@ -7,7 +7,7 @@ export function ApplicantInfoCard({ name, email }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Applicant Information</CardTitle>
+        <CardTitle>معلومات المتقدم</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center gap-3">
@@ -15,10 +15,10 @@ export function ApplicantInfoCard({ name, email }) {
             <User size={20} className="text-blue-600" />
           </div>
           <div>
-            <p className="font-medium">{name || "Unknown"}</p>
+            <p className="font-medium">{name || "غير معروف"}</p>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <Mail size={12} />
-              {email || "No email"}
+              {email || "لا يوجد بريد إلكتروني"}
             </div>
           </div>
         </div>

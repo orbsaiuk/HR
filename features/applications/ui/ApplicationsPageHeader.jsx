@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ApplicationsPageHeader({ positionId, totalApplications }) {
@@ -9,14 +9,14 @@ export function ApplicationsPageHeader({ positionId, totalApplications }) {
     <div className="flex items-center gap-3">
       <Button variant="ghost" size="icon" asChild>
         <Link href={`/company/positions/${positionId}`}>
-          <ArrowLeft size={20} />
+          <ArrowRight size={20} />
         </Link>
       </Button>
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Applications</h1>
+        <h1 className="text-2xl font-bold text-gray-900">طلبات التقديم</h1>
         <p className="text-sm text-muted-foreground">
-          {totalApplications} candidate{totalApplications !== 1 && "s"} in
-          pipeline
+          {totalApplications} {totalApplications === 1 ? "متقدم" : "متقدمين"} في
+          مسار التوظيف
         </p>
       </div>
     </div>

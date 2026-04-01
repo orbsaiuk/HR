@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Eye, MoreHorizontal, Trash2, Star } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { ar } from "date-fns/locale";
 import { ApplicationStatusBadge } from "./ApplicationStatusBadge";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +35,16 @@ const STATUS_OPTIONS = [
   "rejected",
 ];
 
+const STATUS_LABELS = {
+  all: "الكل",
+  new: "جديد",
+  screening: "فرز أولي",
+  interview: "مقابلة",
+  offered: "عرض وظيفي",
+  hired: "تم التوظيف",
+  rejected: "مرفوض",
+};
+
 export function ApplicationsTable({
   applications,
   positionId,
@@ -58,7 +69,7 @@ export function ApplicationsTable({
 
   const renderRating = (rating) => {
     if (!rating)
-      return <span className="text-muted-foreground text-xs">—</span>;
+      return <span className="text-muted-foreground text-xs">غير مقيم</span>;
     return (
       <span className="flex items-center gap-0.5">
         {[...Array(5)].map((_, i) => (
@@ -85,9 +96,9 @@ export function ApplicationsTable({
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex flex-col gap-3">
+      <div className="flex gap-3">
         <Input
-          placeholder="Search by name or email..."
+          placeholder="ابحث بالاسم أو البريد الإلكتروني..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
@@ -100,13 +111,13 @@ export function ApplicationsTable({
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${
+                className={`cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-all ${
                   isActive
                     ? "bg-gray-900 text-white border-gray-900"
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
-                {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+                {STATUS_LABELS[s] || s}
                 <span
                   className={`text-[10px] font-bold ${
                     isActive ? "text-gray-300" : "text-muted-foreground"
@@ -125,10 +136,10 @@ export function ApplicationsTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Applicant</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead>Applied</TableHead>
+              <TableHead>المتقدم</TableHead>
+              <TableHead>الحالة</TableHead>
+              <TableHead>التقييم</TableHead>
+              <TableHead>تاريخ التقديم</TableHead>
               <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
@@ -139,7 +150,7 @@ export function ApplicationsTable({
                   colSpan={5}
                   className="text-center py-8 text-muted-foreground"
                 >
-                  No applications found.
+                  لا توجد طلبات مطابقة.
                 </TableCell>
               </TableRow>
             ) : (
@@ -148,7 +159,7 @@ export function ApplicationsTable({
                   <TableCell>
                     <div>
                       <p className="font-medium">
-                        {app.applicant?.name || "Unknown"}
+                        {app.applicant?.name || "غير معروف"}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {app.applicant?.email}
@@ -163,6 +174,7 @@ export function ApplicationsTable({
                     {app.appliedAt
                       ? formatDistanceToNow(new Date(app.appliedAt), {
                           addSuffix: true,
+                          locale: ar,
                         })
                       : "—"}
                   </TableCell>
@@ -179,7 +191,7 @@ export function ApplicationsTable({
                             href={`/company/positions/${positionId}/applications/${app._id}`}
                           >
                             <Eye size={14} className="mr-2" />
-                            View Details
+                            عرض التفاصيل
                           </Link>
                         </DropdownMenuItem>
                         {canManageApplications && (
@@ -191,8 +203,7 @@ export function ApplicationsTable({
                                   key={s}
                                   onClick={() => onStatusChange(app._id, s)}
                                 >
-                                  Move to{" "}
-                                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                                  نقل إلى {STATUS_LABELS[s] || s}
                                 </DropdownMenuItem>
                               ),
                             )}
@@ -202,7 +213,7 @@ export function ApplicationsTable({
                               onClick={() => onDelete(app._id)}
                             >
                               <Trash2 size={14} className="mr-2" />
-                              Delete
+                              حذف
                             </DropdownMenuItem>
                           </>
                         )}
@@ -217,7 +228,7 @@ export function ApplicationsTable({
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Showing {filtered.length} of {applications.length} application(s)
+        عرض {filtered.length} من أصل {applications.length} طلب
       </p>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, FileText, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { Plus, FileText, ChevronDown, ChevronUp, Trash2, CalendarIcon } from "lucide-react";
 import { formsApi } from "@/features/forms/api/formsApi";
 import { FormBuilder } from "@/features/forms/components/FormBuilder/FormBuilder";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 
 export function ApplicationFormSection({
   formId,
@@ -172,14 +177,73 @@ export function ApplicationFormSection({
           )}
 
           {/* Deadline */}
-          <div className="space-y-2 pt-2 border-t">
-            <Label htmlFor="deadline">الموعد النهائي للتقديم</Label>
-            <Input
-              id="deadline"
-              type="datetime-local"
-              value={deadline}
-              onChange={(e) => onDeadlineChange(e.target.value)}
-            />
+          <div className="space-y-2 pt-2 border-t flex flex-col items-start w-full">
+            <Label className="mb-1 block">الموعد النهائي للتقديم</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-right font-normal",
+                    !deadline && "text-muted-foreground"
+                  )}
+                  dir="rtl"
+                >
+                  <CalendarIcon className="ml-2 h-4 w-4" />
+                  {deadline ? (
+                    format(new Date(deadline), "PPP - p", { locale: ar })
+                  ) : (
+                    <span>اختر تاريخاً ووقتاً</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start" dir="rtl">
+                <Calendar
+                  mode="single"
+                  selected={deadline ? new Date(deadline) : undefined}
+                  onSelect={(date) => {
+                    if (date) {
+                      const current = deadline ? new Date(deadline) : new Date();
+                      date.setHours(current.getHours());
+                      date.setMinutes(current.getMinutes());
+                      
+                      const pad = (n) => (n < 10 ? "0" + n : n);
+                      const formatted = 
+                        date.getFullYear() + "-" + 
+                        pad(date.getMonth() + 1) + "-" + 
+                        pad(date.getDate()) + "T" + 
+                        pad(date.getHours()) + ":" + 
+                        pad(date.getMinutes());
+                      onDeadlineChange(formatted);
+                    }
+                  }}
+                  initialFocus
+                />
+                <div className="p-3 border-t">
+                  <Label className="mb-2 block text-sm">الوقت:</Label>
+                  <Input 
+                    type="time"
+                    className="w-full text-left block"
+                    dir="ltr"
+                    value={deadline && deadline.includes("T") ? deadline.split("T")[1].substring(0, 5) : ""}
+                    onChange={(e) => {
+                      const time = e.target.value;
+                      if (!time) return;
+                      
+                      let dateStr = "";
+                      if (deadline && deadline.includes("T")) {
+                        dateStr = deadline.split("T")[0];
+                      } else {
+                        const d = new Date();
+                        const pad = (n) => (n < 10 ? "0" + n : n);
+                        dateStr = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+                      }
+                      onDeadlineChange(`${dateStr}T${time}`);
+                    }}
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </CardContent>
       )}
