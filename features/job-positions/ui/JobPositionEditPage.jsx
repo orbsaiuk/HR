@@ -157,6 +157,7 @@ export function JobPositionEditPage({ positionId }) {
     <div className="max-w-7xl mx-auto space-y-6">
       <PositionFormHeader
         title="تعديل الوظيفة"
+        subTitle="قم بتعديل تفاصيل الوظيفة"
         backHref={`/company/positions/${positionId}`}
       />
 

@@ -82,7 +82,7 @@ export function JobPositionDetailPage({ positionId }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto space-y-6">
       <PositionDetailHeader
         position={position}
         positionId={positionId}
@@ -102,17 +102,26 @@ export function JobPositionDetailPage({ positionId }) {
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>هل أنت متأكد أنك تريد حذف هذا المنصب؟</AlertDialogTitle>
+            <AlertDialogTitle>
+              هل أنت متأكد أنك تريد حذف هذا المنصب؟
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              لا يمكن التراجع عن هذا الإجراء. سيتم حذف المنصب الوظيفي نهائياً وإزالة جميع طلبات التقديم والبيانات المرتبطة به.
+              لا يمكن التراجع عن هذا الإجراء. سيتم حذف المنصب الوظيفي نهائياً
+              وإزالة جميع طلبات التقديم والبيانات المرتبطة به.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex sm:justify-start gap-2">
             <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <AlertDialogAction onClick={executeDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={executeDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               حذف
             </AlertDialogAction>
           </AlertDialogFooter>

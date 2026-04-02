@@ -8,14 +8,12 @@ import { useToast } from "@/shared/hooks/useToast";
 import { formsApi } from "@/features/forms/api/formsApi";
 import {
   PositionFormHeader,
-  PositionBasicInfoCard,
-  PositionCompensationCard,
-  PositionStepProgress,
   PositionStepActions,
-  PositionReviewSummary,
-  ApplicationMethodSelector,
+  PositionCreateStepProgress,
+  PositionCreateBasicInfoStep,
+  PositionCreateDetailsStep,
+  PositionCreateApplicationStep,
 } from "./components";
-import { ApplicationFormSection } from "./ApplicationFormSection";
 
 export function JobPositionCreatePage() {
   const router = useRouter();
@@ -23,10 +21,9 @@ export function JobPositionCreatePage() {
   const { toast, showToast, hideToast } = useToast();
 
   const steps = [
-    { id: "basic", label: "المعلومات الأساسية" },
-    { id: "salary", label: "الراتب" },
-    { id: "application", label: "نموذج التقديم" },
-    { id: "review", label: "المراجعة" },
+    { id: "basic", label: "معلومات اساسية" },
+    { id: "details", label: "تفاصيل الوظيفة" },
+    { id: "application", label: "اعدادات التقديم" },
   ];
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -42,6 +39,7 @@ export function JobPositionCreatePage() {
     currency: "USD",
     status: "draft",
     deadline: "",
+    isUrgent: false,
     formId: "",
     applicationMethod: "form",
   });
@@ -55,9 +53,26 @@ export function JobPositionCreatePage() {
   });
   const [submitting, setSubmitting] = useState(false);
 
+  const validateBasicStep = () => {
+    if (!formData.title.trim() || !formData.department.trim()) {
+      showToast("عنوان الوظيفة والقسم حقول مطلوبة", "error");
+      return false;
+    }
+
+    if (
+      formData.salaryMin &&
+      formData.salaryMax &&
+      Number(formData.salaryMin) > Number(formData.salaryMax)
+    ) {
+      showToast("الحد الادنى للراتب يجب ان يكون اقل من الحد الاقصى", "error");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleNext = () => {
-    if (currentStep === 0 && !formData.title.trim()) {
-      showToast("المسمى الوظيفي مطلوب", "error");
+    if (currentStep === 0 && !validateBasicStep()) {
       return;
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
@@ -72,8 +87,7 @@ export function JobPositionCreatePage() {
       return;
     }
 
-    if (!formData.title.trim()) {
-      showToast("المسمى الوظيفي مطلوب", "error");
+    if (!validateBasicStep()) {
       return;
     }
 
@@ -101,6 +115,7 @@ export function JobPositionCreatePage() {
       const payload = {
         ...formData,
         formId: linkedFormId,
+        isUrgent: Boolean(formData.isUrgent),
         salaryMin: formData.salaryMin ? Number(formData.salaryMin) : null,
         salaryMax: formData.salaryMax ? Number(formData.salaryMax) : null,
       };
@@ -120,65 +135,40 @@ export function JobPositionCreatePage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto space-y-6">
       <PositionFormHeader
-        title="إنشاء منصب وظيفي"
+        title="نشر وظيفة جديدة"
+        subTitle="قم بإنشاء وظيفة جديدة"
         backHref="/company/positions"
       />
 
-      <PositionStepProgress currentStep={currentStep} steps={steps} />
+      <PositionCreateStepProgress currentStep={currentStep} steps={steps} />
 
       <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
         {currentStep === 0 && (
-          <PositionBasicInfoCard formData={formData} onChange={setFormData} />
+          <PositionCreateBasicInfoStep
+            formData={formData}
+            onChange={setFormData}
+          />
         )}
 
         {currentStep === 1 && (
-          <PositionCompensationCard
+          <PositionCreateDetailsStep
             formData={formData}
             onChange={setFormData}
           />
         )}
 
         {currentStep === 2 && (
-          <div className="space-y-6">
-            <ApplicationMethodSelector
-              value={formData.applicationMethod}
-              onChange={(val) =>
-                setFormData((prev) => ({ ...prev, applicationMethod: val }))
-              }
-            />
-
-            {(formData.applicationMethod === "form" ||
-              formData.applicationMethod === "both") && (
-              <ApplicationFormSection
-                formId={formData.formId}
-                onFormIdChange={(id) =>
-                  setFormData((prev) => ({ ...prev, formId: id }))
-                }
-                newForm={newForm}
-                onNewFormChange={setNewForm}
-                mode={formMode}
-                onModeChange={setFormMode}
-                deadline={formData.deadline}
-                onDeadlineChange={(val) =>
-                  setFormData((prev) => ({ ...prev, deadline: val }))
-                }
-              />
-            )}
-
-            {formData.applicationMethod === "profile" && (
-              <div className="rounded-lg border border-dashed border-gray-300 p-6 bg-gray-50/50 text-center">
-                <p className="text-sm text-muted-foreground">
-                  سيقوم المتقدمون بإرسال ملفهم الشخصي عند التقديم. لا حاجة
-                  لنموذج تقديم.
-                </p>
-              </div>
-            )}
-          </div>
+          <PositionCreateApplicationStep
+            formData={formData}
+            onChange={setFormData}
+            formMode={formMode}
+            onFormModeChange={setFormMode}
+            newForm={newForm}
+            onNewFormChange={setNewForm}
+          />
         )}
-
-        {currentStep === 3 && <PositionReviewSummary formData={formData} />}
 
         <PositionStepActions
           currentStep={currentStep}
@@ -187,8 +177,9 @@ export function JobPositionCreatePage() {
           onNext={handleNext}
           onSubmit={handleSubmit}
           isLoading={actionLoading || submitting}
-          submitText="إنشاء منصب"
+          submitText="نشر الوظيفة"
           cancelHref="/company/positions"
+          cancelText="رجوع للوظائف"
         />
       </form>
 

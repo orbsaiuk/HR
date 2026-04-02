@@ -11,16 +11,12 @@ export function PositionStepActions({
   onSubmit,
   isLoading,
   submitText,
-  cancelHref,
 }) {
   const isLastStep = currentStep >= totalSteps - 1;
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <Button variant="outline" asChild>
-        <Link href={cancelHref}>إلغاء</Link>
-      </Button>
-      <div className="flex items-center gap-2">
+      {currentStep > 0 && (
         <Button
           type="button"
           variant="outline"
@@ -29,16 +25,25 @@ export function PositionStepActions({
         >
           السابق
         </Button>
-        {isLastStep ? (
-          <Button type="button" onClick={onSubmit} disabled={isLoading}>
-            {isLoading ? "جاري الحفظ..." : submitText}
-          </Button>
-        ) : (
-          <Button type="button" onClick={onNext}>
-            التالي
-          </Button>
-        )}
-      </div>
+      )}
+      {isLastStep ? (
+        <Button
+          type="button"
+          onClick={onSubmit}
+          disabled={isLoading}
+          className="bg-[#5338D5] hover:bg-[#462EA8]"
+        >
+          {isLoading ? "جاري الحفظ..." : submitText}
+        </Button>
+      ) : (
+        <Button
+          type="button"
+          onClick={onNext}
+          className="bg-[#5338D5] hover:bg-[#462EA8]"
+        >
+          التالي
+        </Button>
+      )}
     </div>
   );
 }

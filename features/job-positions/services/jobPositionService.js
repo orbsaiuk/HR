@@ -46,6 +46,7 @@ export async function createJobPosition(input, orgId) {
     applicationMethod: input.applicationMethod || "form",
     status: input.status || "draft",
     deadline: input.deadline || null,
+    isUrgent: Boolean(input.isUrgent),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -60,6 +61,10 @@ export async function createJobPosition(input, orgId) {
 
 export async function updateJobPosition(id, input) {
   const updates = { ...input, updatedAt: new Date().toISOString() };
+
+  if (input.isUrgent !== undefined) {
+    updates.isUrgent = Boolean(input.isUrgent);
+  }
 
   // Handle form reference
   if (input.formId !== undefined) {
