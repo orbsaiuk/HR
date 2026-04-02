@@ -51,6 +51,14 @@ export async function createJobPosition(input, orgId) {
     updatedAt: new Date().toISOString(),
   };
 
+  if (input.assignedTo !== undefined) {
+    doc.assignedTo = (input.assignedTo || []).map((userId) => ({
+      _type: "reference",
+      _ref: userId,
+      _key: userId,
+    }));
+  }
+
   // Link form if provided
   if (input.formId) {
     doc.form = { _type: "reference", _ref: input.formId };

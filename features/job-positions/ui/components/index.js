@@ -15,6 +15,7 @@ export { ApplicationMethodSelector } from "./ApplicationMethodSelector";
 export { PositionCreateBasicInfoStep } from "./PositionCreateBasicInfoStep";
 export { PositionCreateDetailsStep } from "./PositionCreateDetailsStep";
 export { PositionCreateApplicationStep } from "./PositionCreateApplicationStep";
+export { PositionEditApplicationStep } from "./PositionEditApplicationStep";
 export { JobPositionsFilters } from "./JobPositionsFilters";
 export { JobPositionsPagination } from "./JobPositionsPagination";
 export { JobPositionCardHeader } from "./JobPositionCardHeader";
