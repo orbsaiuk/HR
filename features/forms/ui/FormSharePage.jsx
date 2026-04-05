@@ -2,89 +2,109 @@
  * Form share page component
  */
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Copy, Check, Share2 } from 'lucide-react';
-import { useFormDetail } from '../model/useFormDetail';
-import { Loading } from '@/shared/components/feedback/Loading';
-import { Error } from '@/shared/components/feedback/Error';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Copy, Check, Share2, Code2 } from "lucide-react";
+import { useFormDetail } from "../model/useFormDetail";
+import { Loading } from "@/shared/components/feedback/Loading";
+import { Error } from "@/shared/components/feedback/Error";
+import { Toast } from "@/shared/components/feedback/Toast";
+import { useToast } from "@/shared/hooks/useToast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function FormSharePage({ formId }) {
-    const router = useRouter();
-    const { form, loading, error, refetch } = useFormDetail(formId);
-    const [copied, setCopied] = useState(false);
+  const router = useRouter();
+  const { form, loading, error, refetch } = useFormDetail(formId);
+  const [copied, setCopied] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
 
-    const shareUrl = form ? `${typeof window !== 'undefined' ? window.location.origin : ''}/forms/${form._id}` : '';
+  const shareUrl = form
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/forms/${form._id}`
+    : "";
 
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(shareUrl);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (error) {
-            alert('Failed to copy link');
-        }
-    };
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      showToast("تم نسخ رابط النموذج", "success");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      showToast("تعذر نسخ الرابط. حاول مرة أخرى.", "error");
+    }
+  };
 
-    if (loading) return <Loading fullPage />;
-    if (error) return <Error message={error} onRetry={refetch} />;
-    if (!form) return <Error message="Form not found" />;
+  if (loading) return <Loading fullPage />;
+  if (error) return <Error message={error} onRetry={refetch} />;
+  if (!form) return <Error message="النموذج غير موجود" />;
 
-    return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center gap-4">
-                <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-lg">
-                    <ArrowLeft size={20} className="text-gray-600" />
-                </button>
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Share Form</h1>
-                    <p className="text-gray-600 mt-1">{form.title}</p>
-                </div>
-            </div>
-
-            {/* Share Link */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                    <Share2 size={24} className="text-blue-600" />
-                    <h2 className="text-xl font-bold text-gray-900">Share Link</h2>
-                </div>
-
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={shareUrl}
-                        readOnly
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                    />
-                    <button
-                        onClick={handleCopy}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    >
-                        {copied ? <Check size={20} /> : <Copy size={20} />}
-                        {copied ? 'Copied!' : 'Copy'}
-                    </button>
-                </div>
-
-                <p className="text-sm text-gray-500 mt-4">
-                    Anyone with this link can view and submit the form.
-                </p>
-            </div>
-
-            {/* Embed Code */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Embed Form</h2>
-                <p className="text-gray-600 mb-4">
-                    Copy this code to embed the form on your website:
-                </p>
-                <div className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
-                    <code className="text-sm">
-                        {`<iframe src="${shareUrl}" width="100%" height="600" frameborder="0"></iframe>`}
-                    </code>
-                </div>
-            </div>
+  return (
+    <div className="space-y-6" dir="rtl">
+      <div className="rounded-2xl border border-slate-200 bg-linear-to-l from-white via-indigo-50/30 to-white px-5 py-6 shadow-sm">
+        <div>
+          <button
+            onClick={() => router.back()}
+            className="mb-3 inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
+          >
+            <ArrowRight size={16} />
+            العودة
+          </button>
+          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            مشاركة النموذج
+          </h1>
+          <p className="mt-1 text-sm text-slate-600 sm:text-base">
+            {form.title || "نموذج بدون عنوان"}
+          </p>
         </div>
-    );
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-3">
+          <Share2 size={22} className="text-indigo-600" />
+          <h2 className="text-xl font-bold text-slate-900">رابط المشاركة</h2>
+        </div>
+
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            value={shareUrl}
+            readOnly
+            className="flex-1 bg-slate-50"
+          />
+          <Button
+            onClick={handleCopy}
+            className="inline-flex items-center gap-2 bg-[#5338D5] hover:bg-[#462EA8]"
+          >
+            {copied ? <Check size={20} /> : <Copy size={20} />}
+            {copied ? "تم النسخ" : "نسخ"}
+          </Button>
+        </div>
+
+        <p className="mt-4 text-sm text-slate-500">
+          كل من يملك هذا الرابط يمكنه عرض النموذج وإرسال استجابة.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-3">
+          <Code2 size={22} className="text-indigo-600" />
+          <h2 className="text-xl font-bold text-slate-900">تضمين النموذج</h2>
+        </div>
+        <p className="mb-4 text-sm text-slate-600 sm:text-base">
+          انسخ الكود التالي لإدراج النموذج داخل موقعك:
+        </p>
+        <div className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+          <code className="text-sm">
+            {`<iframe src="${shareUrl}" width="100%" height="600" frameborder="0"></iframe>`}
+          </code>
+        </div>
+      </div>
+
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
+    </div>
+  );
 }

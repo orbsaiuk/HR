@@ -43,6 +43,7 @@ export function ProjectsPage() {
     currentPage,
     setCurrentPage,
     totalPages,
+    pageSize,
 
     // Actions
     clearFilters,
@@ -83,7 +84,7 @@ export function ProjectsPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex gap-8">
           {/* Desktop sidebar */}
-          <div className="hidden lg:block w-[260px] shrink-0">
+          <div className="hidden lg:block w-65 shrink-0">
             <ProjectsSidebar {...sidebarProps} />
           </div>
 
@@ -109,6 +110,7 @@ export function ProjectsPage() {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
+            pageSize={pageSize}
             hasActiveFilters={hasActiveFilters}
             onClearFilters={clearFilters}
             onFilterToggle={() => setSidebarOpen(!sidebarOpen)}

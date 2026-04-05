@@ -1,56 +1,103 @@
 /**
- * Form card component for table row
+ * Form card component
  */
 
 import Link from "next/link";
-import { FileText, MessageSquare, Calendar } from "lucide-react";
+import { FileText, MessageSquare, CalendarDays } from "lucide-react";
 import { FormActionsMenu } from "./FormActionsMenu";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-export function FormCard({ form, onAction }) {
+export function FormCard({
+  form,
+  onAction,
+  showActions = true,
+  isMock = false,
+}) {
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    if (!dateString) return "غير محدد";
+    return new Date(dateString).toLocaleDateString("ar-SA", {
+      year: "numeric",
       month: "short",
       day: "numeric",
-      year: "numeric",
     });
   };
 
+  const formatNumber = (value) => {
+    const normalized = Number(value || 0);
+    return Number.isNaN(normalized)
+      ? "0"
+      : new Intl.NumberFormat("ar-SA").format(normalized);
+  };
+
+  const statusLabel =
+    form.status === "published"
+      ? "منشور"
+      : form.status === "archived"
+        ? "مؤرشف"
+        : "مسودة";
+
+  const statusClassName =
+    form.status === "published"
+      ? "bg-emerald-100 text-emerald-700"
+      : form.status === "archived"
+        ? "bg-slate-200 text-slate-700"
+        : "bg-amber-100 text-amber-700";
+
+  const summary =
+    form.description?.trim() || "لا يوجد وصف لهذا النموذج حالياً.";
+
   return (
-    <TableRow>
-      <TableCell>
-        <Link href={`/company/forms/${form._id}`} className="block">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FileText className="text-blue-600" size={20} />
+    <Card className="h-full border-slate-200 shadow-sm" dir="rtl">
+      <CardContent className="space-y-4 p-4">
+        <div className="flex items-start justify-between gap-3">
+          <Link
+            href={`/company/forms/${form._id}`}
+            className="flex min-w-0 flex-1 items-start gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5338D5]/40"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100">
+              <FileText className="text-indigo-600" size={20} />
             </div>
             <div className="min-w-0">
-              <p className="font-medium text-gray-900 truncate">{form.title}</p>
-              {form.description && (
-                <p className="text-sm text-gray-500 truncate">
-                  {form.description}
-                </p>
-              )}
+              <h3 className="truncate text-base font-bold text-slate-900">
+                {form.title || "نموذج بدون عنوان"}
+              </h3>
+              <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                {summary}
+              </p>
             </div>
-          </div>
-        </Link>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2">
-          <MessageSquare size={16} className="text-gray-400" />
-          <span className="text-gray-900">{form.responseCount || 0}</span>
+          </Link>
+
+          {showActions && (
+            <FormActionsMenu form={form} onAction={onAction} isMock={isMock} />
+          )}
         </div>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2 text-gray-600">
-          <Calendar size={16} />
-          <span>{formatDate(form.updatedAt)}</span>
+
+        <div className="flex items-center justify-between gap-3 text-sm text-slate-600">
+          <span className="inline-flex items-center gap-1.5">
+            <MessageSquare size={15} />
+            {formatNumber(form.responseCount)} استجابة
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <CalendarDays size={15} />
+            {formatDate(form.updatedAt)}
+          </span>
         </div>
-      </TableCell>
-      <TableCell className="text-right">
-        <FormActionsMenu form={form} onAction={onAction} />
-      </TableCell>
-    </TableRow>
+
+        <div className="flex items-center justify-between gap-2">
+          <Badge className={`border-transparent ${statusClassName}`}>
+            {statusLabel}
+          </Badge>
+          <Link
+            href={`/company/forms/${form._id}`}
+            className="text-sm font-medium text-[#5338D5] hover:text-[#462EA8]"
+          >
+            عرض التفاصيل
+          </Link>
+        </div>
+
+        {isMock && <p className="text-xs text-slate-500">بيانات تجريبية</p>}
+      </CardContent>
+    </Card>
   );
 }

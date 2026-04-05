@@ -11,7 +11,6 @@ import {
   Edit,
   Share2,
   Trash2,
-  MessageSquare,
   TrendingUp,
 } from "lucide-react";
 import {
@@ -25,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { usePermissions } from "@/features/team-member-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
-export function FormActionsMenu({ form, onAction }) {
+export function FormActionsMenu({ form, onAction, isMock = false }) {
   const { hasPermission } = usePermissions();
   const canManageForms = hasPermission(PERMISSIONS.MANAGE_FORMS);
 
@@ -38,59 +37,60 @@ export function FormActionsMenu({ form, onAction }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreVertical className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">فتح القائمة</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-48" dir="rtl">
         <DropdownMenuItem asChild>
           <Link
             href={`/company/forms/${form._id}`}
-            className="flex items-center"
+            className="flex items-center gap-2"
           >
-            <Eye className="mr-2 h-4 w-4" />
-            View Details
+            <Eye className="h-4 w-4" />
+            عرض التفاصيل
           </Link>
         </DropdownMenuItem>
-        {canManageForms && (
+        {canManageForms && !isMock && (
           <DropdownMenuItem asChild>
             <Link
               href={`/company/forms/${form._id}/edit`}
-              className="flex items-center"
+              className="flex items-center gap-2"
             >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
+              <Edit className="h-4 w-4" />
+              تعديل
             </Link>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/company/forms/${form._id}/responses`}
-            className="flex items-center"
-          >
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Responses
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/company/forms/${form._id}/analytics`}
-            className="flex items-center"
-          >
-            <TrendingUp className="mr-2 h-4 w-4" />
-            Analytics
-          </Link>
-        </DropdownMenuItem>
-        {canManageForms && (
+        {!isMock && (
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/company/forms/${form._id}/analytics`}
+              className="flex items-center gap-2"
+            >
+              <TrendingUp className="h-4 w-4" />
+              التحليلات
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {canManageForms && !isMock && (
           <DropdownMenuItem asChild>
             <Link
               href={`/company/forms/${form._id}/share`}
-              className="flex items-center"
+              className="flex items-center gap-2"
             >
-              <Share2 className="mr-2 h-4 w-4" />
-              Share
+              <Share2 className="h-4 w-4" />
+              مشاركة
             </Link>
           </DropdownMenuItem>
         )}
+
+        {isMock && (
+          <DropdownMenuItem disabled className="opacity-80">
+            <TrendingUp className="h-4 w-4" />
+            التحليلات غير متاحة في النموذج التجريبي
+          </DropdownMenuItem>
+        )}
+
         {canManageForms && (
           <>
             <DropdownMenuSeparator />
@@ -98,8 +98,8 @@ export function FormActionsMenu({ form, onAction }) {
               onClick={() => handleAction("delete")}
               className="text-red-600 focus:text-red-600"
             >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
+              <Trash2 className="h-4 w-4" />
+              حذف
             </DropdownMenuItem>
           </>
         )}

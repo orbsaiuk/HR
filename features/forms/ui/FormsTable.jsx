@@ -18,20 +18,20 @@ export function FormsTable({ forms, onSort, onAction }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[40%]">Form</TableHead>
+            <TableHead className="w-[40%]">النموذج</TableHead>
             <TableHead
               className="cursor-pointer hover:bg-muted/50"
               onClick={() => onSort("responseCount")}
             >
-              Responses
+              الاستجابات
             </TableHead>
             <TableHead
               className="cursor-pointer hover:bg-muted/50"
               onClick={() => onSort("updatedAt")}
             >
-              Last Updated
+              آخر تحديث
             </TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="text-right">الإجراءات</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

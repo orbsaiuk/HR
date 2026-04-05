@@ -20,6 +20,7 @@ export function ProjectsResults({
   currentPage,
   totalPages,
   onPageChange,
+  pageSize = 6,
   hasActiveFilters,
   onClearFilters,
   onFilterToggle,
@@ -46,7 +47,7 @@ export function ProjectsResults({
               : "flex flex-col gap-4"
           }
         >
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: pageSize }).map((_, i) => (
             <ProjectCardSkeleton key={i} viewMode={viewMode} />
           ))}
         </div>

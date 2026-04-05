@@ -26,6 +26,12 @@ export const NAV_ITEMS = [
     permission: PERMISSIONS.VIEW_POSITIONS,
   },
   {
+    name: "المشاريع",
+    href: "/company/projects",
+    icon: Briefcase,
+    permission: null,
+  },
+  {
     name: "النماذج",
     href: "/company/forms",
     icon: ClipboardList,

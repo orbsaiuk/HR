@@ -76,11 +76,11 @@ export function AssignedTeamMembersField({ value = [], onChange }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Users className="h-4 w-4" />
-          اضف أعضاء الفريق
+          إضافة أعضاء الفريق
         </CardTitle>
         <CardDescription>
-          اضف أعضاء الفريق الذين سيكونون مسؤولين عن هذه الوظيفة. يمكن لأعضاء
-          الفريق المعينين عرض وتحرير هذه الوظيفة.
+          أضف أعضاء الفريق المسؤولين عن هذا النموذج. يستطيع الأعضاء المعينون عرض
+          النموذج وتعديله.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

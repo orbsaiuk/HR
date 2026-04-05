@@ -73,13 +73,13 @@ export function ProjectsPagination({ currentPage, totalPages, onPageChange }) {
 
   return (
     <Pagination className="mt-8">
-      <PaginationContent>
+      <PaginationContent className="flex-wrap gap-1.5">
         {/* Previous button - Note: In RTL, "previous" arrow points right */}
         <PaginationItem>
           <button
             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className="inline-flex items-center justify-center h-9 w-9 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
             aria-label="الصفحة السابقة"
           >
             <ChevronRight className="h-4 w-4" />
@@ -107,7 +107,7 @@ export function ProjectsPagination({ currentPage, totalPages, onPageChange }) {
                 }}
                 className={`cursor-pointer h-9 w-9 ${
                   page === currentPage
-                    ? "bg-[#1a2332] text-white border-[#1a2332] hover:bg-[#2a3a4a] hover:text-white"
+                    ? "bg-[#5338D5] hover:bg-[#462EA8] text-white"
                     : ""
                 }`}
               >
@@ -124,7 +124,7 @@ export function ProjectsPagination({ currentPage, totalPages, onPageChange }) {
               handlePageChange(Math.min(totalPages, currentPage + 1))
             }
             disabled={currentPage === totalPages}
-            className="inline-flex items-center justify-center h-9 w-9 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+            className="cursor-pointer inline-flex items-center justify-center h-9 w-9 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
             aria-label="الصفحة التالية"
           >
             <ChevronLeft className="h-4 w-4" />

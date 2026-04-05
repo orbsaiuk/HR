@@ -14,13 +14,13 @@ export function useFormCreate() {
 
   const validateForm = (publish) => {
     if (!title.trim()) {
-      return { valid: false, message: "Please enter a form title" };
+      return { valid: false, message: "يرجى إدخال عنوان للنموذج" };
     }
 
     if (publish && fields.length === 0) {
       return {
         valid: false,
-        message: "Please add at least one field before publishing",
+        message: "يرجى إضافة حقل واحد على الأقل قبل نشر النموذج",
       };
     }
 
@@ -53,7 +53,7 @@ export function useFormCreate() {
       router.push(`/company/forms/${form._id}`);
       return { success: true, form };
     } catch (err) {
-      const errorMessage = err.message || "Failed to save form";
+      const errorMessage = err.message || "تعذر حفظ النموذج";
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {

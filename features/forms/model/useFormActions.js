@@ -14,7 +14,7 @@ export function useFormActions() {
       await formsApi.delete(formId);
       return { success: true };
     } catch (err) {
-      const errorMessage = err.message || "Failed to delete form";
+      const errorMessage = err.message || "تعذر حذف النموذج";
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {

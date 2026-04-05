@@ -25,7 +25,7 @@ export function useFormEdit(formId) {
       setFields(data.fields || []);
       setAssignedTo(data.assignedTo?.map((u) => u._id) || []);
     } catch (err) {
-      setError(err.message || "Failed to fetch form");
+      setError(err.message || "تعذر جلب بيانات النموذج");
     } finally {
       setLoading(false);
     }
@@ -33,8 +33,8 @@ export function useFormEdit(formId) {
 
   const saveForm = async (publish = false) => {
     if (!title.trim()) {
-      setError("Please enter a form title");
-      return { success: false, error: "Please enter a form title" };
+      setError("يرجى إدخال عنوان للنموذج");
+      return { success: false, error: "يرجى إدخال عنوان للنموذج" };
     }
 
     if (publish) {
@@ -57,7 +57,7 @@ export function useFormEdit(formId) {
       router.push(`/company/forms/${formId}`);
       return { success: true };
     } catch (err) {
-      const errorMessage = err.message || "Failed to save form";
+      const errorMessage = err.message || "تعذر حفظ النموذج";
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
