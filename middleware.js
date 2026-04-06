@@ -29,12 +29,19 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // Register organization requires sign-in
-  if (isRegisterOrgRoute(req) && !userId) {
-    const signInUrl = new URL("/sign-in", req.url);
-    const redirectTarget = `${req.nextUrl.pathname}${req.nextUrl.search}`;
-    signInUrl.searchParams.set("redirect_url", redirectTarget);
-    return NextResponse.redirect(signInUrl);
+  // Register organization requires sign-in and is not available to org members.
+  if (isRegisterOrgRoute(req)) {
+    if (!userId) {
+      const signInUrl = new URL("/sign-in", req.url);
+      const redirectTarget = `${req.nextUrl.pathname}${req.nextUrl.search}`;
+      signInUrl.searchParams.set("redirect_url", redirectTarget);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    if (orgId || accountType === "orgMember") {
+      const redirectPath = orgId ? "/company" : "/";
+      return NextResponse.redirect(new URL(redirectPath, req.url));
+    }
   }
 
   // User-directory routes are for regular users only.
