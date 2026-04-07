@@ -45,7 +45,7 @@ export function FormEditPage({ formId }) {
           <div>
             <button
               onClick={() => router.back()}
-              className="mb-3 inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
+              className="cursor-pointer mb-3 inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
             >
               <ArrowRight size={16} />
               العودة

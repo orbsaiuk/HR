@@ -9,7 +9,11 @@ import { AppointmentCard } from "../components/AppointmentCard";
 import Link from "next/link";
 
 export function CalendarDashboard() {
-  const [date, setDate] = useState(new Date(2026, 2, 10)); // Fixed to March 10, 2026 for the UI match
+  const [date, setDate] = useState(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
 
   // Mock Data
   const selectedDayAppointments = [

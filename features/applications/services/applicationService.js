@@ -70,13 +70,6 @@ export async function updateApplication(id, input) {
 }
 
 /**
- * Delete an application
- */
-export async function deleteApplication(id) {
-  return client.delete(id);
-}
-
-/**
  * Create an application (typically called from the public-facing apply route)
  */
 export async function createApplication(input) {
@@ -127,6 +120,5 @@ export const applicationService = {
   getApplicationStats,
   updateApplicationStatus,
   updateApplication,
-  deleteApplication,
   createApplication,
 };

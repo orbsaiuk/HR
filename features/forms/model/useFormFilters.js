@@ -4,11 +4,17 @@ import { useState, useMemo } from "react";
 
 export function useFormFilters(forms) {
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState("updatedAt");
+  const [status, setStatus] = useState("all");
+  const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
 
   const filteredForms = useMemo(() => {
     let filtered = [...forms];
+
+    // Filter by status
+    if (status !== "all") {
+      filtered = filtered.filter((form) => form.status === status);
+    }
 
     // Filter by search
     if (search) {
@@ -35,7 +41,7 @@ export function useFormFilters(forms) {
     });
 
     return filtered;
-  }, [forms, search, sortBy, sortOrder]);
+  }, [forms, status, search, sortBy, sortOrder]);
 
   const handleSort = (field) => {
     if (sortBy === field) {
@@ -49,6 +55,8 @@ export function useFormFilters(forms) {
   return {
     search,
     setSearch,
+    status,
+    setStatus,
     sortBy,
     sortOrder,
     setSortBy,

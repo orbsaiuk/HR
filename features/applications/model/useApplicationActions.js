@@ -36,25 +36,9 @@ export function useApplicationActions() {
     }
   };
 
-  const deleteApplication = async (id) => {
-    try {
-      setActionLoading(true);
-      await applicationsApi.delete(id);
-      return { success: true };
-    } catch (err) {
-      return {
-        success: false,
-        error: err.message || "فشل في حذف الطلب",
-      };
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
   return {
     updateStatus,
     updateApplication,
-    deleteApplication,
     actionLoading,
   };
 }

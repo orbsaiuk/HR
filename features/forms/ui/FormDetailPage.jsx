@@ -9,11 +9,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
-  BarChart3,
   Edit,
-  Share2,
+  Link2,
   Trash2,
-  MessageSquare,
   CalendarDays,
   FileText,
 } from "lucide-react";
@@ -59,9 +57,33 @@ export function FormDetailPage({ formId }) {
   const isMockForm = Boolean(form?.isMock);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const handleCopyLink = () => {
+    const url = `${window.location.origin}/company/forms/${form._id}`;
+
+    const textarea = document.createElement("textarea");
+    textarea.value = url;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+      document.execCommand("copy");
+      showToast("تم نسخ الرابط بنجاح", "success");
+    } catch (err) {
+      showToast("فشل في نسخ الرابط", "error");
+    }
+
+    document.body.removeChild(textarea);
+  };
+
   const handleDelete = async () => {
     const result = await deleteForm();
-    if (!result.success) {
+    if (result.success) {
+      showToast("تم حذف النموذج بنجاح", "success");
+    } else {
       showToast(result.error || "تعذر حذف النموذج. حاول مرة أخرى.", "error");
     }
     setIsDeleteDialogOpen(false);
@@ -94,7 +116,7 @@ export function FormDetailPage({ formId }) {
           <div>
             <button
               onClick={() => router.back()}
-              className="mb-3 inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
+              className="cursor-pointer mb-3 inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
             >
               <ArrowRight size={16} />
               العودة
@@ -121,14 +143,13 @@ export function FormDetailPage({ formId }) {
               </Button>
 
               <Button
-                asChild
+                type="button"
                 variant="outline"
                 className="inline-flex items-center gap-2"
+                onClick={handleCopyLink}
               >
-                <Link href={`/company/forms/${form._id}/share`}>
-                  <Share2 size={16} />
-                  مشاركة
-                </Link>
+                <Link2 size={16} />
+                نسخ الرابط
               </Button>
 
               <Button
@@ -147,26 +168,12 @@ export function FormDetailPage({ formId }) {
 
       {isMockForm && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          هذا نموذج تجريبي لعرض واجهة التفاصيل. خيارات التعديل والمشاركة
-          والتحليلات غير متاحة في وضع البيانات التجريبية.
+          هذا نموذج تجريبي لعرض واجهة التفاصيل. خيارات التعديل غير متاحة في وضع
+          البيانات التجريبية.
         </div>
       )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-indigo-100">
-              <MessageSquare className="text-indigo-600" size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">عدد الاستجابات</p>
-              <p className="text-2xl font-bold text-slate-900">
-                {formatCount(form.responseCount)}
-              </p>
-            </div>
-          </div>
-        </div>
-
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-violet-100">
@@ -194,52 +201,6 @@ export function FormDetailPage({ formId }) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {!isMockForm && (
-          <Link
-            href={`/company/forms/${form._id}/analytics`}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-colors hover:border-indigo-300"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900">
-                  تحليلات النموذج
-                </h3>
-                <p className="text-sm text-slate-600">
-                  راقب الأداء واطّلع على توزيع الاستجابات عبر الحقول المختلفة.
-                </p>
-              </div>
-              <BarChart3 size={28} className="text-slate-400" />
-            </div>
-          </Link>
-        )}
-
-        {canManageForms && !isMockForm && (
-          <Link
-            href={`/company/forms/${form._id}/share`}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-colors hover:border-indigo-300"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900">
-                  مشاركة النموذج
-                </h3>
-                <p className="text-sm text-slate-600">
-                  انسخ رابط النموذج أو كود التضمين لمشاركته بسهولة.
-                </p>
-              </div>
-              <Share2 size={28} className="text-slate-400" />
-            </div>
-          </Link>
-        )}
-
-        {isMockForm && (
-          <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-            لا تتوفر بطاقات التحليلات والمشاركة لهذا النموذج التجريبي.
-          </div>
-        )}
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">

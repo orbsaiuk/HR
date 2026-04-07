@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Eye, MoreHorizontal, Trash2, Star } from "lucide-react";
+import { Eye, MoreHorizontal, Star } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { ApplicationStatusBadge } from "./ApplicationStatusBadge";
@@ -49,7 +49,6 @@ export function ApplicationsTable({
   applications,
   positionId,
   onStatusChange,
-  onDelete,
 }) {
   const { hasPermission } = usePermissions();
   const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
@@ -207,14 +206,6 @@ export function ApplicationsTable({
                                 </DropdownMenuItem>
                               ),
                             )}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => onDelete(app._id)}
-                            >
-                              <Trash2 size={14} className="mr-2" />
-                              حذف
-                            </DropdownMenuItem>
                           </>
                         )}
                       </DropdownMenuContent>

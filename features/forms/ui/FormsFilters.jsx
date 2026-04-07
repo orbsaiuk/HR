@@ -15,9 +15,12 @@ import {
 } from "@/components/ui/select";
 
 export function FormsFilters({ filters, onFiltersChange, resultCount = 0 }) {
-  const { search, sortBy, sortOrder } = filters;
+  const { search, status, sortBy, sortOrder } = filters;
   const hasActiveFilters =
-    search.trim().length > 0 || sortBy !== "updatedAt" || sortOrder !== "desc";
+    search.trim().length > 0 ||
+    status !== "all" ||
+    sortBy !== "createdAt" ||
+    sortOrder !== "desc";
 
   const handleSortChange = (value) => {
     const [field, order] = value.split("-");
@@ -27,13 +30,14 @@ export function FormsFilters({ filters, onFiltersChange, resultCount = 0 }) {
 
   const handleReset = () => {
     onFiltersChange.setSearch("");
-    onFiltersChange.setSortBy("updatedAt");
+    onFiltersChange.setStatus("all");
+    onFiltersChange.setSortBy("createdAt");
     onFiltersChange.setSortOrder("desc");
   };
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4" dir="rtl">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
         <div className="relative md:col-span-2">
           <Search
             className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
@@ -50,6 +54,23 @@ export function FormsFilters({ filters, onFiltersChange, resultCount = 0 }) {
 
         <div>
           <Select
+            value={status}
+            onValueChange={onFiltersChange.setStatus}
+            dir="rtl"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="حالة النموذج" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">كل الحالات</SelectItem>
+              <SelectItem value="published">منشور</SelectItem>
+              <SelectItem value="draft">مسودة</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Select
             value={`${sortBy}-${sortOrder}`}
             onValueChange={handleSortChange}
             dir="rtl"
@@ -58,14 +79,8 @@ export function FormsFilters({ filters, onFiltersChange, resultCount = 0 }) {
               <SelectValue placeholder="ترتيب النتائج" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="updatedAt-desc">الأحدث تحديثاً</SelectItem>
-              <SelectItem value="updatedAt-asc">الأقدم تحديثاً</SelectItem>
-              <SelectItem value="createdAt-desc">الأحدث إنشاءً</SelectItem>
-              <SelectItem value="createdAt-asc">الأقدم إنشاءً</SelectItem>
-              <SelectItem value="title-asc">الاسم (أ - ي)</SelectItem>
-              <SelectItem value="title-desc">الاسم (ي - أ)</SelectItem>
-              <SelectItem value="responseCount-desc">الأكثر استجابة</SelectItem>
-              <SelectItem value="responseCount-asc">الأقل استجابة</SelectItem>
+              <SelectItem value="createdAt-desc">الأحدث</SelectItem>
+              <SelectItem value="createdAt-asc">الأقدم</SelectItem>
             </SelectContent>
           </Select>
         </div>

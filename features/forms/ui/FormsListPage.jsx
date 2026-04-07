@@ -84,7 +84,8 @@ export function FormsListPage() {
 
   const hasFilters =
     filters.search.trim().length > 0 ||
-    filters.sortBy !== "updatedAt" ||
+    filters.status !== "all" ||
+    filters.sortBy !== "createdAt" ||
     filters.sortOrder !== "desc";
 
   return (
@@ -130,7 +131,6 @@ export function FormsListPage() {
               key={form._id}
               form={form}
               onAction={handleAction}
-              showActions={canManageForms}
               isMock={isUsingMockData}
             />
           ))}

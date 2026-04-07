@@ -25,10 +25,6 @@ export const applicationsApi = {
     return apiClient.put(API_ENDPOINTS.APPLICATION_BY_ID(id), data);
   },
 
-  async delete(id) {
-    return apiClient.delete(API_ENDPOINTS.APPLICATION_BY_ID(id));
-  },
-
   async updateStatus(id, status, extra = {}) {
     return apiClient.patch(API_ENDPOINTS.APPLICATION_STATUS(id), {
       status,

@@ -5,7 +5,6 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getApplicationById,
   updateApplication,
-  deleteApplication,
 } from "@/features/applications/services/applicationService";
 import { notifyApplicationStatusChange } from "@/features/applications/services/applicationNotificationService";
 
@@ -59,23 +58,6 @@ export async function PUT(request, { params }) {
     const status = error.status || 500;
     return NextResponse.json(
       { error: error.message || "Failed to update application" },
-      { status },
-    );
-  }
-}
-
-export async function DELETE(request, { params }) {
-  try {
-    const context = await resolveOrgContext();
-    requirePermission(context, PERMISSIONS.MANAGE_APPLICATIONS);
-    const { id } = await params;
-    await deleteApplication(id);
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error deleting application:", error);
-    const status = error.status || 500;
-    return NextResponse.json(
-      { error: error.message || "Failed to delete application" },
       { status },
     );
   }

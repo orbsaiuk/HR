@@ -36,11 +36,6 @@ export function useJobPositionsFilters(positions) {
     return filteredAndSortedPositions.slice(startIndex, startIndex + pageSize);
   }, [filteredAndSortedPositions, currentPage, pageSize]);
 
-  const pageNumbers = useMemo(
-    () => Array.from({ length: totalPages }, (_, index) => index + 1),
-    [totalPages],
-  );
-
   useEffect(() => {
     setPage(1);
   }, [searchQuery, statusFilter, typeFilter, sortBy]);
@@ -56,14 +51,6 @@ export function useJobPositionsFilters(positions) {
     setTypeFilter("all");
     setSortBy("newest");
     setPage(1);
-  };
-
-  const goToPreviousPage = () => {
-    setPage((prev) => Math.max(1, prev - 1));
-  };
-
-  const goToNextPage = () => {
-    setPage((prev) => Math.min(totalPages, prev + 1));
   };
 
   const goToPage = (nextPage) => {
@@ -83,12 +70,9 @@ export function useJobPositionsFilters(positions) {
     handlePageSizeChange,
     currentPage,
     totalPages,
-    pageNumbers,
     paginatedPositions,
     filteredCount: filteredAndSortedPositions.length,
     resetFilters,
-    goToPreviousPage,
-    goToNextPage,
     goToPage,
   };
 }

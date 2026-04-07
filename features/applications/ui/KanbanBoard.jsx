@@ -63,7 +63,6 @@ export function KanbanBoard({
   applications,
   positionId,
   onStatusChange,
-  onDelete,
 }) {
   const { hasPermission } = usePermissions();
   const canManageApplications = hasPermission(PERMISSIONS.MANAGE_APPLICATIONS);
@@ -134,7 +133,6 @@ export function KanbanBoard({
               lightText={column.lightText}
               items={column.items}
               positionId={positionId}
-              onDelete={canManageApplications ? onDelete : undefined}
             />
           ))}
         </div>

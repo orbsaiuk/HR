@@ -11,7 +11,6 @@ export const PERMISSIONS = {
     MANAGE_MESSAGES: 'manage_messages',
     VIEW_MESSAGES: 'view_messages',
     MANAGE_SETTINGS: 'manage_settings',
-    VIEW_ANALYTICS: 'view_analytics',
 };
 
 // Human-readable metadata for each permission (for the UI)
@@ -27,7 +26,6 @@ export const PERMISSION_METADATA = {
     [PERMISSIONS.MANAGE_MESSAGES]: { label: 'Manage Messages', description: 'Send and manage messages and conversations', group: 'Communication' },
     [PERMISSIONS.VIEW_MESSAGES]: { label: 'View Messages', description: 'View messages', group: 'Communication' },
     [PERMISSIONS.MANAGE_SETTINGS]: { label: 'Manage Settings', description: 'Edit organization settings', group: 'Organization' },
-    [PERMISSIONS.VIEW_ANALYTICS]: { label: 'View Analytics', description: 'View form and position analytics', group: 'Analytics' },
 };
 
 // All permission keys as an array
@@ -48,7 +46,6 @@ export const PERMISSION_IMPLICATIONS = {
     [PERMISSIONS.MANAGE_APPLICATIONS]: [PERMISSIONS.VIEW_APPLICATIONS],
     [PERMISSIONS.MANAGE_MESSAGES]: [PERMISSIONS.VIEW_MESSAGES],
     [PERMISSIONS.MANAGE_TEAM]: [PERMISSIONS.MANAGE_ROLES],
-    [PERMISSIONS.MANAGE_SETTINGS]: [PERMISSIONS.VIEW_ANALYTICS],
 };
 
 /**
@@ -91,7 +88,6 @@ export const DEFAULT_ROLES = [
             PERMISSIONS.MANAGE_POSITIONS, PERMISSIONS.VIEW_POSITIONS,
             PERMISSIONS.MANAGE_APPLICATIONS, PERMISSIONS.VIEW_APPLICATIONS,
             PERMISSIONS.MANAGE_MESSAGES, PERMISSIONS.VIEW_MESSAGES,
-            PERMISSIONS.VIEW_ANALYTICS,
         ],
         isSystem: true,
     },
@@ -102,7 +98,7 @@ export const DEFAULT_ROLES = [
         permissions: [
             PERMISSIONS.VIEW_FORMS, PERMISSIONS.VIEW_POSITIONS,
             PERMISSIONS.MANAGE_APPLICATIONS, PERMISSIONS.VIEW_APPLICATIONS,
-            PERMISSIONS.VIEW_MESSAGES, PERMISSIONS.VIEW_ANALYTICS,
+            PERMISSIONS.VIEW_MESSAGES,
         ],
         isSystem: true,
     },
@@ -135,7 +131,6 @@ export const PERMISSION_PRESETS = [
             PERMISSIONS.MANAGE_POSITIONS, PERMISSIONS.VIEW_POSITIONS,
             PERMISSIONS.MANAGE_APPLICATIONS, PERMISSIONS.VIEW_APPLICATIONS,
             PERMISSIONS.MANAGE_MESSAGES, PERMISSIONS.VIEW_MESSAGES,
-            PERMISSIONS.VIEW_ANALYTICS,
         ],
     },
     {
@@ -146,7 +141,6 @@ export const PERMISSION_PRESETS = [
             PERMISSIONS.VIEW_POSITIONS,
             PERMISSIONS.MANAGE_APPLICATIONS, PERMISSIONS.VIEW_APPLICATIONS,
             PERMISSIONS.VIEW_MESSAGES,
-            PERMISSIONS.VIEW_ANALYTICS,
         ],
     },
     {
@@ -167,7 +161,6 @@ export const PERMISSION_PRESETS = [
             PERMISSIONS.VIEW_POSITIONS,
             PERMISSIONS.VIEW_APPLICATIONS,
             PERMISSIONS.VIEW_MESSAGES,
-            PERMISSIONS.VIEW_ANALYTICS,
         ],
     },
     {
@@ -177,7 +170,6 @@ export const PERMISSION_PRESETS = [
         permissions: [
             PERMISSIONS.MANAGE_TEAM, PERMISSIONS.MANAGE_ROLES,
             PERMISSIONS.MANAGE_SETTINGS,
-            PERMISSIONS.VIEW_ANALYTICS,
         ],
     },
 ];

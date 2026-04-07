@@ -11,7 +11,6 @@ export function KanbanColumn({
   lightText,
   items,
   positionId,
-  onDelete,
 }) {
   const { setNodeRef, isOver } = useDroppable({ id });
 
@@ -57,7 +56,6 @@ export function KanbanColumn({
               key={app._id}
               application={app}
               positionId={positionId}
-              onDelete={onDelete}
             />
           ))
         )}

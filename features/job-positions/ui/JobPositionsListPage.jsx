@@ -60,12 +60,9 @@ export function JobPositionsListPage() {
     handlePageSizeChange,
     currentPage,
     totalPages,
-    pageNumbers,
     paginatedPositions,
     filteredCount,
     resetFilters,
-    goToPreviousPage,
-    goToNextPage,
     goToPage,
   } = useJobPositionsFilters(displayedPositions);
 
@@ -186,9 +183,6 @@ export function JobPositionsListPage() {
           <JobPositionsPagination
             currentPage={currentPage}
             totalPages={totalPages}
-            pageNumbers={pageNumbers}
-            onPrevious={goToPreviousPage}
-            onNext={goToNextPage}
             onPageChange={goToPage}
             pageSize={pageSize}
             onPageSizeChange={handlePageSizeChange}

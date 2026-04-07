@@ -8,12 +8,7 @@ import { FormActionsMenu } from "./FormActionsMenu";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export function FormCard({
-  form,
-  onAction,
-  showActions = true,
-  isMock = false,
-}) {
+export function FormCard({ form, onAction, isMock = false }) {
   const formatDate = (dateString) => {
     if (!dateString) return "غير محدد";
     return new Date(dateString).toLocaleDateString("ar-SA", {
@@ -68,32 +63,17 @@ export function FormCard({
             </div>
           </Link>
 
-          {showActions && (
-            <FormActionsMenu form={form} onAction={onAction} isMock={isMock} />
-          )}
+          <FormActionsMenu form={form} onAction={onAction} isMock={isMock} />
         </div>
 
         <div className="flex items-center justify-between gap-3 text-sm text-slate-600">
           <span className="inline-flex items-center gap-1.5">
-            <MessageSquare size={15} />
-            {formatNumber(form.responseCount)} استجابة
-          </span>
-          <span className="inline-flex items-center gap-1.5">
             <CalendarDays size={15} />
             {formatDate(form.updatedAt)}
           </span>
-        </div>
-
-        <div className="flex items-center justify-between gap-2">
           <Badge className={`border-transparent ${statusClassName}`}>
             {statusLabel}
           </Badge>
-          <Link
-            href={`/company/forms/${form._id}`}
-            className="text-sm font-medium text-[#5338D5] hover:text-[#462EA8]"
-          >
-            عرض التفاصيل
-          </Link>
         </div>
 
         {isMock && <p className="text-xs text-slate-500">بيانات تجريبية</p>}

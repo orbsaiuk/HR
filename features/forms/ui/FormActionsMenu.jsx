@@ -5,14 +5,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  MoreVertical,
-  Eye,
-  Edit,
-  Share2,
-  Trash2,
-  TrendingUp,
-} from "lucide-react";
+import { MoreVertical, Eye, Edit, Link2, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePermissions } from "@/features/team-member-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
+import { toast } from "sonner";
 
 export function FormActionsMenu({ form, onAction, isMock = false }) {
   const { hasPermission } = usePermissions();
@@ -30,6 +24,50 @@ export function FormActionsMenu({ form, onAction, isMock = false }) {
 
   const handleAction = (action) => {
     onAction(action, form._id);
+  };
+
+  const copyToClipboard = async (value) => {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(value);
+        return true;
+      } catch {
+        // Fall back to execCommand when Clipboard API is blocked.
+      }
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+
+    return copied;
+  };
+
+  const handleCopyLink = async () => {
+    if (!form?._id) {
+      toast.error("فشل في نسخ الرابط");
+      return;
+    }
+
+    const url = `${window.location.origin}/company/forms/${form._id}`;
+    const copied = await copyToClipboard(url);
+
+    if (copied) {
+      toast.success("تم نسخ الرابط بنجاح");
+      return;
+    }
+
+    toast.error("فشل في نسخ الرابط");
   };
 
   return (
@@ -61,33 +99,10 @@ export function FormActionsMenu({ form, onAction, isMock = false }) {
             </Link>
           </DropdownMenuItem>
         )}
-        {!isMock && (
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/company/forms/${form._id}/analytics`}
-              className="flex items-center gap-2"
-            >
-              <TrendingUp className="h-4 w-4" />
-              التحليلات
-            </Link>
-          </DropdownMenuItem>
-        )}
         {canManageForms && !isMock && (
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/company/forms/${form._id}/share`}
-              className="flex items-center gap-2"
-            >
-              <Share2 className="h-4 w-4" />
-              مشاركة
-            </Link>
-          </DropdownMenuItem>
-        )}
-
-        {isMock && (
-          <DropdownMenuItem disabled className="opacity-80">
-            <TrendingUp className="h-4 w-4" />
-            التحليلات غير متاحة في النموذج التجريبي
+          <DropdownMenuItem onSelect={handleCopyLink}>
+            <Link2 className="h-4 w-4" />
+            نسخ الرابط
           </DropdownMenuItem>
         )}
 

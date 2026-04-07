@@ -3,10 +3,9 @@
 import { useRef } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useRouter } from "next/navigation";
-import { Star, Trash2, StickyNote } from "lucide-react";
+import { Star, StickyNote } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
 
 function getInitials(name) {
   if (!name) return "?";
@@ -33,7 +32,7 @@ function getAvatarColor(name) {
   return AVATAR_COLORS[index % AVATAR_COLORS.length];
 }
 
-export function KanbanCard({ application, positionId, onDelete, overlay }) {
+export function KanbanCard({ application, positionId, overlay }) {
   const router = useRouter();
   const pointerStart = useRef(null);
 
@@ -104,24 +103,6 @@ export function KanbanCard({ application, positionId, onDelete, overlay }) {
         application={application}
         renderRating={renderRating}
       />
-
-      {/* Quick-delete (visible on hover) */}
-      {onDelete && !isDragging && (
-        <div className="absolute top-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm text-muted-foreground hover:text-destructive hover:bg-red-50"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onDelete(application._id);
-            }}
-          >
-            <Trash2 size={12} />
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

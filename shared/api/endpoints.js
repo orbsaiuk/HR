@@ -10,10 +10,6 @@ export const API_ENDPOINTS = {
   FORM_PUBLISH: (id) => `/api/forms/${id}/publish`,
   FORM_CLOSE: (id) => `/api/forms/${id}/close`,
 
-  // Analytics
-  ANALYTICS: "/api/analytics",
-  FORM_ANALYTICS: (formId) => `/api/analytics/${formId}`,
-
   // Auth
   AUTH_USER: "/api/auth/user",
 

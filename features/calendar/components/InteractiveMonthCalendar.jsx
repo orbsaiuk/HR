@@ -8,6 +8,7 @@ export function InteractiveMonthCalendar({ date, setDate }) {
     <div className="rounded-2xl bg-[#F7F7F9] p-1 md:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
       <Calendar
         mode="single"
+        required
         selected={date}
         onSelect={setDate}
         locale={ar}
