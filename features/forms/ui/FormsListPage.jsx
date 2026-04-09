@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Plus, ClipboardList } from "lucide-react";
 import { useFormsList } from "../model/useFormsList";
@@ -12,6 +12,7 @@ import { useFormFilters } from "../model/useFormFilters";
 import { useFormActions } from "../model/useFormActions";
 import { FormsFilters } from "./FormsFilters";
 import { FormCard } from "./FormCard";
+import { FormsPagination } from "./FormsPagination";
 import { MOCK_FORMS } from "../lib/mockForms";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
@@ -32,6 +33,8 @@ import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { usePermissions } from "@/features/team-member-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
+const FORM_CARDS_PER_PAGE = 9;
+
 export function FormsListPage() {
   const { forms, loading, error, refetch, setForms } = useFormsList();
   const { deleteForm } = useFormActions();
@@ -41,10 +44,39 @@ export function FormsListPage() {
   );
   const isUsingMockData = forms.length === 0 && mockForms.length > 0;
   const displayedForms = isUsingMockData ? mockForms : forms;
-  const filters = useFormFilters(displayedForms);
+  const formFilters = useFormFilters(displayedForms);
+  const { filteredForms, search, status, sortBy, sortOrder } = formFilters;
   const { hasPermission } = usePermissions();
   const canManageForms = hasPermission(PERMISSIONS.MANAGE_FORMS);
   const [formToDelete, setFormToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(filteredForms.length / FORM_CARDS_PER_PAGE);
+
+  const paginatedForms = useMemo(() => {
+    const start = (currentPage - 1) * FORM_CARDS_PER_PAGE;
+    return filteredForms.slice(start, start + FORM_CARDS_PER_PAGE);
+  }, [filteredForms, currentPage]);
+
+  const visibleRangeStart =
+    filteredForms.length === 0
+      ? 0
+      : (currentPage - 1) * FORM_CARDS_PER_PAGE + 1;
+  const visibleRangeEnd = Math.min(
+    currentPage * FORM_CARDS_PER_PAGE,
+    filteredForms.length,
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, status, sortBy, sortOrder]);
+
+  useEffect(() => {
+    setCurrentPage((previousPage) => {
+      const safeTotalPages = Math.max(totalPages, 1);
+      return Math.min(previousPage, safeTotalPages);
+    });
+  }, [totalPages]);
 
   const handleAction = (action, formId) => {
     if (action === "delete") {
@@ -83,10 +115,10 @@ export function FormsListPage() {
   }
 
   const hasFilters =
-    filters.search.trim().length > 0 ||
-    filters.status !== "all" ||
-    filters.sortBy !== "createdAt" ||
-    filters.sortOrder !== "desc";
+    search.trim().length > 0 ||
+    status !== "all" ||
+    sortBy !== "createdAt" ||
+    sortOrder !== "desc";
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -119,22 +151,32 @@ export function FormsListPage() {
       </div>
 
       <FormsFilters
-        filters={filters}
-        onFiltersChange={filters}
-        resultCount={filters.filteredForms.length}
+        filters={formFilters}
+        onFiltersChange={formFilters}
+        resultCount={filteredForms.length}
+        rangeStart={visibleRangeStart}
+        rangeEnd={visibleRangeEnd}
       />
 
-      {filters.filteredForms.length > 0 ? (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {filters.filteredForms.map((form) => (
-            <FormCard
-              key={form._id}
-              form={form}
-              onAction={handleAction}
-              isMock={isUsingMockData}
-            />
-          ))}
-        </div>
+      {filteredForms.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {paginatedForms.map((form) => (
+              <FormCard
+                key={form._id}
+                form={form}
+                onAction={handleAction}
+                isMock={isUsingMockData}
+              />
+            ))}
+          </div>
+
+          <FormsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
       ) : (
         <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">

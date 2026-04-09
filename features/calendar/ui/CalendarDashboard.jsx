@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
 import { CalendarPageHeader } from "../components/CalendarPageHeader";
 import { InteractiveMonthCalendar } from "../components/InteractiveMonthCalendar";
 import { AppointmentCard } from "../components/AppointmentCard";
 import Link from "next/link";
+
+const arabicFullDateFormatter = new Intl.DateTimeFormat("ar-EG-u-nu-arab", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 
 export function CalendarDashboard() {
   const [date, setDate] = useState(() => {
@@ -14,6 +19,8 @@ export function CalendarDashboard() {
     today.setHours(0, 0, 0, 0);
     return today;
   });
+
+  const selectedDateLabel = arabicFullDateFormatter.format(date);
 
   // Mock Data
   const selectedDayAppointments = [
@@ -77,7 +84,7 @@ export function CalendarDashboard() {
       <div className="mb-8 rounded-xl border border-[#E6E8F0] bg-[#FCFCFE] p-3 md:p-4 shadow-[0_1px_2px_rgba(38,43,62,0.04)]">
         <div className="flex flex-col gap-5 items-start">
           <h2 className="text-xl md:text-3xl leading-[1.2] font-medium text-[#4C556A] mb-3 text-right">
-            مواعيد يوم الثلاثاء، ١٠ مارس ٢٠٢٦
+            {`مواعيد يوم ${selectedDateLabel}`}
           </h2>
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-5 w-full m-0 p-0">
             <div className="w-full lg:col-span-1 shrink-0">

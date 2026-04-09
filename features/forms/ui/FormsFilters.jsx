@@ -14,13 +14,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function FormsFilters({ filters, onFiltersChange, resultCount = 0 }) {
+export function FormsFilters({
+  filters,
+  onFiltersChange,
+  resultCount = 0,
+  rangeStart = 0,
+  rangeEnd = 0,
+}) {
   const { search, status, sortBy, sortOrder } = filters;
   const hasActiveFilters =
     search.trim().length > 0 ||
     status !== "all" ||
     sortBy !== "createdAt" ||
     sortOrder !== "desc";
+  const visibleRangeText =
+    resultCount > 0
+      ? `عرض ${rangeStart}-${rangeEnd} من ${resultCount}`
+      : "عدد النتائج: 0";
 
   const handleSortChange = (value) => {
     const [field, order] = value.split("-");
@@ -87,7 +97,7 @@ export function FormsFilters({ filters, onFiltersChange, resultCount = 0 }) {
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-2 text-xs text-slate-500">
-        <span>عدد النتائج: {resultCount}</span>
+        <span>{visibleRangeText}</span>
         {hasActiveFilters && (
           <Button
             variant="ghost"

@@ -3,3 +3,4 @@
  */
 
 export { FormsListPage } from "./FormsListPage";
+export { FormsPagination } from "./FormsPagination";
