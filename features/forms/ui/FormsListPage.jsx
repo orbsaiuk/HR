@@ -30,7 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const FORM_CARDS_PER_PAGE = 9;

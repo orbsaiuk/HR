@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const STATUS_OPTIONS = [

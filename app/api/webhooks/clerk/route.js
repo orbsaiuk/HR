@@ -18,7 +18,7 @@ import {
 } from "@/features/auth/services/userService";
 import { seedDefaultRoles } from "@/features/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
-import { getInviteByEmail } from "@/features/team-member-management/services/teamMemberManagementService";
+import { getInviteByEmail } from "@/features/org-members-management/services/orgMembersManagementService";
 
 function mapClerkRoleToRoleKey(clerkRole) {
   switch (clerkRole) {

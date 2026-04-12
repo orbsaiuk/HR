@@ -2,7 +2,7 @@ import { TYPE_LABELS } from "./jobPositionCard.constants";
 
 export function formatNumber(value) {
   if (value == null || Number.isNaN(Number(value))) return "0";
-  return Number(value).toLocaleString("ar-SA");
+  return Number(value).toLocaleString("en-US");
 }
 
 export function formatSalary(position) {

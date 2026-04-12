@@ -43,6 +43,7 @@ export function useCreatePositionPage() {
     const isValid = await trigger([
       "title",
       "department",
+      "seniority",
       "salaryMin",
       "salaryMax",
       "deadline",

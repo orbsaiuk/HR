@@ -40,6 +40,7 @@ export async function createJobPosition(input, orgId) {
     requirements: input.requirements || "",
     location: input.location || "",
     type: input.type || "full-time",
+    seniority: input.seniority || "mid",
     salaryMin: input.salaryMin || null,
     salaryMax: input.salaryMax || null,
     currency: input.currency || "USD",

@@ -6,6 +6,13 @@ export const TYPE_LABELS = {
   remote: "عن بعد",
 };
 
+export const SENIORITY_LABELS = {
+  entry: "مبتدئ",
+  mid: "متوسط الخبرة",
+  senior: "خبير",
+  manager: "مدير",
+};
+
 export const STATUS_LABELS = {
   draft: "مسودة",
   open: "نشطة",

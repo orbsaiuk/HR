@@ -14,7 +14,7 @@ import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   AlertDialog,

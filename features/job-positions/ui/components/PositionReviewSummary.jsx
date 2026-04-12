@@ -9,6 +9,13 @@ export function PositionReviewSummary({ formData }) {
     remote: "عن بعد",
   };
 
+  const SENIORITY_LABELS = {
+    entry: "مبتدئ",
+    mid: "متوسط الخبرة",
+    senior: "خبير",
+    manager: "مدير",
+  };
+
   return (
     <div className="rounded-lg border bg-white p-6 space-y-4">
       <h3 className="text-lg font-semibold">ملخص المراجعة</h3>
@@ -37,6 +44,14 @@ export function PositionReviewSummary({ formData }) {
           <p className="font-medium">طبيعة العمل</p>
           <p className="text-muted-foreground">
             {TYPE_LABELS[formData.type] || formData.type || "لم يتم تعيينه"}
+          </p>
+        </div>
+        <div>
+          <p className="font-medium">المستوى الوظيفي</p>
+          <p className="text-muted-foreground">
+            {SENIORITY_LABELS[formData.seniority] ||
+              formData.seniority ||
+              "لم يتم تعيينه"}
           </p>
         </div>
         <div>

@@ -1,13 +1,7 @@
 "use client";
 
 import { TeamMemberRow } from "./TeamMemberRow";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -31,8 +25,8 @@ export function TeamMembersList({
     <Card>
       <CardHeader>
         <CardTitle>
-          Active Team Members
-          <span className="ml-2 text-sm font-normal text-muted-foreground">
+          أعضاء الشركة النشطون
+          <span className="mr-2 text-sm font-normal text-muted-foreground">
             ({teamMembers.length})
           </span>
         </CardTitle>
@@ -41,12 +35,12 @@ export function TeamMembersList({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="px-6">Team Member</TableHead>
-              <TableHead className="px-6">Email</TableHead>
-              <TableHead className="px-6">Role</TableHead>
-              <TableHead className="px-6">Forms</TableHead>
-              <TableHead className="px-6">Joined</TableHead>
-              <TableHead className="px-6 text-right">Actions</TableHead>
+              <TableHead className="px-6">عضو الشركة</TableHead>
+              <TableHead className="px-6">البريد الإلكتروني</TableHead>
+              <TableHead className="px-6">الدور</TableHead>
+              <TableHead className="px-6">النماذج</TableHead>
+              <TableHead className="px-6">تاريخ الانضمام</TableHead>
+              <TableHead className="px-6 text-right">الإجراءات</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

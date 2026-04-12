@@ -75,7 +75,7 @@ export async function removeResume(userId) {
 
 
 export async function getProfileCompleteness(clerkId) {
-    return clientRead.fetch(userProfileQueries.getProfileCompleteness, {
+    return client.fetch(userProfileQueries.getProfileCompleteness, {
         clerkId,
     });
 }

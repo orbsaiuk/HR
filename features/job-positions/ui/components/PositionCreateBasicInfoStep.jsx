@@ -115,6 +115,27 @@ export function PositionCreateBasicInfoStep({ formData, onChange }) {
           </div>
         </div>
 
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="seniority">المستوى الوظيفي</Label>
+            <Select
+              value={formData.seniority}
+              onValueChange={(val) => onChange({ ...formData, seniority: val })}
+              dir="rtl"
+            >
+              <SelectTrigger id="seniority" className="w-full">
+                <SelectValue placeholder="اختر المستوى الوظيفي" />
+              </SelectTrigger>
+              <SelectContent dir="rtl">
+                <SelectItem value="entry">مبتدئ</SelectItem>
+                <SelectItem value="mid">متوسط الخبرة</SelectItem>
+                <SelectItem value="senior">خبير</SelectItem>
+                <SelectItem value="manager">مدير</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <div className="rounded-lg border border-slate-100 bg-slate-50/70 p-4">
           <div className="mb-3">
             <p className="font-semibold text-slate-800">نطاق الراتب</p>

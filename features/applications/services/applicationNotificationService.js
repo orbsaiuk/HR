@@ -9,7 +9,7 @@ import {
   sendApplicationStatusEmail,
 } from "@/shared/services/email";
 import { getOrganizationRoles } from "@/features/roles/services/rolesService";
-import { getAllTeamMembers } from "@/features/team-member-management/services/teamMemberManagementService";
+import { getAllTeamMembers } from "@/features/org-members-management/services/orgMembersManagementService";
 import { getApplicationById } from "./applicationService";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

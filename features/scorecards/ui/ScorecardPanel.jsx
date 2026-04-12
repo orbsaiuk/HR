@@ -7,7 +7,7 @@ import { ScorecardsList } from "./ScorecardsList";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { ClipboardCheck, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export function ScorecardPanel({ applicationId }) {

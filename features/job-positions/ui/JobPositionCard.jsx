@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
+  SENIORITY_LABELS,
   STATUS_CLASSES,
   STATUS_LABELS,
   TAG_CLASSES,
@@ -38,7 +39,9 @@ export function JobPositionCard({
   const salaryLabel = formatSalary(position);
   const typeLabel =
     position?.workType || TYPE_LABELS[position?.type] || "نوع العمل";
-  const levelLabel = position?.level || "مستوى متقدم";
+  const seniorityValue = position?.seniority || position?.level;
+  const levelLabel =
+    SENIORITY_LABELS[seniorityValue] || seniorityValue || "متوسط الخبرة";
   const status = position?.status || "draft";
   const statusLabel = STATUS_LABELS[status] || status;
   const applicationsCount =

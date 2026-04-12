@@ -25,3 +25,26 @@ export function formatRelativeDate(dateString) {
         year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
     });
 }
+
+export function formatRelativeDateAr(dateString) {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInSeconds < 60) return 'الآن';
+    if (diffInMinutes < 60) return `منذ ${diffInMinutes} دقائق`;
+    if (diffInHours < 24) return `منذ ${diffInHours} ساعات`;
+    if (diffInDays === 1) return 'أمس';
+    if (diffInDays < 7) return `منذ ${diffInDays} أيام`;
+
+    return date.toLocaleDateString('ar-EG', {
+        month: 'short',
+        day: 'numeric',
+        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    });
+}

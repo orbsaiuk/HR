@@ -51,7 +51,7 @@ export function useEditPositionPage(positionId) {
 
   const validateStep = async () => {
     const stepFields = {
-      0: ["title", "salaryMin", "salaryMax", "deadline"],
+      0: ["title", "seniority", "salaryMin", "salaryMax", "deadline"],
       1: ["description", "requirements"],
       2: ["applicationMethod", "formId"],
     };

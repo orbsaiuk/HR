@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { careersApi } from "../api/careersApi";
-import { MOCK_POSITIONS } from "../ui/components/position-card/MockPositionCard";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -66,12 +65,10 @@ export function useCareersList() {
       setLoading(true);
       setError(null);
       const data = await careersApi.getPositions({});
-      // Use mock data as fallback when API returns no positions
-      setAllPositions(data && data.length > 0 ? data : MOCK_POSITIONS);
+      setAllPositions(Array.isArray(data) ? data : []);
     } catch (err) {
-      // Fall back to mock data on error so the page still renders
-      setAllPositions(MOCK_POSITIONS);
-      setError(null);
+      setAllPositions([]);
+      setError(err?.message || "تعذر تحميل الوظائف");
     } finally {
       setLoading(false);
     }
@@ -107,16 +104,14 @@ export function useCareersList() {
           p.department?.toLowerCase().includes(q) ||
           p.description?.toLowerCase().includes(q) ||
           p.location?.toLowerCase().includes(q) ||
-          p.organizationName?.toLowerCase().includes(q)
+          p.organizationName?.toLowerCase().includes(q),
       );
     }
 
     // Location search filter
     if (searchLocation) {
       const loc = searchLocation.toLowerCase();
-      result = result.filter((p) =>
-        p.location?.toLowerCase().includes(loc)
-      );
+      result = result.filter((p) => p.location?.toLowerCase().includes(loc));
     }
 
     // Employment type filter (multi-select)
@@ -128,17 +123,17 @@ export function useCareersList() {
     if (selectedDepartments.length > 0) {
       result = result.filter((p) =>
         selectedDepartments.some(
-          (d) => d.toLowerCase() === p.department?.toLowerCase()
-        )
+          (d) => d.toLowerCase() === p.department?.toLowerCase(),
+        ),
       );
     }
 
     // Level filter (multi-select) - maps to experience/seniority if available
-    // For now, this is a placeholder filter
     if (selectedLevels.length > 0) {
       result = result.filter((p) => {
-        if (!p.level) return false;
-        return selectedLevels.includes(p.level);
+        const levelValue = p.seniority || p.level;
+        if (!levelValue) return false;
+        return selectedLevels.includes(levelValue);
       });
     }
 
@@ -157,9 +152,7 @@ export function useCareersList() {
 
     // Sorting
     if (sortBy === "date") {
-      result.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
+      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } else if (sortBy === "salary") {
       result.sort((a, b) => (b.salaryMax || 0) - (a.salaryMax || 0));
     }
@@ -197,8 +190,9 @@ export function useCareersList() {
       }
 
       // Level counts
-      if (p.level) {
-        levelCounts[p.level] = (levelCounts[p.level] || 0) + 1;
+      const levelValue = p.seniority || p.level;
+      if (levelValue) {
+        levelCounts[levelValue] = (levelCounts[levelValue] || 0) + 1;
       }
 
       // Salary range counts
@@ -239,33 +233,25 @@ export function useCareersList() {
   // Toggle helpers for multi-select
   const toggleType = useCallback((value) => {
     setSelectedTypes((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleDepartment = useCallback((value) => {
     setSelectedDepartments((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleLevel = useCallback((value) => {
     setSelectedLevels((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 
   const toggleSalaryRange = useCallback((value) => {
     setSelectedSalaryRanges((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }, []);
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
-import { usePermissions } from "@/features/team-member-management";
+import { usePermissions } from "@/features/org-members-management";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
 import { urlFor } from "@/shared/lib/sanityImage";

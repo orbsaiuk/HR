@@ -95,6 +95,20 @@ export default {
       initialValue: "full-time",
     },
     {
+      name: "seniority",
+      title: "Seniority Level",
+      type: "string",
+      options: {
+        list: [
+          { title: "Entry", value: "entry" },
+          { title: "Mid", value: "mid" },
+          { title: "Senior", value: "senior" },
+          { title: "Manager", value: "manager" },
+        ],
+      },
+      initialValue: "mid",
+    },
+    {
       name: "salaryMin",
       title: "Salary Min",
       type: "number",

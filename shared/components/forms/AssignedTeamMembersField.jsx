@@ -21,11 +21,37 @@ import {
 } from "@/components/ui/select";
 import { apiClient } from "@/shared/api/client";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 
 export function AssignedTeamMembersField({ value = [], onChange }) {
   const { org } = useCurrentOrg();
+  const { userId } = useAuth();
   const [members, setMembers] = useState([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
+
+  const normalizeMember = (member) => {
+    if (!member) return null;
+
+    const user = member.user || member;
+    if (!user?._id) return null;
+
+    return {
+      _id: user._id,
+      clerkId: user.clerkId,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      roleKey: member.roleKey,
+    };
+  };
+
+  const isAutoAccessMember = (member) => {
+    if (!member) return false;
+    const isOrgAdmin = member.roleKey === ADMIN_ROLE_KEY;
+    const isCurrentUser = Boolean(userId && member.clerkId === userId);
+    return isOrgAdmin || isCurrentUser;
+  };
 
   // Fetch org members for the dropdown
   useEffect(() => {
@@ -37,7 +63,8 @@ export function AssignedTeamMembersField({ value = [], onChange }) {
         const data = await apiClient.get(
           `/api/organizations/${org._id}/members`,
         );
-        setMembers(data || []);
+        const normalized = (data || []).map(normalizeMember).filter(Boolean);
+        setMembers(normalized);
       } catch {
         setMembers([]);
       } finally {
@@ -49,7 +76,9 @@ export function AssignedTeamMembersField({ value = [], onChange }) {
   }, [org?._id]);
 
   const assignedMembers = members.filter((m) => value.includes(m._id));
-  const unassignedMembers = members.filter((m) => !value.includes(m._id));
+  const unassignedMembers = members.filter(
+    (m) => !value.includes(m._id) && !isAutoAccessMember(m),
+  );
 
   function handleAdd(userId) {
     if (!value.includes(userId)) {
@@ -76,11 +105,11 @@ export function AssignedTeamMembersField({ value = [], onChange }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Users className="h-4 w-4" />
-          إضافة أعضاء الفريق
+          إضافة أعضاء الشركة
         </CardTitle>
         <CardDescription>
-          أضف أعضاء الفريق المسؤولين عن هذا النموذج. يستطيع الأعضاء المعينون عرض
-          النموذج وتعديله.
+          أضف أعضاء الشركة الذين يحتاجون للوصول. منشئ الوظيفة ومدير الشركة لديهم
+          وصول تلقائي ولن يظهروا في القائمة.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -95,7 +124,7 @@ export function AssignedTeamMembersField({ value = [], onChange }) {
             <SelectTrigger>
               <SelectValue
                 placeholder={
-                  loadingMembers ? "جاري التحميل..." : "أضف عضو فريق"
+                  loadingMembers ? "جاري التحميل..." : "أضف عضو شركة"
                 }
               />
             </SelectTrigger>
@@ -147,7 +176,7 @@ export function AssignedTeamMembersField({ value = [], onChange }) {
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            لم يتم تعيين أي أعضاء بعد. استخدم القائمة أعلاه لإضافة أعضاء الفريق.
+            لم يتم تعيين أي أعضاء بعد. استخدم القائمة أعلاه لإضافة أعضاء الشركة.
           </p>
         )}
       </CardContent>

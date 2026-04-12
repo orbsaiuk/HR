@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { Star, Pin } from "lucide-react";
 import { useEffect } from "react";
 import { useMessages } from "../model/useMessages";
 import { useConversation } from "../model/useConversation";
@@ -11,6 +11,9 @@ import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export function ConversationPage({ conversationId, currentUserId }) {
   const router = useRouter();
@@ -30,10 +33,8 @@ export function ConversationPage({ conversationId, currentUserId }) {
     error: conversationError,
   } = useConversation(conversationId);
 
-  // Trigger a storage event when messages are marked as read
   useEffect(() => {
     if (!messagesLoading && messages.length > 0) {
-      // Notify other components that messages were read
       window.dispatchEvent(
         new CustomEvent("messagesRead", { detail: { conversationId } }),
       );
@@ -41,14 +42,11 @@ export function ConversationPage({ conversationId, currentUserId }) {
   }, [messagesLoading, conversationId, messages.length]);
 
   const handleSend = async (content) => {
-    // Get current user info for optimistic update
     const currentUser =
       conversation?.teamMember?._id === currentUserId
         ? conversation.teamMember
         : conversation?.user;
-
     await sendMessage(content, currentUser);
-    // Errors are shown inline in the message bubble
   };
 
   const handleRetry = async (messageId) => {
@@ -56,7 +54,6 @@ export function ConversationPage({ conversationId, currentUserId }) {
       conversation?.teamMember?._id === currentUserId
         ? conversation.teamMember
         : conversation?.user;
-
     await retryMessage(messageId, currentUser);
   };
 
@@ -64,11 +61,8 @@ export function ConversationPage({ conversationId, currentUserId }) {
     deleteMessage(messageId);
   };
 
-  // Determine the other participant based on current user
   const getOtherParticipant = () => {
     if (!conversation) return null;
-
-    // Check if current user is the team member
     const isTeamMember = conversation.teamMember?._id === currentUserId;
     return isTeamMember ? conversation.user : conversation.teamMember;
   };
@@ -81,53 +75,53 @@ export function ConversationPage({ conversationId, currentUserId }) {
   if (error) return <Error message={error} onRetry={refetch} />;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-70px)]">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Go back"
-          >
-            <ArrowLeft size={20} className="text-gray-600" />
-          </button>
+      <div className="flex items-center justify-between border-b border-slate-100 bg-white px-5 py-3">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 border-2 border-secondary-100">
+            <AvatarImage src={otherParticipant?.avatar} alt={otherParticipant?.name} />
+            <AvatarFallback className="bg-gradient-to-br from-secondary-400 to-secondary-700 text-base font-semibold text-white">
+              {otherParticipant?.name?.charAt(0).toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
 
-          {/* Avatar */}
-          <div className="relative">
-            {otherParticipant?.avatar ? (
-              <img
-                src={otherParticipant.avatar}
-                alt={otherParticipant.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-blue-100"
-              />
-            ) : (
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md">
-                <span className="text-white font-semibold text-lg">
-                  {otherParticipant?.name?.charAt(0).toUpperCase() || "U"}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* User Info */}
-          <div className="flex-1">
-            <h2 className="font-semibold text-gray-900 text-lg">
-              {otherParticipant?.name || "Unknown User"}
+          <div>
+            <h2 className="text-base font-bold text-slate-900">
+              {otherParticipant?.name || "مستخدم غير معروف"}
             </h2>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-success-500" />
+              متصل الآن
               {conversation?.relatedForm && (
-                <span className="text-blue-600 font-medium">
-                  {conversation.relatedForm.title}
-                </span>
+                <>
+                  {" • "}
+                  <span className="text-secondary-700">{conversation.relatedForm.title}</span>
+                </>
               )}
-            </div>
+            </p>
           </div>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <a
+            href="#"
+            className="rounded-md px-3 py-1.5 text-xs font-medium text-secondary-700 transition-colors hover:bg-secondary-50"
+          >
+            مشاهدة البروفايل
+          </a>
+          <Separator orientation="vertical" className="mx-1 h-5" />
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-secondary-700">
+            <Pin size={16} />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-secondary-700">
+            <Star size={16} />
+          </Button>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto bg-gray-50">
+      <div className="flex-1 overflow-y-auto bg-slate-50/50 p-5">
         <MessageList
           messages={messages}
           currentUserId={currentUserId}
@@ -138,9 +132,7 @@ export function ConversationPage({ conversationId, currentUserId }) {
 
       {/* Input */}
       <PermissionGate permission={PERMISSIONS.MANAGE_MESSAGES}>
-        <div className="bg-white">
-          <MessageInput onSend={handleSend} disabled={sending} />
-        </div>
+        <MessageInput onSend={handleSend} disabled={sending} />
       </PermissionGate>
     </div>
   );

@@ -8,6 +8,8 @@ const EMPLOYMENT_TYPES = [
   "remote",
 ];
 
+const SENIORITY_LEVELS = ["entry", "mid", "senior", "manager"];
+
 const APPLICATION_METHODS = ["form", "profile", "both"];
 
 const parseOptionalNumber = (value) => {
@@ -39,6 +41,7 @@ const baseFormShape = {
   requirements: z.string().transform(normalizeText),
   location: z.string().transform(normalizeText),
   type: z.enum(EMPLOYMENT_TYPES),
+  seniority: z.enum(SENIORITY_LEVELS),
   salaryMin: z.string().transform(normalizeText),
   salaryMax: z.string().transform(normalizeText),
   currency: z.string().trim().min(1, "العملة مطلوبة"),
@@ -145,6 +148,7 @@ export const jobPositionCreateDefaults = {
   requirements: "",
   location: "",
   type: "full-time",
+  seniority: "mid",
   salaryMin: "",
   salaryMax: "",
   currency: "USD",
@@ -170,6 +174,7 @@ const toNullableNumber = (value) => {
 export function buildJobPositionPayload(values, linkedFormId) {
   const payload = {
     ...values,
+    seniority: values.seniority || "mid",
     formId: linkedFormId,
     salaryMin: toNullableNumber(values.salaryMin),
     salaryMax: toNullableNumber(values.salaryMax),
@@ -192,6 +197,11 @@ export function mapPositionToEditValues(position) {
     requirements: position.requirements || "",
     location: position.location || "",
     type: position.type || "full-time",
+    seniority: SENIORITY_LEVELS.includes(position.seniority)
+      ? position.seniority
+      : SENIORITY_LEVELS.includes(position.level)
+        ? position.level
+        : "mid",
     salaryMin:
       position.salaryMin === null || position.salaryMin === undefined
         ? ""
@@ -239,6 +249,7 @@ export function getFormCompleteness(formData) {
     "requirements",
     "location",
     "type",
+    "seniority",
     "salaryMin",
     "salaryMax",
     "deadline",

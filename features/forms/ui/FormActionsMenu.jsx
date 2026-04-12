@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { toast } from "sonner";
 

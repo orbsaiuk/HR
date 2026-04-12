@@ -3,7 +3,6 @@ import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { MapPin, Users, Briefcase, Lock } from "lucide-react";
-import { GrCurrency } from "react-icons/gr";
 import {
   TYPE_LABELS,
   formatSalary,
@@ -64,7 +63,11 @@ export function CareerDetailSidebar({
 
             {salary && (
               <DetailRow
-                icon={<GrCurrency size={14} />}
+                icon={
+                  <span className="text-xs font-semibold uppercase text-muted-foreground">
+                    {position.currency || "USD"}
+                  </span>
+                }
                 label="الراتب"
                 value={salary}
               />

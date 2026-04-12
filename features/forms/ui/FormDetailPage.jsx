@@ -20,7 +20,7 @@ import { Loading } from "@/shared/components/feedback/Loading";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

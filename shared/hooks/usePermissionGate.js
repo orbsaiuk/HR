@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { usePermissions } from "@/features/team-member-management/model/usePermissions";
+import { usePermissions } from "@/features/org-members-management/model/usePermissions";
 import { PERMISSION_METADATA } from "@/shared/lib/permissions";
 
 

@@ -23,7 +23,7 @@ export function useTeamMemberManagement() {
       setTeamMembers(teamMembersData || []);
       setRoles(rolesData || []);
     } catch (err) {
-      setError(err.message || "Failed to fetch team member management data");
+      setError(err.message || "تعذر تحميل بيانات إدارة أعضاء المنظمة");
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export function useTeamMemberManagement() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to create invite",
+        error: err.message || "تعذر إنشاء الدعوة",
       };
     }
   };
@@ -58,7 +58,7 @@ export function useTeamMemberManagement() {
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to delete invite",
+        error: err.message || "تعذر حذف الدعوة",
       };
     }
   };
@@ -67,14 +67,12 @@ export function useTeamMemberManagement() {
     try {
       await teamMemberManagementApi.removeTeamMember(userId);
       // Team members are embedded entries; filter by user._id
-      setTeamMembers((prev) =>
-        prev.filter((tm) => tm.user?._id !== userId),
-      );
+      setTeamMembers((prev) => prev.filter((tm) => tm.user?._id !== userId));
       return { success: true };
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to remove team member",
+        error: err.message || "تعذر إزالة عضو المنظمة",
       };
     }
   };
@@ -84,15 +82,13 @@ export function useTeamMemberManagement() {
       await teamMemberManagementApi.changeRole(teamMemberKey, roleKey);
       // Update the local state optimistically
       setTeamMembers((prev) =>
-        prev.map((tm) =>
-          tm._key === teamMemberKey ? { ...tm, roleKey } : tm,
-        ),
+        prev.map((tm) => (tm._key === teamMemberKey ? { ...tm, roleKey } : tm)),
       );
       return { success: true };
     } catch (err) {
       return {
         success: false,
-        error: err.message || "Failed to change role",
+        error: err.message || "تعذر تغيير الدور",
       };
     }
   };

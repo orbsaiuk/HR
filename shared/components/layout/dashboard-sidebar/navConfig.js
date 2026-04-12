@@ -50,8 +50,8 @@ export const NAV_ITEMS = [
     permission: PERMISSIONS.VIEW_MESSAGES,
   },
   {
-    name: "أعضاء الفريق",
-    href: "/company/team-members",
+    name: "أعضاء الشركة",
+    href: "/company/org-members",
     icon: Users,
     permission: PERMISSIONS.MANAGE_TEAM,
   },

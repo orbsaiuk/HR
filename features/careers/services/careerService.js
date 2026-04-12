@@ -5,15 +5,15 @@ import {
 } from "@/sanity/queries/recruitment";
 
 /**
- * Get all open positions for the public careers page.
- * Cross-org — shows all open positions with organization info.
+ * Get all published/open positions for the public careers page.
+ * Cross-org — shows all publicly available positions with organization info.
  */
 export async function getPublicPositions() {
   return clientRead.fetch(careerQueries.getPublicPositions);
 }
 
 /**
- * Get a single open position by ID.
+ * Get a single published/open position by ID.
  * Includes organization info for display.
  */
 export async function getPublicPositionById(id) {

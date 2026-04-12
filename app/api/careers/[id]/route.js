@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { careerService } from "@/features/careers/services/careerService";
 
 /**
- * GET /api/careers/[id] — Get a single open position (public)
+ * GET /api/careers/[id] — Get a single published/open position (public)
  */
 export async function GET(request, { params }) {
   try {
@@ -11,7 +11,7 @@ export async function GET(request, { params }) {
 
     if (!position) {
       return NextResponse.json(
-        { error: "Position not found or no longer open" },
+        { error: "Position not found or no longer published" },
         { status: 404 },
       );
     }

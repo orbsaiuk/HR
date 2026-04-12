@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { careerService } from "@/features/careers/services/careerService";
 
 /**
- * GET /api/careers — List all open positions (public, no auth)
+ * GET /api/careers — List all published/open positions (public, no auth)
  */
 export async function GET(request) {
   try {

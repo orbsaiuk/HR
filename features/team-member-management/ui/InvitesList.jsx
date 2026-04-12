@@ -2,13 +2,7 @@
 
 import { Mail } from "lucide-react";
 import { InviteRow } from "./InviteRow";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -26,9 +20,9 @@ export function InvitesList({ invites: rawInvites, roles = [], onDelete }) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
           <Mail className="h-10 w-10 text-muted-foreground/50 mb-3" />
-          <h3 className="text-base font-semibold mb-1">No pending invites</h3>
+          <h3 className="text-base font-semibold mb-1">لا توجد دعوات معلقة</h3>
           <p className="text-sm text-muted-foreground">
-            Invite team members by entering their email above.
+            ادعُ أعضاء المنظمة عبر إدخال البريد الإلكتروني بالأعلى.
           </p>
         </CardContent>
       </Card>
@@ -39,8 +33,8 @@ export function InvitesList({ invites: rawInvites, roles = [], onDelete }) {
     <Card>
       <CardHeader>
         <CardTitle>
-          Pending Invites
-          <span className="ml-2 text-sm font-normal text-muted-foreground">
+          الدعوات المعلقة
+          <span className="mr-2 text-sm font-normal text-muted-foreground">
             ({pendingInvites.length})
           </span>
         </CardTitle>
@@ -49,11 +43,11 @@ export function InvitesList({ invites: rawInvites, roles = [], onDelete }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="px-6">Email</TableHead>
-              <TableHead className="px-6">Role</TableHead>
-              <TableHead className="px-6">Status</TableHead>
-              <TableHead className="px-6">Invited</TableHead>
-              <TableHead className="px-6 text-right">Actions</TableHead>
+              <TableHead className="px-6">البريد الإلكتروني</TableHead>
+              <TableHead className="px-6">الدور</TableHead>
+              <TableHead className="px-6">الحالة</TableHead>
+              <TableHead className="px-6">تاريخ الدعوة</TableHead>
+              <TableHead className="px-6 text-right">الإجراءات</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

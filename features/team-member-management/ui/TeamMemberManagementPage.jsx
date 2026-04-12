@@ -38,7 +38,7 @@ export function TeamMemberManagementPage() {
   const handleInvite = async (email, roleKey) => {
     const result = await createInvite(email, roleKey);
     if (result.success) {
-      showToast(`Invite sent to ${email}`, "success");
+      showToast(`تم إرسال الدعوة إلى ${email}`, "success");
     } else {
       showToast(result.error, "error");
     }
@@ -48,7 +48,7 @@ export function TeamMemberManagementPage() {
   const handleDeleteInvite = async (id) => {
     const result = await deleteInvite(id);
     if (result.success) {
-      showToast("Invite revoked", "success");
+      showToast("تم إلغاء الدعوة", "success");
     } else {
       showToast(result.error, "error");
     }
@@ -57,7 +57,7 @@ export function TeamMemberManagementPage() {
   const handleRemoveTeamMember = async (id) => {
     const result = await removeTeamMember(id);
     if (result.success) {
-      showToast("Team member removed", "success");
+      showToast("تمت إزالة العضو", "success");
     } else {
       showToast(result.error, "error");
     }
@@ -66,7 +66,7 @@ export function TeamMemberManagementPage() {
   const handleChangeRole = async (teamMemberKey, roleKey) => {
     const result = await changeRole(teamMemberKey, roleKey);
     if (result.success) {
-      showToast("Role updated successfully", "success");
+      showToast("تم تحديث الدور بنجاح", "success");
     } else {
       showToast(result.error, "error");
     }
@@ -75,18 +75,18 @@ export function TeamMemberManagementPage() {
 
   return (
     <PermissionGuard>
-      <div className="space-y-6">
+      <div className="space-y-6" dir="rtl">
         {/* Page Header */}
         <div>
           <div className="flex items-center gap-3 mb-1">
             <Users className="text-blue-600" size={24} />
             <h1 className="text-2xl font-bold text-gray-900">
-              Manage Team Members
+              إدارة أعضاء الشركة
             </h1>
           </div>
           <p className="text-gray-500">
-            Invite new team members and manage existing ones. Invited users will
-            automatically become team members when they sign up.
+            قم بدعوة أعضاء جدد للشركة وإدارة الأعضاء الحاليين. المستخدمون
+            المدعوون سيصبحون أعضاء تلقائيًا بعد إتمام التسجيل.
           </p>
         </div>
 

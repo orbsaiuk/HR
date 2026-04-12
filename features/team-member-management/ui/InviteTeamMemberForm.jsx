@@ -29,7 +29,7 @@ export function InviteTeamMemberForm({ onInvite, roles = [] }) {
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmedEmail)) {
-      setError("Please enter a valid email address");
+      setError("يرجى إدخال بريد إلكتروني صالح");
       return;
     }
 
@@ -49,28 +49,28 @@ export function InviteTeamMemberForm({ onInvite, roles = [] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Invite a Team Member</CardTitle>
+        <CardTitle>دعوة عضو</CardTitle>
         <CardDescription>
-          Enter an email address to whitelist. When that person signs up,
-          they'll automatically become a team member.
+          أدخل البريد الإلكتروني لإرسال دعوة. عند تسجيل المستخدم، سيصبح عضوًا في
+          الشركة تلقائيًا.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex gap-3">
+        <form onSubmit={handleSubmit} className="flex gap-3" dir="rtl">
           <div className="relative flex-1">
             <Mail
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               size={18}
             />
             <Input
               type="email"
-              placeholder="team.member@example.com"
+              placeholder="org.member@example.com"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
                 setError(null);
               }}
-              className="pl-10"
+              className="pr-10"
               disabled={submitting}
             />
           </div>
@@ -84,9 +84,13 @@ export function InviteTeamMemberForm({ onInvite, roles = [] }) {
               />
             </div>
           )}
-          <Button type="submit" disabled={submitting || !email.trim()}>
-            <Plus size={18} className="mr-1" />
-            {submitting ? "Inviting..." : "Invite"}
+          <Button
+            type="submit"
+            disabled={submitting || !email.trim()}
+            className="gap-1.5"
+          >
+            <Plus size={18} />
+            {submitting ? "جارٍ إرسال الدعوة..." : "إرسال الدعوة"}
           </Button>
         </form>
 

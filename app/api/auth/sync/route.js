@@ -15,7 +15,7 @@ import {
   getInviteByEmail,
   markInviteJoined,
   findPendingInviteByEmail,
-} from "@/features/team-member-management/services/teamMemberManagementService";
+} from "@/features/org-members-management/services/orgMembersManagementService";
 
 /**
  * Get the user's organization by their Clerk membership.
@@ -76,7 +76,10 @@ export async function POST() {
       });
     } catch (err) {
       console.error("Failed to create user in Sanity:", err);
-      return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to create user" },
+        { status: 500 },
+      );
     }
   } else {
     // Update avatar and other fields if they've changed

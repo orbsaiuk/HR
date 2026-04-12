@@ -1,16 +1,17 @@
 export const careerQueries = {
   /**
    * Get all published/open positions for the public careers page.
-   * No auth scoping — only shows "open" positions.
+   * No auth scoping — shows positions that are publicly published.
    * Includes organization info for multi-tenant display.
    */
-  getPublicPositions: `*[_type == "jobPosition" && status == "open"] | order(createdAt desc) {
+  getPublicPositions: `*[_type == "jobPosition" && status in ["open", "published"]] | order(createdAt desc) {
     _id,
     title,
     department,
     description,
     location,
     type,
+    seniority,
     salaryMin,
     salaryMax,
     currency,
@@ -30,10 +31,10 @@ export const careerQueries = {
   }`,
 
   /**
-   * Get a single open position by ID for the public detail page.
+   * Get a single published/open position by ID for the public detail page.
    * Includes full requirements, linked form fields, and organization info.
    */
-  getPublicPositionById: `*[_type == "jobPosition" && _id == $id && status == "open"][0] {
+  getPublicPositionById: `*[_type == "jobPosition" && _id == $id && status in ["open", "published"]][0] {
     _id,
     title,
     department,
@@ -41,6 +42,7 @@ export const careerQueries = {
     requirements,
     location,
     type,
+    seniority,
     salaryMin,
     salaryMax,
     currency,
@@ -68,14 +70,14 @@ export const careerQueries = {
   }`,
 
   /**
-   * List unique departments from open positions (for filter dropdown)
+   * List unique departments from published/open positions (for filter dropdown)
    */
-  getDepartments: `array::unique(*[_type == "jobPosition" && status == "open"].department)`,
+  getDepartments: `array::unique(*[_type == "jobPosition" && status in ["open", "published"]].department)`,
 
   /**
-   * List unique locations from open positions (for filter dropdown)
+   * List unique locations from published/open positions (for filter dropdown)
    */
-  getLocations: `array::unique(*[_type == "jobPosition" && status == "open"].location)`,
+  getLocations: `array::unique(*[_type == "jobPosition" && status in ["open", "published"]].location)`,
 
   /**
    * Check if a user has already applied to a position (returns boolean)

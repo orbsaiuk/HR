@@ -21,13 +21,13 @@ export const API_ENDPOINTS = {
     `/api/conversations/${conversationId}/mark-read`,
 
   // Team Member Management
-  TEAM_MEMBER_INVITES: "/api/team-members/invites",
-  TEAM_MEMBER_INVITE_BY_ID: (id) => `/api/team-members/invites/${id}`,
-  TEAM_MEMBERS_MANAGED: "/api/team-members/managed",
-  TEAM_MEMBER_REMOVE: (id) => `/api/team-members/${id}/remove`,
-  TEAM_MEMBER_CHANGE_ROLE: (id) => `/api/team-members/${id}/role`,
-  TEAM_MEMBER_MY_PERMISSIONS: "/api/team-members/my-permissions",
-  TEAM_MEMBER_IS_OWNER: "/api/team-members/is-owner",
+  TEAM_MEMBER_INVITES: "/api/org-members/invites",
+  TEAM_MEMBER_INVITE_BY_ID: (id) => `/api/org-members/invites/${id}`,
+  TEAM_MEMBERS_MANAGED: "/api/org-members/managed",
+  TEAM_MEMBER_REMOVE: (id) => `/api/org-members/${id}/remove`,
+  TEAM_MEMBER_CHANGE_ROLE: (id) => `/api/org-members/${id}/role`,
+  TEAM_MEMBER_MY_PERMISSIONS: "/api/org-members/my-permissions",
+  TEAM_MEMBER_IS_OWNER: "/api/org-members/is-owner",
 
   // Roles
   ROLES: "/api/roles",
@@ -109,8 +109,8 @@ export const API_ENDPOINTS = {
 
   // Temporary Grants
   TEMPORARY_GRANTS: (memberId) =>
-    `/api/team-members/${memberId}/temporary-grants`,
+    `/api/org-members/${memberId}/temporary-grants`,
   TEMPORARY_GRANT_BY_KEY: (memberId, grantKey) =>
-    `/api/team-members/${memberId}/temporary-grants/${grantKey}`,
-  TEMPORARY_GRANTS_CLEANUP: "/api/team-members/temporary-grants/cleanup",
+    `/api/org-members/${memberId}/temporary-grants/${grantKey}`,
+  TEMPORARY_GRANTS_CLEANUP: "/api/org-members/temporary-grants/cleanup",
 };

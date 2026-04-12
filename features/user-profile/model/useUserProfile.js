@@ -39,6 +39,9 @@ export function useUserProfile() {
             setError(null);
             const updated = await userProfileApi.updateProfile(data);
             setProfile(updated);
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("profile_updated"));
+            }
             return updated;
         } catch (err) {
             setError(err.message || "Failed to update profile");
@@ -60,6 +63,9 @@ export function useUserProfile() {
             formData.append("file", file);
             const updated = await userProfileApi.uploadResume(formData);
             setProfile(updated);
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("profile_updated"));
+            }
             return updated;
         } catch (err) {
             setError(err.message || "Failed to upload resume");
@@ -78,6 +84,9 @@ export function useUserProfile() {
             setError(null);
             const updated = await userProfileApi.removeResume();
             setProfile(updated);
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("profile_updated"));
+            }
             return updated;
         } catch (err) {
             setError(err.message || "Failed to remove resume");
