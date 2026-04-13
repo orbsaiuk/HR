@@ -38,7 +38,6 @@ export function OrgMembersList({
               <TableHead className="px-6">عضو الشركة</TableHead>
               <TableHead className="px-6">البريد الإلكتروني</TableHead>
               <TableHead className="px-6">الدور</TableHead>
-              <TableHead className="px-6">النماذج</TableHead>
               <TableHead className="px-6">تاريخ الانضمام</TableHead>
               <TableHead className="px-6 text-right">الإجراءات</TableHead>
             </TableRow>

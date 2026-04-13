@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, FileText, Shield, Loader2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableRow, TableCell } from "@/components/ui/table";
 import {
@@ -18,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { RoleSelector } from "./RoleSelector";
+import { getLocalizedRoleName } from "@/shared/lib/permissions";
 
 export function OrgMemberRow({
   entry,
@@ -45,11 +45,16 @@ export function OrgMemberRow({
   };
 
   const pendingRoleName = pendingRoleKey
-    ? roles.find((r) => r._key === pendingRoleKey)?.name || pendingRoleKey
+    ? getLocalizedRoleName(
+        pendingRoleKey,
+        roles.find((r) => r._key === pendingRoleKey)?.name || pendingRoleKey,
+      )
     : "";
 
-  const roleName =
-    roles.find((r) => r._key === entry.roleKey)?.name || entry.roleKey;
+  const roleName = getLocalizedRoleName(
+    entry.roleKey,
+    roles.find((r) => r._key === entry.roleKey)?.name || entry.roleKey,
+  );
 
   return (
     <TableRow>
@@ -63,12 +68,6 @@ export function OrgMemberRow({
           </Avatar>
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">{user.name}</span>
-            {isOwner && (
-              <Badge variant="secondary" className="gap-1 text-xs">
-                <Shield size={10} />
-                المالك
-              </Badge>
-            )}
           </div>
         </div>
       </TableCell>
@@ -90,12 +89,6 @@ export function OrgMemberRow({
         ) : (
           <span className="text-sm text-muted-foreground">{roleName}</span>
         )}
-      </TableCell>
-      <TableCell className="px-6">
-        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-          <FileText size={14} className="text-muted-foreground/50" />
-          {entry.formCount || 0}
-        </span>
       </TableCell>
       <TableCell className="px-6">
         <span className="text-sm text-muted-foreground">
