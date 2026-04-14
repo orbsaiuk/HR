@@ -31,6 +31,10 @@ export const organizationQueries = {
         industry,
         size,
         location,
+        foundedYear,
+        socialLinks,
+        services[] { _key, title, description, image },
+        officeLocations,
         settings,
         roles[] {
             _key,
@@ -39,6 +43,19 @@ export const organizationQueries = {
             permissions,
             isSystem,
             createdAt
+        },
+        "openPositions": *[_type == "jobPosition" && organization._ref == ^._id && status == "open"] | order(createdAt desc) {
+            _id,
+            title,
+            department,
+            location,
+            type,
+            salaryMin,
+            salaryMax,
+            currency,
+            deadline,
+            createdAt,
+            "applicationCount": count(*[_type == "application" && jobPosition._ref == ^._id])
         },
         createdAt,
         updatedAt
@@ -217,6 +234,10 @@ export const organizationQueries = {
         industry,
         size,
         location,
+        foundedYear,
+        socialLinks,
+        services[] { _key, title, description, image },
+        officeLocations,
         settings,
         createdAt,
         "openPositions": *[_type == "jobPosition" && organization._ref == ^._id && status == "open"] | order(createdAt desc) {

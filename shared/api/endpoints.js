@@ -71,6 +71,7 @@ export const API_ENDPOINTS = {
   // Companies (public)
   COMPANIES: "/api/companies",
   COMPANY_BY_SLUG: (slug) => `/api/companies/${slug}`,
+  COMPANY_PROFILE: "/api/company/profile",
   PLATFORM_STATS: "/api/platform/stats",
   FEATURED_POSITIONS: "/api/platform/featured-positions",
 

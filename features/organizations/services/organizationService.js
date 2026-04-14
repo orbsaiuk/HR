@@ -39,9 +39,17 @@ export async function updateOrganization(id, input) {
   };
 
   if (input.name !== undefined) updates.name = input.name;
+  if (input.logo !== undefined) updates.logo = input.logo;
   if (input.description !== undefined) updates.description = input.description;
   if (input.website !== undefined) updates.website = input.website;
   if (input.settings !== undefined) updates.settings = input.settings;
+  if (input.industry !== undefined) updates.industry = input.industry;
+  if (input.size !== undefined) updates.size = input.size;
+  if (input.location !== undefined) updates.location = input.location;
+  if (input.foundedYear !== undefined) updates.foundedYear = input.foundedYear;
+  if (input.socialLinks !== undefined) updates.socialLinks = input.socialLinks;
+  if (input.services !== undefined) updates.services = input.services;
+  if (input.officeLocations !== undefined) updates.officeLocations = input.officeLocations;
 
   return client.patch(id).set(updates).commit();
 }

@@ -6,6 +6,7 @@ import {
   Users,
   Settings,
   CalendarDays,
+  Building2,
 } from "lucide-react";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
@@ -54,6 +55,12 @@ export const NAV_ITEMS = [
     href: "/company/org-members",
     icon: Users,
     permission: PERMISSIONS.MANAGE_TEAM,
+  },
+  {
+    name: "ملف الشركة",
+    href: "/company/profile",
+    icon: Building2,
+    permission: PERMISSIONS.MANAGE_SETTINGS,
   },
   {
     name: "الإعدادات",

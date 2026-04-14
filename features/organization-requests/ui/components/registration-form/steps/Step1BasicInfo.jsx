@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { OrgLogoUpload } from "../OrgLogoUpload";
-import { Building2, Users, Briefcase, FileText } from "lucide-react";
+import { Building2, Users, Briefcase, FileText, Calendar } from "lucide-react";
 
 const INDUSTRY_OPTIONS = [
   { label: "تكنولوجيا المعلومات", value: "technology" },
@@ -181,6 +181,36 @@ export function Step1BasicInfo() {
               </p>
             )}
           </div>
+        </div>
+
+        {/* Founded Year */}
+        <div className="space-y-3 p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors">
+          <Label
+            htmlFor="orgFoundedYear"
+            className="text-base font-semibold flex items-center gap-2"
+          >
+            <Calendar size={16} className="text-primary" />
+            تاريخ التأسيس
+          </Label>
+          <Input
+            id="orgFoundedYear"
+            type="number"
+            {...register("orgFoundedYear")}
+            placeholder="مثال: 2020"
+            className="text-base h-11"
+            dir="ltr"
+            aria-describedby={errors.orgFoundedYear ? "orgFoundedYear-error" : undefined}
+            aria-invalid={errors.orgFoundedYear ? "true" : "false"}
+          />
+          {errors.orgFoundedYear && (
+            <p
+              id="orgFoundedYear-error"
+              className="text-sm text-destructive font-medium"
+              role="alert"
+            >
+              {errors.orgFoundedYear.message}
+            </p>
+          )}
         </div>
 
         {/* Logo Upload */}

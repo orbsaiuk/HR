@@ -85,6 +85,43 @@ export default {
             description: "Headquarters location",
         },
         {
+            name: "foundedYear",
+            title: "Founded Year",
+            type: "number",
+        },
+        {
+            name: "socialLinks",
+            title: "Social Links",
+            type: "object",
+            fields: [
+                { name: "twitter", title: "Twitter URL", type: "url" },
+                { name: "facebook", title: "Facebook URL", type: "url" },
+                { name: "linkedin", title: "LinkedIn URL", type: "url" },
+                { name: "email", title: "Contact Email", type: "string" },
+            ]
+        },
+        {
+            name: "services",
+            title: "Services",
+            type: "array",
+            of: [
+                {
+                    type: "object",
+                    fields: [
+                        { name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required() },
+                        { name: "description", title: "Description", type: "text" },
+                        { name: "image", title: "Image", type: "image" },
+                    ]
+                }
+            ]
+        },
+        {
+            name: "officeLocations",
+            title: "Office Locations",
+            type: "array",
+            of: [{ type: "string" }]
+        },
+        {
             name: "settings",
             title: "Settings",
             type: "object",

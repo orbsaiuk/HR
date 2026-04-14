@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { useCompanyDetail } from "../model/useCompanyDetail";
+import { useCompanyDetail } from "../../model/useCompanyDetail";
 import { CompanyHeader } from "./CompanyHeader";
 import { Error } from "@/shared/components/feedback/Error";
 import { CompanyProfileSkeleton } from "./CompanyProfileSkeleton";
 import {
     CompanyAboutCard,
     CompanyPositionsSection,
-} from "./company-profile";
+} from "./components";
 
 export function CompanyProfilePage({ slug }) {
     const { company, loading, error } = useCompanyDetail(slug);

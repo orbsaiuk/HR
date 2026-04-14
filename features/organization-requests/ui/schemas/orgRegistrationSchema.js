@@ -12,6 +12,7 @@ export const orgRegistrationSchema = z.object({
     .any()
     .refine((val) => val instanceof File, { message: "شعار المؤسسة مطلوب" }),
   orgDescription: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
+  orgFoundedYear: z.coerce.number().min(1900, "سنة غير صحيحة").max(new Date().getFullYear(), "سنة غير صحيحة").optional().or(z.literal("")),
 
   // Step 2 - Email and Address required, others optional
   contactEmail: z.string().email("البريد الإلكتروني غير صحيح"),
@@ -36,7 +37,7 @@ export const orgRegistrationSchema = z.object({
  * Per-step validation field groups.
  */
 export const STEP_FIELDS = [
-  ["orgName", "orgSize", "orgIndustry", "orgLogo", "orgDescription"], // Step 1
+  ["orgName", "orgSize", "orgIndustry", "orgLogo", "orgDescription", "orgFoundedYear"], // Step 1
   ["contactEmail", "orgWebsite", "contactPhone", "socialLinks", "address"], // Step 2
   ["registrationNumber", "taxId"], // Step 3
   [], // Step 4 (Review) - no validation needed
@@ -51,6 +52,7 @@ export const orgRegistrationDefaults = {
   orgIndustry: "",
   orgLogo: null,
   orgDescription: "",
+  orgFoundedYear: "",
   contactEmail: "",
   orgWebsite: "",
   contactPhone: "",
@@ -76,6 +78,11 @@ export function cleanOrgFormData(data) {
   if (!cleaned.contactPhone) delete cleaned.contactPhone;
   if (!cleaned.registrationNumber) delete cleaned.registrationNumber;
   if (!cleaned.taxId) delete cleaned.taxId;
+  if (!cleaned.orgFoundedYear) {
+    delete cleaned.orgFoundedYear;
+  } else {
+    cleaned.orgFoundedYear = Number(cleaned.orgFoundedYear);
+  }
 
   // Clean up social links - remove empty entries
   if (cleaned.socialLinks) {

@@ -99,6 +99,13 @@ export default {
       },
     },
 
+    // Founded Year
+    {
+      name: "orgFoundedYear",
+      title: "Founded Year",
+      type: "number",
+    },
+
     // Address (required)
     {
       name: "address",
