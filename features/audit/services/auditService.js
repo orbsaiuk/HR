@@ -51,7 +51,11 @@ function buildQueryAndParams(orgId, options = {}) {
     const offset = forExport ? 0 : (page - 1) * pageSize;
     const end = forExport ? 99999 : offset + pageSize;
 
-    const hasDateRange = startDate && endDate;
+    // Treat a date range as active if EITHER bound is provided,
+    // and normalise the missing bound to a sentinel so GROQ range queries still work.
+    const hasDateRange = !!(startDate || endDate);
+    const normalizedStartDate = startDate || '2000-01-01T00:00:00.000Z';
+    const normalizedEndDate   = endDate   || '2099-12-31T23:59:59.999Z';
     const hasCategory = !!category;
     const hasActor = !!actorId;
 
@@ -62,7 +66,7 @@ function buildQueryAndParams(orgId, options = {}) {
         if (hasCategory && hasDateRange) {
             return {
                 query: auditLogQueries.exportByCategoryAndDateRange,
-                params: { ...baseParams, category, startDate, endDate },
+                params: { ...baseParams, category, startDate: normalizedStartDate, endDate: normalizedEndDate },
             };
         }
         if (hasCategory) {
@@ -74,7 +78,7 @@ function buildQueryAndParams(orgId, options = {}) {
         if (hasDateRange) {
             return {
                 query: auditLogQueries.exportByDateRange,
-                params: { ...baseParams, startDate, endDate },
+                params: { ...baseParams, startDate: normalizedStartDate, endDate: normalizedEndDate },
             };
         }
         return {
@@ -87,7 +91,7 @@ function buildQueryAndParams(orgId, options = {}) {
     if (hasCategory && hasActor && hasDateRange) {
         return {
             query: auditLogQueries.getByAllFilters,
-            params: { ...baseParams, category, actorId, startDate, endDate },
+            params: { ...baseParams, category, actorId, startDate: normalizedStartDate, endDate: normalizedEndDate },
         };
     }
     if (hasCategory && hasActor) {
@@ -99,13 +103,13 @@ function buildQueryAndParams(orgId, options = {}) {
     if (hasCategory && hasDateRange) {
         return {
             query: auditLogQueries.getByCategoryAndDateRange,
-            params: { ...baseParams, category, startDate, endDate },
+            params: { ...baseParams, category, startDate: normalizedStartDate, endDate: normalizedEndDate },
         };
     }
     if (hasActor && hasDateRange) {
         return {
             query: auditLogQueries.getByActorAndDateRange,
-            params: { ...baseParams, actorId, startDate, endDate },
+            params: { ...baseParams, actorId, startDate: normalizedStartDate, endDate: normalizedEndDate },
         };
     }
     if (hasCategory) {
@@ -123,7 +127,7 @@ function buildQueryAndParams(orgId, options = {}) {
     if (hasDateRange) {
         return {
             query: auditLogQueries.getByDateRange,
-            params: { ...baseParams, startDate, endDate },
+            params: { ...baseParams, startDate: normalizedStartDate, endDate: normalizedEndDate },
         };
     }
     return {
@@ -137,12 +141,14 @@ function buildQueryAndParams(orgId, options = {}) {
  */
 function buildCountQueryAndParams(orgId, options = {}) {
     const { category, startDate, endDate } = options;
-    const hasDateRange = startDate && endDate;
+    const hasDateRange = !!(startDate || endDate);
+    const normalizedStartDate = startDate || '2000-01-01T00:00:00.000Z';
+    const normalizedEndDate   = endDate   || '2099-12-31T23:59:59.999Z';
 
     if (category && hasDateRange) {
         return {
             query: auditLogQueries.countByCategoryAndDateRange,
-            params: { orgId, category, startDate, endDate },
+            params: { orgId, category, startDate: normalizedStartDate, endDate: normalizedEndDate },
         };
     }
     if (category) {
@@ -154,7 +160,7 @@ function buildCountQueryAndParams(orgId, options = {}) {
     if (hasDateRange) {
         return {
             query: auditLogQueries.countByDateRange,
-            params: { orgId, startDate, endDate },
+            params: { orgId, startDate: normalizedStartDate, endDate: normalizedEndDate },
         };
     }
     return {

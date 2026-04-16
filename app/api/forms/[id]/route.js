@@ -75,16 +75,24 @@ export async function DELETE(request, { params }) {
     const context = await resolveOrgContext();
     requirePermission(context, PERMISSIONS.MANAGE_FORMS);
     const { id } = await params;
+    const formToDelete = await getFormById(id);
     await deleteForm(id);
 
     await logAuditEvent({
       action: "form.deleted",
       category: "forms",
-      description: `Deleted form "${id}"`,
+      description: `Deleted form "${formToDelete?.title || id}"`,
       actorId: context.teamMember._id,
       orgId: context.orgId,
       targetType: "form",
       targetId: id,
+      metadata: {
+        before: JSON.stringify({
+          id,
+          title: formToDelete?.title || "",
+          status: formToDelete?.status || "",
+        }),
+      },
     });
 
     return NextResponse.json({ success: true });

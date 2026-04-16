@@ -68,16 +68,24 @@ export async function DELETE(request, { params }) {
     const context = await resolveOrgContext();
     requirePermission(context, PERMISSIONS.MANAGE_POSITIONS);
     const { id } = await params;
+    const positionToDelete = await getJobPositionById(id);
     await deleteJobPosition(id);
 
     await logAuditEvent({
       action: "position.deleted",
       category: "positions",
-      description: `Deleted position "${id}"`,
+      description: `Deleted position "${positionToDelete?.title || id}"`,
       actorId: context.teamMember._id,
       orgId: context.orgId,
       targetType: "position",
       targetId: id,
+      metadata: {
+        before: JSON.stringify({
+          id,
+          title: positionToDelete?.title || "",
+          status: positionToDelete?.status || "",
+        }),
+      },
     });
 
     return NextResponse.json({ success: true });

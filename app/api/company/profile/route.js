@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
+import {
+  resolveOrgContext,
+  invalidateOrgContextCache,
+} from "@/shared/lib/orgContext";
 import {
   getOrganizationById,
   updateOrganization,
@@ -41,11 +44,14 @@ export async function PUT(request) {
     const input = await request.json();
 
     if (input.logoBase64) {
-      const base64Data = input.logoBase64.replace(/^data:image\/\w+;base64,/, "");
+      const base64Data = input.logoBase64.replace(
+        /^data:image\/\w+;base64,/,
+        "",
+      );
       const { client } = require("@/sanity/client");
       const buffer = Buffer.from(base64Data, "base64");
       const asset = await client.assets.upload("image", buffer);
-      
+
       input.logo = {
         _type: "image",
         asset: { _type: "reference", _ref: asset._id },
@@ -59,7 +65,10 @@ export async function PUT(request) {
       for (let i = 0; i < input.services.length; i++) {
         const service = input.services[i];
         if (service.imageBase64) {
-          const base64Data = service.imageBase64.replace(/^data:image\/\w+;base64,/, "");
+          const base64Data = service.imageBase64.replace(
+            /^data:image\/\w+;base64,/,
+            "",
+          );
           const buffer = Buffer.from(base64Data, "base64");
           const asset = await client.assets.upload("image", buffer);
           service.image = {
@@ -82,7 +91,7 @@ export async function PUT(request) {
 
     await logAuditEvent({
       action: "company_profile.updated",
-      category: "settings",
+      category: "profile",
       description: "Updated company profile",
       actorId: context.teamMember._id,
       orgId: context.orgId,

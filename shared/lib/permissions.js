@@ -46,13 +46,13 @@ export const PERMISSION_METADATA = {
     group: "التوظيف",
   },
   [PERMISSIONS.MANAGE_APPLICATIONS]: {
-    label: "إدارة الطلبات",
-    description: "مراجعة الطلبات وتقييمها وتغيير حالتها",
+    label: "إدارة التقديمات",
+    description: "مراجعة التقديمات علي الوظائف وتقييمها وتغيير حالتها",
     group: "التوظيف",
   },
   [PERMISSIONS.VIEW_APPLICATIONS]: {
-    label: "عرض الطلبات",
-    description: "عرض طلبات التوظيف",
+    label: "عرض التقديمات",
+    description: "عرض التقديمات علي الوظائف",
     group: "التوظيف",
   },
   [PERMISSIONS.MANAGE_MESSAGES]: {
@@ -67,23 +67,14 @@ export const PERMISSION_METADATA = {
   },
   [PERMISSIONS.MANAGE_SETTINGS]: {
     label: "إدارة الإعدادات",
-    description: "تعديل إعدادات المنظمة",
-    group: "المنظمة",
+    description: "تعديل إعدادات الشركة",
+    group: "الشركة",
   },
 };
 
 // All permission keys as an array
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS);
 
-/**
- * Permission implication rules.
- * If a user has a "manage_*" permission, they automatically get the corresponding "view_*" permission.
- * This prevents misconfigured roles where a user can create/edit but can't see the list page.
- *
- * Example: A custom role with manage_forms but without view_forms would be broken —
- * the user could create forms but couldn't see the forms list page.
- * With implications, manage_forms automatically grants view_forms.
- */
 export const PERMISSION_IMPLICATIONS = {
   [PERMISSIONS.MANAGE_FORMS]: [PERMISSIONS.VIEW_FORMS],
   [PERMISSIONS.MANAGE_POSITIONS]: [PERMISSIONS.VIEW_POSITIONS],
@@ -92,13 +83,6 @@ export const PERMISSION_IMPLICATIONS = {
   [PERMISSIONS.MANAGE_TEAM]: [PERMISSIONS.MANAGE_ROLES],
 };
 
-/**
- * Expand a permissions array by resolving all implication rules.
- * Returns a new array with the original permissions plus any implied permissions.
- *
- * @param {string[]} permissions - The base permissions array
- * @returns {string[]} Expanded permissions array (deduplicated)
- */
 export function expandPermissions(permissions) {
   const expanded = new Set(permissions);
 
@@ -126,7 +110,7 @@ export const DEFAULT_ROLES = [
   {
     _key: "recruiter",
     name: "مسؤول التوظيف",
-    description: "يمكنه إدارة النماذج والوظائف والطلبات والرسائل",
+    description: "يمكنه إدارة النماذج والوظائف التقديمات والرسائل",
     permissions: [
       PERMISSIONS.MANAGE_FORMS,
       PERMISSIONS.VIEW_FORMS,
@@ -142,7 +126,7 @@ export const DEFAULT_ROLES = [
   {
     _key: "hiring_manager",
     name: "مدير التوظيف",
-    description: "يمكنه مراجعة الطلبات وعرض الوظائف",
+    description: "يمكنه مراجعة التقديمات وعرض الوظائف",
     permissions: [
       PERMISSIONS.VIEW_FORMS,
       PERMISSIONS.VIEW_POSITIONS,
@@ -155,7 +139,7 @@ export const DEFAULT_ROLES = [
   {
     _key: "viewer",
     name: "مشاهد",
-    description: "وصول للعرض فقط إلى النماذج والوظائف والطلبات والرسائل",
+    description: "وصول للعرض فقط إلى النماذج والوظائف التقديمات والرسائل",
     permissions: [
       PERMISSIONS.VIEW_FORMS,
       PERMISSIONS.VIEW_POSITIONS,
@@ -177,17 +161,22 @@ export const SYSTEM_ROLE_LABELS_AR = {
   viewer: "مشاهد",
 };
 
-/**
- * Get an Arabic display name for a role.
- * Falls back to the stored role name for custom roles.
- *
- * @param {string} roleKey
- * @param {string} fallbackName
- * @returns {string}
- */
+// Arabic descriptions for built-in system role keys.
+export const SYSTEM_ROLE_DESCRIPTIONS_AR = {
+  admin: "وصول كامل إلى جميع ميزات المنظمة",
+  recruiter: "يمكنه إدارة النماذج والوظائف والتقديمات علي الوظائف والرسائل",
+  hiring_manager: "يمكنه مراجعة التقديمات علي الوظائف وعرض الوظائف",
+  viewer: "وصول للعرض فقط إلى النماذج والوظائف والتقديمات علي الوظائف والرسائل",
+};
+
 export function getLocalizedRoleName(roleKey, fallbackName = "") {
   if (!roleKey) return fallbackName || "—";
   return SYSTEM_ROLE_LABELS_AR[roleKey] || fallbackName || roleKey;
+}
+
+export function getLocalizedRoleDescription(roleKey, fallbackDescription = "") {
+  if (!roleKey) return fallbackDescription || "";
+  return SYSTEM_ROLE_DESCRIPTIONS_AR[roleKey] || fallbackDescription || "";
 }
 
 /**
@@ -197,8 +186,8 @@ export function getLocalizedRoleName(roleKey, fallbackName = "") {
 export const PERMISSION_PRESETS = [
   {
     key: "full_recruiter",
-    name: "Full Recruiter",
-    description: "Full access to forms, positions, applications, and messages",
+    name: "مسؤول توظيف كامل",
+    description: "وصول كامل لإدارة النماذج والوظائف والتقديمات والرسائل",
     permissions: [
       PERMISSIONS.MANAGE_FORMS,
       PERMISSIONS.VIEW_FORMS,
@@ -212,9 +201,8 @@ export const PERMISSION_PRESETS = [
   },
   {
     key: "application_reviewer",
-    name: "Application Reviewer",
-    description:
-      "Can review and score applications, view positions and messages",
+    name: "مراجع طلبات",
+    description: "يمكنه مراجعة وتقييم التقديمات مع عرض الوظائف والرسائل",
     permissions: [
       PERMISSIONS.VIEW_POSITIONS,
       PERMISSIONS.MANAGE_APPLICATIONS,
@@ -224,8 +212,8 @@ export const PERMISSION_PRESETS = [
   },
   {
     key: "content_editor",
-    name: "Content Editor",
-    description: "Can create and manage forms and positions",
+    name: "محرر محتوى",
+    description: "يمكنه إنشاء وإدارة النماذج والوظائف",
     permissions: [
       PERMISSIONS.MANAGE_FORMS,
       PERMISSIONS.VIEW_FORMS,
@@ -235,8 +223,8 @@ export const PERMISSION_PRESETS = [
   },
   {
     key: "read_only",
-    name: "Read Only",
-    description: "View-only access to all resources",
+    name: "عرض فقط",
+    description: "وصول للعرض فقط على جميع الموارد",
     permissions: [
       PERMISSIONS.VIEW_FORMS,
       PERMISSIONS.VIEW_POSITIONS,
@@ -246,8 +234,8 @@ export const PERMISSION_PRESETS = [
   },
   {
     key: "team_admin",
-    name: "Team Admin",
-    description: "Can manage team members, roles, and organization settings",
+    name: "مدير الفريق",
+    description: "يمكنه إدارة أعضاء الفريق والأدوار وإعدادات المنظمة",
     permissions: [
       PERMISSIONS.MANAGE_TEAM,
       PERMISSIONS.MANAGE_ROLES,
