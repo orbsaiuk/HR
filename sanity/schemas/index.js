@@ -1,4 +1,3 @@
-
 // Organization schemas
 import organizationSchemas from "./organizations";
 
@@ -14,6 +13,9 @@ import messagingSchemas from "./messaging";
 // Recruitment schemas
 import recruitmentSchemas from "./recruitment";
 
+// Contract schemas
+import contractSchemas from "./contracts";
+
 // Audit schemas
 import auditSchemas from "./audit";
 
@@ -27,6 +29,7 @@ export const schemaTypes = [
   ...formSchemas,
   ...messagingSchemas,
   ...recruitmentSchemas,
+  ...contractSchemas,
   ...auditSchemas,
   apiKey,
 ];
@@ -40,5 +43,11 @@ export { organization, organizationRequest } from "./organizations";
 export { user } from "./users";
 export { form, formField } from "./forms";
 export { conversation, message } from "./messaging";
-export { jobPosition, application, evaluationScorecard, scorecardCriterion } from "./recruitment";
+export {
+  jobPosition,
+  application,
+  evaluationScorecard,
+  scorecardCriterion,
+} from "./recruitment";
+export { contract, contractTemplate } from "./contracts";
 export { auditLog } from "./audit";

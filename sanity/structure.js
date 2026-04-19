@@ -35,7 +35,9 @@ export const structure = (S) =>
                         .child(
                           S.documentTypeList("organizationRequest")
                             .title("Pending Requests")
-                            .filter('_type == "organizationRequest" && status == "pending"'),
+                            .filter(
+                              '_type == "organizationRequest" && status == "pending"',
+                            ),
                         ),
 
                       S.listItem()
@@ -44,7 +46,9 @@ export const structure = (S) =>
                         .child(
                           S.documentTypeList("organizationRequest")
                             .title("Approved Requests")
-                            .filter('_type == "organizationRequest" && status == "approved"'),
+                            .filter(
+                              '_type == "organizationRequest" && status == "approved"',
+                            ),
                         ),
 
                       S.listItem()
@@ -53,7 +57,9 @@ export const structure = (S) =>
                         .child(
                           S.documentTypeList("organizationRequest")
                             .title("Rejected Requests")
-                            .filter('_type == "organizationRequest" && status == "rejected"'),
+                            .filter(
+                              '_type == "organizationRequest" && status == "rejected"',
+                            ),
                         ),
 
                       S.divider(),
@@ -62,8 +68,9 @@ export const structure = (S) =>
                         .title("All Requests")
                         .icon(() => "📄")
                         .child(
-                          S.documentTypeList("organizationRequest")
-                            .title("All Organization Requests"),
+                          S.documentTypeList("organizationRequest").title(
+                            "All Organization Requests",
+                          ),
                         ),
                     ]),
                 ),
@@ -71,7 +78,9 @@ export const structure = (S) =>
               S.listItem()
                 .title("All Organizations")
                 .icon(() => "🏢")
-                .child(S.documentTypeList("organization").title("Organizations")),
+                .child(
+                  S.documentTypeList("organization").title("Organizations"),
+                ),
             ]),
         ),
 
@@ -89,6 +98,12 @@ export const structure = (S) =>
         .icon(() => "📝")
         .child(S.documentTypeList("form").title("Forms")),
 
+      // Contracts Group
+      S.listItem()
+        .title("Contracts")
+        .icon(() => "📑")
+        .child(S.documentTypeList("contract").title("Contracts")),
+
       // Recruitment Group
       S.listItem()
         .title("Recruitment")
@@ -100,7 +115,9 @@ export const structure = (S) =>
               S.listItem()
                 .title("Job Positions")
                 .icon(() => "📋")
-                .child(S.documentTypeList("jobPosition").title("Job Positions")),
+                .child(
+                  S.documentTypeList("jobPosition").title("Job Positions"),
+                ),
 
               S.listItem()
                 .title("Applications")
@@ -110,8 +127,12 @@ export const structure = (S) =>
               S.listItem()
                 .title("Evaluation Scorecards")
                 .icon(() => "⭐")
-                .child(S.documentTypeList("evaluationScorecard").title("Evaluation Scorecards")),
-            ])
+                .child(
+                  S.documentTypeList("evaluationScorecard").title(
+                    "Evaluation Scorecards",
+                  ),
+                ),
+            ]),
         ),
 
       // Messaging Group
@@ -125,12 +146,14 @@ export const structure = (S) =>
               S.listItem()
                 .title("Conversations")
                 .icon(() => "💭")
-                .child(S.documentTypeList("conversation").title("Conversations")),
+                .child(
+                  S.documentTypeList("conversation").title("Conversations"),
+                ),
 
               S.listItem()
                 .title("Messages")
                 .icon(() => "📩")
                 .child(S.documentTypeList("message").title("Messages")),
-            ])
+            ]),
         ),
     ]);

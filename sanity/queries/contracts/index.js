@@ -1,0 +1,1 @@
+export { contractsQueries } from "./contracts";

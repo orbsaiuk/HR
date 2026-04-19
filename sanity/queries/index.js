@@ -13,6 +13,9 @@ export * from "./messaging";
 // Recruitment queries
 export * from "./recruitment";
 
+// Contracts queries
+export * from "./contracts";
+
 // Audit queries
 export * from "./audit";
 

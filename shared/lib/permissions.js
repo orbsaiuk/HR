@@ -10,6 +10,8 @@ export const PERMISSIONS = {
   VIEW_APPLICATIONS: "view_applications",
   MANAGE_MESSAGES: "manage_messages",
   VIEW_MESSAGES: "view_messages",
+  MANAGE_CONTRACTS: "manage_contracts",
+  VIEW_CONTRACTS: "view_contracts",
   MANAGE_SETTINGS: "manage_settings",
 };
 
@@ -65,6 +67,16 @@ export const PERMISSION_METADATA = {
     description: "عرض الرسائل",
     group: "التواصل",
   },
+  [PERMISSIONS.MANAGE_CONTRACTS]: {
+    label: "إدارة العقود",
+    description: "إنشاء قوالب العقود وتعديلها وإرسال العقود",
+    group: "العقود",
+  },
+  [PERMISSIONS.VIEW_CONTRACTS]: {
+    label: "عرض العقود",
+    description: "عرض العقود وقوالب العقود",
+    group: "العقود",
+  },
   [PERMISSIONS.MANAGE_SETTINGS]: {
     label: "إدارة الإعدادات",
     description: "تعديل إعدادات الشركة",
@@ -80,6 +92,7 @@ export const PERMISSION_IMPLICATIONS = {
   [PERMISSIONS.MANAGE_POSITIONS]: [PERMISSIONS.VIEW_POSITIONS],
   [PERMISSIONS.MANAGE_APPLICATIONS]: [PERMISSIONS.VIEW_APPLICATIONS],
   [PERMISSIONS.MANAGE_MESSAGES]: [PERMISSIONS.VIEW_MESSAGES],
+  [PERMISSIONS.MANAGE_CONTRACTS]: [PERMISSIONS.VIEW_CONTRACTS],
   [PERMISSIONS.MANAGE_TEAM]: [PERMISSIONS.MANAGE_ROLES],
 };
 
@@ -220,6 +233,12 @@ export const PERMISSION_PRESETS = [
       PERMISSIONS.MANAGE_POSITIONS,
       PERMISSIONS.VIEW_POSITIONS,
     ],
+  },
+  {
+    key: "contract_manager",
+    name: "مدير العقود",
+    description: "يمكنه إدارة العقود وقوالبها",
+    permissions: [PERMISSIONS.MANAGE_CONTRACTS, PERMISSIONS.VIEW_CONTRACTS],
   },
   {
     key: "read_only",

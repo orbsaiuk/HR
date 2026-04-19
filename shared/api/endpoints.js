@@ -63,6 +63,12 @@ export const API_ENDPOINTS = {
   PROJECT_BY_ID: (id) => `/api/projects/${id}`,
   PROJECT_FILTERS: "/api/projects/filters",
 
+  // Contracts
+  CONTRACTS: "/api/contracts",
+  CONTRACT_TEMPLATES: "/api/contracts/templates",
+  CONTRACT_BY_ID: (id) => `/api/contracts/${id}`,
+  CONTRACT_SEND_WHATSAPP: (id) => `/api/contracts/${id}/send-whatsapp`,
+
   // Organizations
   ORGANIZATIONS: "/api/organizations",
   ORGANIZATION_BY_ID: (id) => `/api/organizations/${id}`,

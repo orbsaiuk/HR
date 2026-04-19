@@ -1,0 +1,73 @@
+export const contractsQueries = {
+  getByOrgAndCreator: `*[_type == "contract" && organization._ref == $orgId && createdBy._ref == $userId] | order(coalesce(updatedAt, createdAt) desc) {
+    _id,
+    "id": _id,
+    _type,
+    templateId,
+    title,
+    description,
+    type,
+    category,
+    status,
+    formData,
+    clauses,
+    whatsapp,
+    createdAt,
+    updatedAt,
+    "createdBy": createdBy->{_id, name, email},
+    "organization": organization->{_id, name}
+  }`,
+
+  getByIdScoped: `*[_type == "contract" && _id == $id && organization._ref == $orgId][0] {
+    _id,
+    "id": _id,
+    _type,
+    templateId,
+    title,
+    description,
+    type,
+    category,
+    status,
+    formData,
+    clauses,
+    whatsapp,
+    createdAt,
+    updatedAt,
+    "createdBy": createdBy->{_id, name, email},
+    "organization": organization->{_id, name}
+  }`,
+
+  getTemplatesByOrg: `*[_type == "contractTemplate" && organization._ref == $orgId && coalesce(isActive, true) == true] | order(coalesce(updatedAt, createdAt) desc) {
+    _id,
+    "id": _id,
+    _type,
+    title,
+    description,
+    type,
+    category,
+    clauses,
+    isActive,
+    usageCount,
+    createdAt,
+    updatedAt,
+    "createdBy": createdBy->{_id, name, email},
+    "organization": organization->{_id, name}
+  }`,
+
+  getTemplateById: `*[_type == "contractTemplate" && _id == $id && organization._ref == $orgId][0] {
+    _id,
+    "id": _id,
+    _type,
+    title,
+    description,
+    type,
+    category,
+    clauses,
+    isActive,
+    usageCount,
+    createdAt,
+    updatedAt,
+    "createdBy": createdBy->{_id, name, email},
+    "organization": organization->{_id, name}
+  }`,
+};
