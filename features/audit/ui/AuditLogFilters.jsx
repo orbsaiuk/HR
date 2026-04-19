@@ -184,13 +184,7 @@ export function AuditLogFilters({ filters, onFilterChange, getExportUrl }) {
             <Button variant="outline" size="sm" asChild>
               <a href={getExportUrl("csv")} download className="gap-1.5">
                 <Download className="h-3.5 w-3.5" />
-                تصدير CSV
-              </a>
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <a href={getExportUrl("json")} download className="gap-1.5">
-                <Download className="h-3.5 w-3.5" />
-                تصدير JSON
+                تحميل CSV
               </a>
             </Button>
           </div>

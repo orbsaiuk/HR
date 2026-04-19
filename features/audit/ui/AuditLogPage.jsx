@@ -4,14 +4,9 @@ import { useAuditLogs } from "../model/useAuditLogs";
 import { AuditLogTable } from "./AuditLogTable";
 import { AuditLogFilters } from "./AuditLogFilters";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2, ScrollText } from "lucide-react";
+import { Loading } from "@/shared/components/feedback/Loading";
 
 /**
  * Main audit log page component.
@@ -59,9 +54,7 @@ export function AuditLogPage() {
 
       {/* Loading state */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
+        <Loading />
       ) : (
         <Card>
           <CardContent className="p-0">

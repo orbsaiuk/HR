@@ -6,7 +6,8 @@ import { RoleCard } from "./RoleCard";
 import { CreateRoleDialog } from "./CreateRoleDialog";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { Loading } from "@/shared/components/feedback/Loading";
 
 // Fetch the user's permissions from an API
 async function fetchUserPermissions() {
@@ -22,7 +23,7 @@ async function fetchUserPermissions() {
 }
 
 export function RolesSettingsPage() {
-  const { roles, loading, error, createRole, updateRole, deleteRole, refetch } =
+  const { roles, loading, error, createRole, updateRole, deleteRole } =
     useRoles();
   const [userPermissions, setUserPermissions] = useState([]);
   const [permissionsLoading, setPermissionsLoading] = useState(true);
@@ -34,24 +35,9 @@ export function RolesSettingsPage() {
     });
   }, []);
 
-  const canManageRoles = userPermissions.includes(PERMISSIONS.MANAGE_ROLES);
-
-  if (loading || permissionsLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
-    );
-  }
+  const canManageRoles =
+    !permissionsLoading && userPermissions.includes(PERMISSIONS.MANAGE_ROLES);
+  const isContentLoading = loading || permissionsLoading;
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -65,7 +51,7 @@ export function RolesSettingsPage() {
         <CreateRoleDialog onCreate={createRole} disabled={!canManageRoles} />
       </div>
 
-      {!canManageRoles && (
+      {!permissionsLoading && !canManageRoles && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -75,22 +61,35 @@ export function RolesSettingsPage() {
         </Alert>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {roles.map((role) => (
-          <RoleCard
-            key={role._key}
-            role={role}
-            onEdit={updateRole}
-            onDelete={deleteRole}
-            editDisabled={!canManageRoles}
-          />
-        ))}
-      </div>
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-      {roles.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          لا توجد أدوار حالياً. أنشئ أول دور مخصص للبدء.
-        </div>
+      {isContentLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {roles.map((role) => (
+              <RoleCard
+                key={role._key}
+                role={role}
+                onEdit={updateRole}
+                onDelete={deleteRole}
+                editDisabled={!canManageRoles}
+              />
+            ))}
+          </div>
+
+          {roles.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              لا توجد أدوار حالياً. أنشئ أول دور مخصص للبدء.
+            </div>
+          )}
+        </>
       )}
     </div>
   );

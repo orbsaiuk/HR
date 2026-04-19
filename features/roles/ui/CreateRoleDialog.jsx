@@ -69,7 +69,7 @@ export function CreateRoleDialog({ onCreate, disabled = false }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={disabled}>
+        <Button disabled={disabled} className="bg-[#5338D5] hover:bg-[#462EA8]">
           <Plus className="h-4 w-4 mr-2" />
           إنشاء دور
         </Button>
