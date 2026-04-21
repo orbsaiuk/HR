@@ -1,4 +1,4 @@
-import { FreelancerPagePlaceholder } from "@/features/freelancer-dashboard";
+import { FreelancerProjectsPage } from "@/features/freelancer-dashboard";
 
 export const metadata = {
   title: "مشاريعي | لوحة المستقل",
@@ -6,10 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <FreelancerPagePlaceholder
-      title="مشاريعي"
-      description="استعرض جميع المشاريع التي تعمل عليها حالياً وتابع حالة التنفيذ والتسليم."
-    />
-  );
+  return <FreelancerProjectsPage />;
 }
