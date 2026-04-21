@@ -10,6 +10,9 @@ export function SidebarDesktop({
   pathname,
   unreadCount,
   permissionsLoading,
+  skeletonCount,
+  homeHref,
+  variant,
 }) {
   return (
     <>
@@ -33,6 +36,9 @@ export function SidebarDesktop({
           pathname={pathname}
           unreadCount={unreadCount}
           permissionsLoading={permissionsLoading}
+          skeletonCount={skeletonCount}
+          homeHref={homeHref}
+          variant={variant}
           isCollapsed={isCollapsed}
           showCollapseToggle
           onToggleCollapse={onToggleCollapse}

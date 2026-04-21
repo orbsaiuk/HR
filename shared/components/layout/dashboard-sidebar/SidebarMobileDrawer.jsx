@@ -11,6 +11,9 @@ export function SidebarMobileDrawer({
   pathname,
   unreadCount,
   permissionsLoading,
+  skeletonCount,
+  homeHref,
+  variant,
 }) {
   if (!isOpen) {
     return null;
@@ -45,6 +48,9 @@ export function SidebarMobileDrawer({
           pathname={pathname}
           unreadCount={unreadCount}
           permissionsLoading={permissionsLoading}
+          skeletonCount={skeletonCount}
+          homeHref={homeHref}
+          variant={variant}
           isCollapsed={false}
           onNavigate={onClose}
         />

@@ -2,20 +2,29 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
 import { usePermissions } from "@/features/org-members-management";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
 import { urlFor } from "@/shared/lib/sanityImage";
 import { NAV_ITEMS } from "./dashboard-sidebar/navConfig";
+import { FREELANCER_NAV_ITEMS } from "./dashboard-sidebar/freelancerNavConfig";
 import { SidebarDesktop, SidebarMobileDrawer } from "./dashboard-sidebar";
 
-export function DashboardSidebar({ isMobileOpen, onClose }) {
+export function DashboardSidebar({
+  isMobileOpen,
+  onClose,
+  variant = "company",
+}) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
+  const { user } = useUser();
   const { hasPermission, loading: permissionsLoading } = usePermissions();
+  const isFreelancer = variant === "freelancer";
   const canViewMessages =
-    !permissionsLoading && hasPermission(PERMISSIONS.VIEW_MESSAGES);
+    isFreelancer ||
+    (!permissionsLoading && hasPermission(PERMISSIONS.VIEW_MESSAGES));
   const { unreadCount } = useUnreadCount(canViewMessages);
   const { org } = useCurrentOrg();
 
@@ -23,19 +32,32 @@ export function DashboardSidebar({ isMobileOpen, onClose }) {
     ? urlFor(org.logo).width(64).height(64).url()
     : null;
 
-  const navItems = permissionsLoading
-    ? []
-    : NAV_ITEMS.filter(
-        (item) => !item.permission || hasPermission(item.permission),
-      );
+  const navItems = isFreelancer
+    ? FREELANCER_NAV_ITEMS
+    : permissionsLoading
+      ? []
+      : NAV_ITEMS.filter(
+          (item) => !item.permission || hasPermission(item.permission),
+        );
+
+  const profileName =
+    user?.fullName ||
+    user?.username ||
+    user?.primaryEmailAddress?.emailAddress ||
+    "المستخدم";
 
   const sidebarProps = {
-    logoUrl,
-    orgName: org?.name,
+    logoUrl: isFreelancer ? user?.imageUrl : logoUrl,
+    orgName: isFreelancer ? profileName : org?.name,
     navItems,
     pathname,
     unreadCount,
-    permissionsLoading,
+    permissionsLoading: isFreelancer ? false : permissionsLoading,
+    skeletonCount: isFreelancer
+      ? FREELANCER_NAV_ITEMS.length
+      : NAV_ITEMS.length,
+    homeHref: isFreelancer ? "/freelancer" : "/company",
+    variant,
   };
 
   return (

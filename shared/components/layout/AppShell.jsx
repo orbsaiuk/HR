@@ -13,7 +13,13 @@ import { Footer } from "@/features/landing/ui/Footer";
  * client-side navigation, preventing the header/footer flicker that
  * occurs when they are duplicated across sibling route-group layouts.
  */
-const SHELL_EXCLUDED_PREFIXES = ["/company", "/studio", "/sign-in", "/sign-up"];
+const SHELL_EXCLUDED_PREFIXES = [
+  "/company",
+  "/freelancer",
+  "/studio",
+  "/sign-in",
+  "/sign-up",
+];
 
 export function AppShell({ children }) {
   const pathname = usePathname();

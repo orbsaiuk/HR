@@ -1,7 +1,8 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Header } from "@/shared/components/layout/Header";
 import { AccountTypeSelector } from "./AccountTypeSelector";
 import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequest";
@@ -16,15 +17,48 @@ import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequ
  * Users who have submitted an organization request (pending or approved)
  * also skip the selector, as their role will be determined by the org approval process.
  */
-export function AccountTypeGuard({ children }) {
+export function AccountTypeGuard({ children, allowedTypes = null }) {
   const { user, isLoaded } = useUser();
   const pathname = usePathname();
+  const router = useRouter();
+  const accountType = user?.publicMetadata?.accountType;
+  const hasAllowedTypes =
+    Array.isArray(allowedTypes) && allowedTypes.length > 0;
+  const DASHBOARD_PATH_PREFIXES = ["/company", "/freelancer"];
+  const isDashboardPath = DASHBOARD_PATH_PREFIXES.some((path) =>
+    pathname.startsWith(path),
+  );
 
   // Fetch org requests to check if user has already submitted
-  const { requests, loading: orgRequestLoading } = useOrgRequest(Boolean(isLoaded && user));
+  const { requests, loading: orgRequestLoading } = useOrgRequest(
+    Boolean(isLoaded && user && !hasAllowedTypes && !isDashboardPath),
+  );
 
-  const ORG_FLOW_PATHS = ["/register-organization", "/user/organization-requests"];
-  const isOrgFlowPath = ORG_FLOW_PATHS.some((path) => pathname.startsWith(path));
+  useEffect(() => {
+    if (!hasAllowedTypes || !isLoaded) {
+      return;
+    }
+
+    if (!accountType || !allowedTypes.includes(accountType)) {
+      router.replace("/");
+    }
+  }, [hasAllowedTypes, isLoaded, accountType, allowedTypes, router]);
+
+  if (hasAllowedTypes) {
+    if (!isLoaded || !accountType || !allowedTypes.includes(accountType)) {
+      return null;
+    }
+
+    return <>{children}</>;
+  }
+
+  const ORG_FLOW_PATHS = [
+    "/register-organization",
+    "/user/organization-requests",
+  ];
+  const isOrgFlowPath = ORG_FLOW_PATHS.some((path) =>
+    pathname.startsWith(path),
+  );
 
   // Wait for user and org request data before making decision
   if (!isLoaded || !user || orgRequestLoading) {
@@ -32,8 +66,13 @@ export function AccountTypeGuard({ children }) {
   }
 
   const role = user.publicMetadata?.role;
-  const accountType = user.publicMetadata?.accountType;
-  const hasOrgRequest = requests.some((r) => r.status === "pending" || r.status === "approved");
+  const hasOrgRequest = requests.some(
+    (r) => r.status === "pending" || r.status === "approved",
+  );
+
+  if (isDashboardPath) {
+    return <>{children}</>;
+  }
 
   // Team members don't need an account type
   if (role === "teamMember") {

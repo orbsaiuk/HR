@@ -131,7 +131,7 @@ export function DesktopNav({
                     )}
                   </Link>
                 )}
-                {!hasOrgRequest && (
+                {!hasOrgRequest && !isFreelancer && (
                   <NavLink href="/user/profile" pathname={pathname}>
                     الملف الشخصي
                   </NavLink>
@@ -167,6 +167,20 @@ export function DesktopNav({
                 navigateToDashboard={navigateToDashboard}
                 className="text-gray-700 hover:text-gray-900 transition-colors font-medium cursor-pointer"
               />
+            )}
+
+            {isSignedIn && isUserLoaded && isFreelancer && (
+              <Link
+                href="/freelancer"
+                className={cn(
+                  "transition-colors font-medium",
+                  isNavActive("/freelancer", pathname)
+                    ? "text-[#5286A5]"
+                    : "text-gray-700 hover:text-gray-900",
+                )}
+              >
+                لوحة التحكم
+              </Link>
             )}
           </>
         )}

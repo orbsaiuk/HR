@@ -5,7 +5,7 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardSidebar } from "./DashboardSidebar";
 
-export function DashboardShell({ children }) {
+export function DashboardShell({ children, variant = "company" }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -23,6 +23,7 @@ export function DashboardShell({ children }) {
         </Button>
 
         <DashboardSidebar
+          variant={variant}
           isMobileOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
         />

@@ -3,11 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { Building2, ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { Building2, ChevronLeft, ChevronRight, Home, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { NAV_ITEMS, isNavActive } from "./navConfig";
+import { isNavActive } from "./navConfig";
+import { isFreelancerNavActive } from "./freelancerNavConfig";
 
 export function SidebarContent({
   logoUrl,
@@ -16,13 +17,18 @@ export function SidebarContent({
   pathname,
   unreadCount,
   permissionsLoading,
+  skeletonCount = 8,
+  homeHref = "/company",
+  variant = "company",
   isCollapsed = false,
   showCollapseToggle = false,
   onToggleCollapse,
   onNavigate,
 }) {
   const { user } = useUser();
+  const isFreelancer = variant === "freelancer";
   const CollapseIcon = isCollapsed ? ChevronLeft : ChevronRight;
+  const isItemActive = isFreelancer ? isFreelancerNavActive : isNavActive;
   const userName =
     user?.fullName ||
     user?.username ||
@@ -44,15 +50,29 @@ export function SidebarContent({
           )}
         >
           <Link
-            href="/company"
+            href={homeHref}
             onClick={onNavigate}
-            title={isCollapsed ? orgName || "اسم الشركة" : undefined}
+            title={
+              isCollapsed
+                ? orgName || (isFreelancer ? "المستخدم" : "اسم الشركة")
+                : undefined
+            }
             className={cn(
               "flex items-center",
               isCollapsed ? "justify-center" : "gap-3",
             )}
           >
-            {logoUrl ? (
+            {isFreelancer ? (
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+                {userName ? (
+                  <span className="text-sm font-semibold">
+                    {userName.charAt(0)}
+                  </span>
+                ) : (
+                  <User size={18} />
+                )}
+              </div>
+            ) : logoUrl ? (
               <Image
                 src={logoUrl}
                 alt={orgName || "الشركة"}
@@ -69,8 +89,11 @@ export function SidebarContent({
             {!isCollapsed && (
               <div>
                 <p className="text-sm font-semibold text-slate-900">
-                  {orgName || "اسم الشركة"}
+                  {orgName || (isFreelancer ? "المستخدم" : "اسم الشركة")}
                 </p>
+                {isFreelancer && (
+                  <p className="text-xs text-slate-500">لوحة المستقل</p>
+                )}
               </div>
             )}
           </Link>
@@ -112,11 +135,14 @@ export function SidebarContent({
         )}
       >
         {permissionsLoading ? (
-          <SidebarSkeleton isCollapsed={isCollapsed} />
+          <SidebarSkeleton
+            isCollapsed={isCollapsed}
+            skeletonCount={skeletonCount}
+          />
         ) : (
           navItems.map((item) => {
             const Icon = item.icon;
-            const active = isNavActive(item.href, pathname);
+            const active = isItemActive(item.href, pathname);
             const showBadge =
               item.name === "الرسائل" && unreadCount > 0 && !isCollapsed;
 
@@ -184,8 +210,8 @@ export function SidebarContent({
   );
 }
 
-function SidebarSkeleton({ isCollapsed = false }) {
-  return Array.from({ length: NAV_ITEMS.length }, (_, index) => (
+function SidebarSkeleton({ isCollapsed = false, skeletonCount = 8 }) {
+  return Array.from({ length: skeletonCount }, (_, index) => (
     <Skeleton
       key={index}
       className={cn("h-10 rounded-xl", isCollapsed ? "w-10 mx-auto" : "w-full")}

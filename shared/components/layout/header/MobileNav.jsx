@@ -117,7 +117,7 @@ export function MobileNav({
                 اكمل التسجيل
               </NavLink>
             )}
-            {!hasOrgRequest && (
+            {!hasOrgRequest && !isFreelancer && (
               <NavLink href="/user/profile" pathname={pathname}>
                 الملف الشخصي
               </NavLink>
@@ -161,6 +161,12 @@ export function MobileNav({
                 <Clock size={16} />
                 طلب التسجيل
               </Link>
+            )}
+
+            {isFreelancer && (
+              <NavLink href="/freelancer" pathname={pathname}>
+                لوحة التحكم
+              </NavLink>
             )}
           </>
         )}
