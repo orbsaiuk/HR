@@ -54,7 +54,7 @@ export function ContractTemplateCard({ template, onUse, canManage = true }) {
             onClick={() => onUse(template)}
             className="h-9 rounded-md bg-[#5338D5] px-5 text-sm hover:bg-[#462EA8]"
           >
-            استخدم وأرسل
+            استخدم وحمّل PDF
           </Button>
         </div>
       ) : null}

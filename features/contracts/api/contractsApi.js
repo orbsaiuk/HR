@@ -127,4 +127,8 @@ export const contractsApi = {
   async sendViaWhatsApp(contractId) {
     return apiClient.post(API_ENDPOINTS.CONTRACT_SEND_WHATSAPP(contractId), {});
   },
+
+  getContractPdfDownloadUrl(contractId) {
+    return API_ENDPOINTS.CONTRACT_DOWNLOAD_PDF(contractId);
+  },
 };

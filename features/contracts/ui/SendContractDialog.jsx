@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ContractStepper } from "./steps/ContractStepper";
+import { StepFirstParty } from "./steps/StepFirstParty";
 import { StepSecondParty } from "./steps/StepSecondParty";
 import { StepContractDetails } from "./steps/StepContractDetails";
 import { StepReview } from "./steps/StepReview";
@@ -72,14 +73,18 @@ export function SendContractDialog({
             {template.title}
           </DialogTitle>
           <DialogDescription className="text-right text-sm leading-6 text-[#6B7280] sm:text-base sm:leading-7">
-            أكمل بيانات الطرف الثاني وتفاصيل العقد ثم راجع النسخة النهائية قبل
-            الإرسال.
+            أكمل بيانات الطرفين وتفاصيل العقد ثم راجع النسخة النهائية قبل
+            التحميل.
           </DialogDescription>
         </DialogHeader>
 
         <ContractStepper steps={steps} currentStep={currentStep} />
 
         <div className="rounded-sm border border-[#E7EBF3] p-4 sm:p-6">
+          {steps[currentStep]?.id === "first-party" ? (
+            <StepFirstParty register={register} errors={errors} />
+          ) : null}
+
           {steps[currentStep]?.id === "second-party" ? (
             <StepSecondParty register={register} errors={errors} />
           ) : null}
@@ -126,9 +131,9 @@ export function SendContractDialog({
             className="min-w-24 bg-[#5338D5] hover:bg-[#462EA8]"
           >
             {isSubmitting
-              ? "جارٍ الإرسال..."
+              ? "جارٍ التحضير..."
               : currentStep === lastStepIndex
-                ? "إرسال عبر واتساب"
+                ? "تحميل العقد"
                 : "التالي"}
           </Button>
         </DialogFooter>

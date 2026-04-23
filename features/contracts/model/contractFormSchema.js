@@ -10,10 +10,10 @@ const nationalIdSchema = z
   .trim()
   .regex(/^\d{14}$/, "الرقم القومي يجب أن يتكون من 14 رقم");
 
-const whatsappSchema = z
+const phoneSchema = z
   .string()
   .trim()
-  .regex(/^(\+?\d{10,15})$/, "رقم الواتساب غير صحيح");
+  .regex(/^(\+?\d{10,15})$/, "رقم الهاتف غير صحيح");
 
 const templateClauseSchema = z.object({
   text: z.string().trim().min(3, "نص البند مطلوب"),
@@ -24,10 +24,21 @@ export const sendContractSchema = z
     templateId: z.string().trim().optional().or(z.literal("")),
     contractType: z.string().trim().optional().or(z.literal("")),
 
-    secondPartyFullName: z.string().trim().min(2, "الاسم الكامل مطلوب"),
+    firstPartyCompanyName: z.string().trim().min(2, "اسم الشركة مطلوب"),
+    firstPartyLegalRepresentative: z
+      .string()
+      .trim()
+      .min(2, "الممثل القانوني مطلوب"),
+
+    secondPartyFirstName: z.string().trim().min(2, "الاسم الأول مطلوب"),
+    secondPartyLastName: z.string().trim().min(2, "اسم العائلة مطلوب"),
     secondPartyNationalId: nationalIdSchema,
     secondPartyAddress: z.string().trim().min(6, "العنوان مطلوب"),
-    secondPartyWhatsapp: whatsappSchema,
+    secondPartyPhone: phoneSchema,
+    secondPartyEmail: z
+      .string()
+      .trim()
+      .email("البريد الإلكتروني غير صحيح"),
 
     jobTitle: z.string().trim().min(2, "المسمى الوظيفي مطلوب"),
     compensationAmount: z.coerce
@@ -77,10 +88,15 @@ export const sendContractDefaults = {
   templateId: "",
   contractType: "",
 
-  secondPartyFullName: "",
+  firstPartyCompanyName: "",
+  firstPartyLegalRepresentative: "",
+
+  secondPartyFirstName: "",
+  secondPartyLastName: "",
   secondPartyNationalId: "",
   secondPartyAddress: "",
-  secondPartyWhatsapp: "",
+  secondPartyPhone: "",
+  secondPartyEmail: "",
 
   jobTitle: "",
   compensationAmount: "",
@@ -100,11 +116,14 @@ export const templateFormDefaults = {
 };
 
 export const SEND_CONTRACT_STEP_FIELDS = [
+  ["firstPartyCompanyName", "firstPartyLegalRepresentative"],
   [
-    "secondPartyFullName",
+    "secondPartyFirstName",
+    "secondPartyLastName",
     "secondPartyNationalId",
     "secondPartyAddress",
-    "secondPartyWhatsapp",
+    "secondPartyPhone",
+    "secondPartyEmail",
   ],
   [
     "contractType",

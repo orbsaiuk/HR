@@ -17,6 +17,91 @@ const DEFAULT_COMPANY_PROFILE = {
   legalRepresentative: "",
 };
 
+function buildSecondPartyFullName(values = {}) {
+  const firstName = String(values.secondPartyFirstName || "").trim();
+  const lastName = String(values.secondPartyLastName || "").trim();
+  return [firstName, lastName].filter(Boolean).join(" ");
+}
+
+function extractFileNameFromDisposition(contentDisposition) {
+  if (!contentDisposition) return "contract.pdf";
+
+  const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+  if (utf8Match?.[1]) {
+    try {
+      return decodeURIComponent(utf8Match[1]);
+    } catch {
+      return utf8Match[1];
+    }
+  }
+
+  const basicMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
+  if (basicMatch?.[1]) {
+    return basicMatch[1];
+  }
+
+  return "contract.pdf";
+}
+
+async function downloadContractPdfFile(contractId) {
+  if (typeof window === "undefined") return;
+  if (!contractId) return;
+
+  const downloadUrl =
+    typeof contractsApi.getContractPdfDownloadUrl === "function"
+      ? contractsApi.getContractPdfDownloadUrl(contractId)
+      : API_ENDPOINTS.CONTRACT_DOWNLOAD_PDF(contractId);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  let response;
+  try {
+    response = await fetch(downloadUrl, {
+      method: "GET",
+      credentials: "same-origin",
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new Error("Download timed out. Please try again.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
+  if (!response.ok) {
+    let errorMessage = "Failed to download contract PDF";
+    try {
+      const errorBody = await response.json();
+      errorMessage = errorBody?.error || errorBody?.message || errorMessage;
+    } catch {
+      // ignore json parse errors
+    }
+    throw new Error(errorMessage);
+  }
+
+  const blob = await response.blob();
+  const fileName = extractFileNameFromDisposition(
+    response.headers.get("content-disposition"),
+  );
+
+  const blobUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = fileName;
+  link.rel = "noopener noreferrer";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Release the object URL after the browser starts the download.
+  setTimeout(() => {
+    window.URL.revokeObjectURL(blobUrl);
+  }, 1000);
+}
+
 export function useSendContractDialog({
   open,
   onOpenChange,
@@ -32,6 +117,7 @@ export function useSendContractDialog({
     reset,
     trigger,
     setValue,
+    getValues,
     watch,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -44,6 +130,7 @@ export function useSendContractDialog({
 
   const steps = useMemo(() => {
     return [
+      { id: "first-party", label: "الطرف الأول" },
       { id: "second-party", label: "الطرف الثاني" },
       { id: "details", label: "تفاصيل العقد" },
       { id: "preview", label: "المعاينة" },
@@ -70,27 +157,24 @@ export function useSendContractDialog({
 
     async function loadCompanyContext() {
       try {
-        const [companyResult, userResult] = await Promise.allSettled([
-          apiClient.get(API_ENDPOINTS.COMPANY_PROFILE),
-          apiClient.get(API_ENDPOINTS.USER_PROFILE),
-        ]);
+        const companyResult = await apiClient.get(API_ENDPOINTS.COMPANY_PROFILE);
 
         if (!mounted) return;
 
-        const companyName =
-          companyResult.status === "fulfilled"
-            ? String(companyResult.value?.name || "").trim()
-            : "";
-
-        const legalRepresentative =
-          userResult.status === "fulfilled"
-            ? String(userResult.value?.name || "").trim()
-            : "";
+        const companyName = String(companyResult?.name || "").trim();
 
         setCompanyProfile({
           companyName,
-          legalRepresentative,
+          legalRepresentative: "",
         });
+
+        if (!getValues("firstPartyCompanyName") && companyName) {
+          setValue("firstPartyCompanyName", companyName, {
+            shouldDirty: false,
+            shouldValidate: false,
+          });
+        }
+
       } catch (error) {
         if (!mounted) return;
         console.error("Failed to load send-contract context:", error);
@@ -103,7 +187,7 @@ export function useSendContractDialog({
     return () => {
       mounted = false;
     };
-  }, [open]);
+  }, [getValues, open, setValue]);
 
   const handleDialogChange = (nextOpen) => {
     onOpenChange?.(nextOpen);
@@ -122,6 +206,14 @@ export function useSendContractDialog({
 
   const onSubmit = async (values) => {
     const resolvedContractType = template?.type || values.contractType || "";
+    const secondPartyFullName = buildSecondPartyFullName(values);
+    const resolvedValues = {
+      ...values,
+      templateId: template?.id || values.templateId || "",
+      contractType: resolvedContractType,
+      secondPartyFullName,
+    };
+    const clauses = generateContractClauses(template, resolvedValues);
 
     const payload = {
       templateId: template?.id || values.templateId || "",
@@ -129,17 +221,8 @@ export function useSendContractDialog({
       description: template?.description || "",
       type: resolvedContractType,
       category: template?.category || "",
-      formData: {
-        ...values,
-        templateId: template?.id || values.templateId || "",
-        contractType: resolvedContractType,
-        firstPartyCompanyName: companyProfile.companyName,
-        firstPartyLegalRepresentative: companyProfile.legalRepresentative,
-      },
-      clauses: generateContractClauses(template, {
-        ...values,
-        contractType: resolvedContractType,
-      }),
+      formData: resolvedValues,
+      clauses,
     };
 
     const createdContract = await contractsApi.createContract(payload);
@@ -149,15 +232,11 @@ export function useSendContractDialog({
       throw new Error("Failed to create contract");
     }
 
-    const whatsappResult = await contractsApi.sendViaWhatsApp(contractId);
-    if (whatsappResult?.url && typeof window !== "undefined") {
-      window.open(whatsappResult.url, "_blank", "noopener,noreferrer");
-    }
+    await downloadContractPdfFile(contractId);
 
     onContractSent?.({
       templateId: payload.templateId,
       contract: createdContract,
-      whatsappUrl: whatsappResult?.url,
     });
 
     handleDialogChange(false);
@@ -171,12 +250,16 @@ export function useSendContractDialog({
 
     const stepId = steps[currentStep]?.id;
     const stepFields =
-      stepId === "second-party"
+      stepId === "first-party"
+        ? ["firstPartyCompanyName", "firstPartyLegalRepresentative"]
+        : stepId === "second-party"
         ? [
-            "secondPartyFullName",
+            "secondPartyFirstName",
+            "secondPartyLastName",
             "secondPartyNationalId",
             "secondPartyAddress",
-            "secondPartyWhatsapp",
+            "secondPartyPhone",
+            "secondPartyEmail",
           ]
         : stepId === "details"
           ? [

@@ -9,7 +9,13 @@ export async function GET(request, { params }) {
     const context = await resolveOrgContext();
     requirePermission(context, PERMISSIONS.VIEW_CONTRACTS);
 
-    const { id } = params;
+    const { id } = await params;
+    if (!id) {
+      return NextResponse.json(
+        { error: "Contract id is required" },
+        { status: 400 },
+      );
+    }
 
     const contract = await getContractByIdScoped(id, context.orgId);
     if (!contract) {

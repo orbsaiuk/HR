@@ -68,6 +68,7 @@ export const API_ENDPOINTS = {
   CONTRACT_TEMPLATES: "/api/contracts/templates",
   CONTRACT_BY_ID: (id) => `/api/contracts/${id}`,
   CONTRACT_SEND_WHATSAPP: (id) => `/api/contracts/${id}/send-whatsapp`,
+  CONTRACT_DOWNLOAD_PDF: (id) => `/api/contracts/${id}/download`,
 
   // Organizations
   ORGANIZATIONS: "/api/organizations",

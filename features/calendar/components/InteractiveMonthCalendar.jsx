@@ -1,9 +1,23 @@
 "use client";
 
+import { useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { ar } from "date-fns/locale";
 
-export function InteractiveMonthCalendar({ date, setDate }) {
+function dateToKey(value) {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, "0");
+  const day = String(value.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function InteractiveMonthCalendar({ date, setDate, eventDates = [] }) {
+  const eventDateKeys = useMemo(
+    () => new Set(eventDates.map((value) => dateToKey(value))),
+    [eventDates],
+  );
+
   return (
     <div className="rounded-2xl bg-[#F7F7F9] p-1 md:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
       <Calendar
@@ -15,6 +29,9 @@ export function InteractiveMonthCalendar({ date, setDate }) {
         className="w-full"
         showOutsideDays={true}
         fixedWeeks={false}
+        modifiers={{
+          hasEvent: (day) => eventDateKeys.has(dateToKey(day)),
+        }}
         formatters={{
           formatCaption: (month) =>
             month.toLocaleString(ar.code, { month: "long" }),
@@ -48,6 +65,23 @@ export function InteractiveMonthCalendar({ date, setDate }) {
           outside: "text-[#C8CCD8] pointer-events-none",
           hidden: "invisible",
           disabled: "text-[#C8CCD8] opacity-50",
+        }}
+        components={{
+          DayButton: ({ children, className, modifiers, ...props }) => {
+            return (
+              <button
+                className={cn("relative", className)}
+                type="button"
+                data-selected-single={modifiers?.selected}
+                {...props}
+              >
+                {children}
+                {!modifiers?.selected && modifiers?.hasEvent && (
+                  <span className="pointer-events-none absolute bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#5B4AE4]" />
+                )}
+              </button>
+            );
+          },
         }}
       />
     </div>

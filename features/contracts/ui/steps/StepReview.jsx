@@ -18,24 +18,24 @@ import { SignaturesSection } from "./review/SignaturesSection";
 import {
   formatCompensation,
   formatSignatureDate,
-  getContractTypeLabel,
 } from "./review/reviewFormatters";
 
 export function StepReview({ values, onEditStep, template, companyProfile }) {
-  const contractTypeLabel = getContractTypeLabel(
-    template?.type || values.contractType,
-  );
-
   const clauses = useMemo(
     () => generateContractClauses(template, values),
     [template, values],
   );
 
   const firstPartyName =
-    companyProfile?.companyName || values.firstPartyCompanyName;
+    values.firstPartyCompanyName || companyProfile?.companyName;
   const firstPartyRepresentative =
-    companyProfile?.legalRepresentative || values.firstPartyLegalRepresentative;
-  const secondPartyName = values.secondPartyFullName;
+    values.firstPartyLegalRepresentative || companyProfile?.legalRepresentative;
+  const secondPartyName = [
+    values.secondPartyFirstName,
+    values.secondPartyLastName,
+  ]
+    .filter(Boolean)
+    .join(" ") || values.secondPartyFullName;
 
   const formattedDate = formatSignatureDate(new Date());
 
@@ -46,6 +46,7 @@ export function StepReview({ values, onEditStep, template, companyProfile }) {
         <ReviewSectionHeader
           icon={Building2}
           title="الطرف الأول (صاحب العمل)"
+          onEdit={() => onEditStep(0)}
         />
         <ul className="space-y-1 pr-1">
           <ReviewDetailItem label="اسم الشركة" value={firstPartyName} />
@@ -61,18 +62,27 @@ export function StepReview({ values, onEditStep, template, companyProfile }) {
         <ReviewSectionHeader
           icon={User}
           title="الطرف الثاني (الموظف)"
-          onEdit={() => onEditStep(0)}
+          onEdit={() => onEditStep(1)}
         />
         <ul className="space-y-1 pr-1">
-          <ReviewDetailItem label="الاسم" value={values.secondPartyFullName} />
+          <ReviewDetailItem
+            label="الاسم الأول"
+            value={values.secondPartyFirstName}
+          />
+          <ReviewDetailItem
+            label="اسم العائلة"
+            value={values.secondPartyLastName}
+          />
+          <ReviewDetailItem label="الاسم الكامل" value={secondPartyName} />
           <ReviewDetailItem
             label="الرقم القومي"
             value={values.secondPartyNationalId}
           />
           <ReviewDetailItem label="العنوان" value={values.secondPartyAddress} />
+          <ReviewDetailItem label="رقم الهاتف" value={values.secondPartyPhone} />
           <ReviewDetailItem
-            label="رقم الواتساب"
-            value={values.secondPartyWhatsapp}
+            label="البريد الإلكتروني"
+            value={values.secondPartyEmail}
           />
         </ul>
       </section>
@@ -82,7 +92,7 @@ export function StepReview({ values, onEditStep, template, companyProfile }) {
         <ReviewSectionHeader
           icon={Briefcase}
           title="تفاصيل العقد"
-          onEdit={() => onEditStep(1)}
+          onEdit={() => onEditStep(2)}
         />
         <ul className="space-y-1 pr-1">
           <ReviewDetailItem label="المسمى الوظيفي" value={values.jobTitle} />

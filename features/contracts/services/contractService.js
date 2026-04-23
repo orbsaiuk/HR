@@ -16,9 +16,13 @@ const CONTRACT_FORM_DATA_KEYS = [
   "contractType",
   "firstPartyCompanyName",
   "firstPartyLegalRepresentative",
+  "secondPartyFirstName",
+  "secondPartyLastName",
   "secondPartyFullName",
   "secondPartyNationalId",
   "secondPartyAddress",
+  "secondPartyPhone",
+  "secondPartyEmail",
   "secondPartyWhatsapp",
   "jobTitle",
   "compensationAmount",
@@ -104,12 +108,17 @@ function normalizeTemplatePayload(input = {}) {
 function buildWhatsAppMessage(contract = {}) {
   const data = contract.formData || {};
   const compensationCurrency = data.compensationCurrency || "EGP";
+  const secondPartyName =
+    data.secondPartyFullName ||
+    [data.secondPartyFirstName, data.secondPartyLastName]
+      .filter(Boolean)
+      .join(" ");
 
   return [
     "مرحباً،",
     `تم إعداد عقد: ${contract.title || "عقد جديد"}`,
     `الطرف الأول: ${data.firstPartyCompanyName || "-"}`,
-    `الطرف الثاني: ${data.secondPartyFullName || "-"}`,
+    `الطرف الثاني: ${secondPartyName || "-"}`,
     `المسمى الوظيفي: ${data.jobTitle || "-"}`,
     `الراتب/المقابل: ${data.compensationAmount || "-"} ${compensationCurrency}`,
     "يرجى مراجعة البيانات واستكمال الإجراءات.",
@@ -191,7 +200,9 @@ export async function markContractAsSent(id) {
 
 export function buildContractWhatsAppUrl(contract) {
   const data = contract?.formData || {};
-  const recipient = String(data.secondPartyWhatsapp || "").replace(/\s+/g, "");
+  const recipient = String(
+    data.secondPartyWhatsapp || data.secondPartyPhone || "",
+  ).replace(/\s+/g, "");
   const encodedMessage = encodeURIComponent(buildWhatsAppMessage(contract));
 
   if (!recipient) {

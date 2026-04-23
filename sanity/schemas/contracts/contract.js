@@ -7,11 +7,24 @@ export default {
       title: "title",
       subtitle: "type",
       partyOne: "formData.firstPartyCompanyName",
-      partyTwo: "formData.secondPartyFullName",
+      partyTwoFullName: "formData.secondPartyFullName",
+      partyTwoFirstName: "formData.secondPartyFirstName",
+      partyTwoLastName: "formData.secondPartyLastName",
       status: "status",
     },
-    prepare({ title, subtitle, partyOne, partyTwo, status }) {
+    prepare({
+      title,
+      subtitle,
+      partyOne,
+      partyTwoFullName,
+      partyTwoFirstName,
+      partyTwoLastName,
+      status,
+    }) {
       const statusEmoji = status === "sent" ? "📤" : "📝";
+      const partyTwo =
+        partyTwoFullName ||
+        [partyTwoFirstName, partyTwoLastName].filter(Boolean).join(" ");
       const parties = [partyOne, partyTwo].filter(Boolean).join(" • ");
       return {
         title: `${statusEmoji} ${title || "Untitled Contract"}`,
@@ -90,8 +103,18 @@ export default {
           type: "string",
         },
         {
+          name: "secondPartyFirstName",
+          title: "Second Party First Name",
+          type: "string",
+        },
+        {
+          name: "secondPartyLastName",
+          title: "Second Party Last Name",
+          type: "string",
+        },
+        {
           name: "secondPartyFullName",
-          title: "Second Party Name",
+          title: "Second Party Name (Legacy)",
           type: "string",
         },
         {
@@ -105,8 +128,18 @@ export default {
           type: "string",
         },
         {
+          name: "secondPartyPhone",
+          title: "Second Party Phone",
+          type: "string",
+        },
+        {
+          name: "secondPartyEmail",
+          title: "Second Party Email",
+          type: "string",
+        },
+        {
           name: "secondPartyWhatsapp",
-          title: "Second Party WhatsApp",
+          title: "Second Party WhatsApp (Legacy)",
           type: "string",
         },
         { name: "jobTitle", title: "Job Title", type: "string" },

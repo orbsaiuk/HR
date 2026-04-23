@@ -11,42 +11,41 @@ function FieldError({ message }) {
 export function StepSecondParty({ register, errors }) {
   return (
     <div className="space-y-4" dir="rtl">
-      <h3 className="text-right text-lg md:text-2xl font-semibold text-[#1F2937]">
+      <h3 className="text-right text-lg font-semibold text-[#1F2937] md:text-2xl">
         بيانات الطرف الثاني (المتعاقد)
       </h3>
 
       <div className="grid gap-2 md:gap-4 sm:grid-cols-2">
         <div>
           <Label
-            htmlFor="second-party-full-name"
+            htmlFor="second-party-first-name"
             className="text-sm text-[#344054]"
           >
-            الاسم الكامل
+            الاسم الأول
           </Label>
           <Input
-            id="second-party-full-name"
+            id="second-party-first-name"
             className="mt-2 h-10 border-[#D8DFEC] text-right text-sm md:text-base"
-            placeholder="الاسم الكامل"
-            {...register("secondPartyFullName")}
+            placeholder="الاسم الأول"
+            {...register("secondPartyFirstName")}
           />
-          <FieldError message={errors.secondPartyFullName?.message} />
+          <FieldError message={errors.secondPartyFirstName?.message} />
         </div>
 
         <div>
           <Label
-            htmlFor="second-party-whatsapp"
+            htmlFor="second-party-last-name"
             className="text-sm text-[#344054]"
           >
-            رقم الواتساب
+            اسم العائلة
           </Label>
           <Input
-            id="second-party-whatsapp"
+            id="second-party-last-name"
             className="mt-2 h-10 border-[#D8DFEC] text-right text-sm md:text-base"
-            inputMode="tel"
-            placeholder="رقم الواتساب"
-            {...register("secondPartyWhatsapp")}
+            placeholder="اسم العائلة"
+            {...register("secondPartyLastName")}
           />
-          <FieldError message={errors.secondPartyWhatsapp?.message} />
+          <FieldError message={errors.secondPartyLastName?.message} />
         </div>
       </div>
 
@@ -83,6 +82,37 @@ export function StepSecondParty({ register, errors }) {
             {...register("secondPartyAddress")}
           />
           <FieldError message={errors.secondPartyAddress?.message} />
+        </div>
+      </div>
+
+      <div className="grid gap-2 md:gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="second-party-phone" className="text-sm text-[#344054]">
+            رقم الهاتف
+          </Label>
+          <Input
+            id="second-party-phone"
+            className="mt-2 h-10 border-[#D8DFEC] text-right text-sm md:text-base"
+            inputMode="tel"
+            placeholder="رقم الهاتف"
+            {...register("secondPartyPhone")}
+          />
+          <FieldError message={errors.secondPartyPhone?.message} />
+        </div>
+
+        <div>
+          <Label htmlFor="second-party-email" className="text-sm text-[#344054]">
+            البريد الإلكتروني
+          </Label>
+          <Input
+            id="second-party-email"
+            className="mt-2 h-10 border-[#D8DFEC] text-right text-sm md:text-base"
+            type="email"
+            inputMode="email"
+            placeholder="example@domain.com"
+            {...register("secondPartyEmail")}
+          />
+          <FieldError message={errors.secondPartyEmail?.message} />
         </div>
       </div>
     </div>

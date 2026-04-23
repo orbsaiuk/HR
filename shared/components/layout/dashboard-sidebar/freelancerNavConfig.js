@@ -4,6 +4,7 @@ import {
   FileText,
   MessageSquare,
   Wallet,
+  CalendarDays,
   UserCircle2,
   Settings,
   Send,
@@ -39,6 +40,11 @@ export const FREELANCER_NAV_ITEMS = [
     name: "الأرباح",
     href: "/freelancer/earnings",
     icon: Wallet,
+  },
+  {
+    name: "التقويم",
+    href: "/freelancer/calendar",
+    icon: CalendarDays,
   },
   {
     name: "الملف الشخصي",
