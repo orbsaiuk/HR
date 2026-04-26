@@ -1,6 +1,6 @@
 "use client";
 
-import { MessagesSidebar } from "@/features/user-messages/ui/MessagesSidebar";
+import { MessagesSidebar } from "@/features/user/messages/ui/MessagesSidebar";
 
 export default function MessagesLayout({ children }) {
   return (

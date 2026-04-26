@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getRequestById } from "@/features/organization-requests/services/orgRequestService";
+import { getRequestById } from "@/features/public/organization-requests/services/orgRequestService";
 
 /**
  * GET /api/organization-requests/[id] — Get a single organization request by ID

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getResponsesByFormId } from "@/features/responses/services/responseService";
+import { getResponsesByFormId } from "@/features/company/responses/services/responseService";
 
 export async function GET(request) {
   try {

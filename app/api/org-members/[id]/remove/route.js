@@ -8,9 +8,9 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getOwnerTeamMember,
   removeTeamMember,
-} from "@/features/org-members-management/services/orgMembersManagementService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
-import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
+} from "@/features/company/org-members/services/orgMembersManagementService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 export async function DELETE(request, { params }) {
   try {

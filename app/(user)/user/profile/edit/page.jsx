@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { EditProfilePage } from "@/features/user-profile";
-import { getUserByClerkId } from "@/features/auth/services/userService";
-import { countActiveRequestsByUser } from "@/features/organization-requests/repositories/orgRequestRepository";
+import { EditProfilePage } from "@/features/user/profile";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
+import { countActiveRequestsByUser } from "@/features/public/organization-requests/repositories/orgRequestRepository";
 
 export default async function Page() {
   const { userId } = await auth();

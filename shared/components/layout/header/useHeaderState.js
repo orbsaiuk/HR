@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/features/auth/hooks/useAuth.js";
+import { useAuth } from "@/features/shared/auth/hooks/useAuth.js";
 import { useOrganizationList, useOrganization } from "@clerk/nextjs";
-import { useUnreadCount } from "@/features/chat/model/useUnreadCount";
-import { useOrgRequest } from "@/features/organization-requests/model/useOrgRequest";
-import { useHasDraft } from "@/features/organization-requests/model/useHasDraft";
-import { ORG_REGISTRATION_FORM_ID } from "@/features/organization-requests/model/orgDraftStorage";
+import { useUnreadCount } from "@/features/shared/messaging/model/useUnreadCount";
+import { useOrgRequest } from "@/features/public/organization-requests/model/useOrgRequest";
+import { useHasDraft } from "@/features/public/organization-requests/model/useHasDraft";
+import { ORG_REGISTRATION_FORM_ID } from "@/features/public/organization-requests/model/orgDraftStorage";
 
 /**
  * Encapsulates all auth, organization, and mobile-menu state

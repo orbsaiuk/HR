@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { ApplicationDetailPage } from "@/features/applications";
+import { ApplicationDetailPage } from "@/features/company/applications";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

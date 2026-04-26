@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPublicCompanyBySlug } from "@/features/organizations/services/organizationService";
+import { getPublicCompanyBySlug } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/companies/:slug — Get a single company's public profile with open positions

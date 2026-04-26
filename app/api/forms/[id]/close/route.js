@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { updateForm } from "@/features/forms/services/formService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { updateForm } from "@/features/company/forms/services/formService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function POST(request, { params }) {
   try {

@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
-import { ConversationPage } from "@/features/chat";
+import { ConversationPage } from "@/features/company/messages";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";

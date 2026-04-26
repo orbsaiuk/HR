@@ -1,4 +1,4 @@
-import { validateApiKey } from "@/features/api-keys/services/apiKeyService";
+import { validateApiKey } from "@/features/shared/api-keys/services/apiKeyService";
 
 export async function resolveApiKeyContext(request) {
     const authHeader = request.headers.get("Authorization");

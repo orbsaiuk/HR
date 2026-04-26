@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { updateApplicationStatus } from "@/features/applications/services/applicationService";
-import { notifyApplicationStatusChange } from "@/features/applications/services/applicationNotificationService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { updateApplicationStatus } from "@/features/company/applications/services/applicationService";
+import { notifyApplicationStatusChange } from "@/features/company/applications/services/applicationNotificationService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 const VALID_STATUSES = [
   "new",

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import {
   getUserByClerkId,
   setAccountType,
-} from "@/features/auth/services/userService";
+} from "@/features/shared/auth/services/userService";
 
 const VALID_ACCOUNT_TYPES = ["jobSeeker", "freelancer", "orgMember"];
 

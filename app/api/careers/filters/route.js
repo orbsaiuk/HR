@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { careerService } from "@/features/careers/services/careerService";
+import { careerService } from "@/features/public/careers/services/careerService";
 
 /**
  * GET /api/careers/filters — Get unique departments and locations for filters

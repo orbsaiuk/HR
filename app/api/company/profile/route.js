@@ -6,8 +6,8 @@ import {
 import {
   getOrganizationById,
   updateOrganization,
-} from "@/features/organizations/services/organizationService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/shared/organizations/services/organizationService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 /**
  * GET /api/company/profile — Get the current organization's full profile

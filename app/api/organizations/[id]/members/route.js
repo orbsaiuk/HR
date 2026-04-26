@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { hasAnyPermission } from "@/shared/lib/permissionChecker";
 import { ADMIN_ROLE_KEY, PERMISSIONS } from "@/shared/lib/permissions";
-import { getOrganizationMembers } from "@/features/organizations/services/organizationService";
+import { getOrganizationMembers } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/organizations/[id]/members — List all members of the organization

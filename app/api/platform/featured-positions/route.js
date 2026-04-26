@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getFeaturedPositions } from "@/features/organizations/services/organizationService";
+import { getFeaturedPositions } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/platform/featured-positions — Get recent open positions for the landing page

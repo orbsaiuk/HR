@@ -1,5 +1,5 @@
-import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute.jsx";
-import { ProfileCompletionBanner } from "@/features/user-profile";
+import { ProtectedRoute } from "@/features/shared/auth/components/ProtectedRoute.jsx";
+import { ProfileCompletionBanner } from "@/features/user/profile";
 
 export default function UserLayout({ children }) {
   return (

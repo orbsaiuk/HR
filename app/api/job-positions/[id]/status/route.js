@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { updateJobPositionStatus } from "@/features/job-positions/services/jobPositionService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { updateJobPositionStatus } from "@/features/company/job-positions/services/jobPositionService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function PATCH(request, { params }) {
   try {

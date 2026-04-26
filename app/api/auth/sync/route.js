@@ -5,17 +5,17 @@ import {
   createUser,
   updateUser,
   setAccountType,
-} from "@/features/auth/services/userService";
+} from "@/features/shared/auth/services/userService";
 import {
   getOrganizationByClerkOrgId,
   getOrganizationByIdWithMembers,
   addTeamMemberToOrg,
-} from "@/features/organizations/services/organizationService";
+} from "@/features/shared/organizations/services/organizationService";
 import {
   getInviteByEmail,
   markInviteJoined,
   findPendingInviteByEmail,
-} from "@/features/org-members-management/services/orgMembersManagementService";
+} from "@/features/company/org-members/services/orgMembersManagementService";
 
 /**
  * Get the user's organization by their Clerk membership.

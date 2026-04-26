@@ -1,5 +1,5 @@
-import { AuthProvider } from "@/features/auth/components/AuthProvider.jsx";
-import { SyncUser } from "@/features/auth/components/SyncUser.jsx";
+import { AuthProvider } from "@/features/shared/auth/components/AuthProvider.jsx";
+import { SyncUser } from "@/features/shared/auth/components/SyncUser.jsx";
 import { AppShell } from "@/shared/components/layout/AppShell.jsx";
 import { Toaster } from "@/components/ui/sonner";
 import localFont from "next/font/local";

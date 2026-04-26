@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { cleanupExpiredGrants } from "@/features/org-members-management/services/temporaryGrantsService";
+import { cleanupExpiredGrants } from "@/features/company/org-members/services/temporaryGrantsService";
 
 /**
  * POST /api/org-members/temporary-grants/cleanup

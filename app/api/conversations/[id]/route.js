@@ -3,7 +3,7 @@ import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { currentUser } from "@clerk/nextjs/server";
-import { getConversationById } from "@/features/chat/services/chatService";
+import { getConversationById } from "@/features/shared/messaging/services/chatService";
 
 // GET a single conversation by ID
 export async function GET(request, { params }) {

@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission, hasPermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getForms, getFormsAssignedToUser, createForm } from "@/features/forms/services/formService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { getForms, getFormsAssignedToUser, createForm } from "@/features/company/forms/services/formService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function GET() {
   try {

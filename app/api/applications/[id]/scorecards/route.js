@@ -5,8 +5,8 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getScorecardsByApplication,
   upsertScorecard,
-} from "@/features/scorecards/services/scorecardService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/company/scorecards/services/scorecardService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 /**
  * GET /api/applications/[id]/scorecards — list all scorecards for an application

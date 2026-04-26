@@ -3,8 +3,8 @@
 import { Users, ScrollText } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
-import { RolesSettingsPage } from "@/features/roles";
-import { AuditLogPage } from "@/features/audit";
+import { RolesSettingsPage } from "@/features/company/roles";
+import { AuditLogPage } from "@/features/company/audit";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
 export default function SettingsPage() {

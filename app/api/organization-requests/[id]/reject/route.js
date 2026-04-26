@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { rejectRequest } from "@/features/organization-requests/services/orgRequestService";
+import { rejectRequest } from "@/features/public/organization-requests/services/orgRequestService";
 
 /**
  * POST /api/organization-requests/[id]/reject — Reject an organization request

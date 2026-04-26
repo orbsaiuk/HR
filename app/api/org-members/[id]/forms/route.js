@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPublishedFormsByUser } from "@/features/forms/services/formService";
+import { getPublishedFormsByUser } from "@/features/company/forms/services/formService";
 
 export async function GET(request, { params }) {
   try {

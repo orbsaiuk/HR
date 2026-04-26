@@ -1,6 +1,6 @@
 "use client";
 
-import { CompanyMessagesSidebar } from "@/features/chat/ui/CompanyMessagesSidebar";
+import { CompanyMessagesSidebar } from "@/features/company/messages";
 
 export default function CompanyMessagesLayout({ children }) {
   return (

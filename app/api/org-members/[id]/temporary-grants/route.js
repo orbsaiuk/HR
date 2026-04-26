@@ -5,9 +5,9 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
     grantTemporaryPermissions,
     getActiveTemporaryGrantsForUser,
-} from "@/features/org-members-management/services/temporaryGrantsService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
-import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
+} from "@/features/company/org-members/services/temporaryGrantsService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/org-members/[id]/temporary-grants

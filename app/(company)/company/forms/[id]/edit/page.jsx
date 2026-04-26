@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { FormEditPage } from "@/features/forms";
+import { FormEditPage } from "@/features/company/forms";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

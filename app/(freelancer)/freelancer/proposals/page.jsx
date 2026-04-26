@@ -1,4 +1,4 @@
-import { FreelancerPagePlaceholder } from "@/features/freelancer-dashboard";
+import { FreelancerPagePlaceholder } from "@/features/shared/components/FreelancerPagePlaceholder";
 
 export const metadata = {
   title: "العروض المقدمة | لوحة المستقل",

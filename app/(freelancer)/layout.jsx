@@ -1,7 +1,7 @@
 import { DashboardShell } from "@/shared/components/layout/DashboardShell.jsx";
-import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute.jsx";
-import { AccountTypeGuard } from "@/features/auth/components/AccountTypeGuard.jsx";
-import { SyncUser } from "@/features/auth/components/SyncUser.jsx";
+import { ProtectedRoute } from "@/features/shared/auth/components/ProtectedRoute.jsx";
+import { AccountTypeGuard } from "@/features/shared/auth/components/AccountTypeGuard.jsx";
+import { SyncUser } from "@/features/shared/auth/components/SyncUser.jsx";
 
 export default function FreelancerLayout({ children }) {
   return (

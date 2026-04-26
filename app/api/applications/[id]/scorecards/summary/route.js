@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getScorecardSummary } from "@/features/scorecards/services/scorecardService";
+import { getScorecardSummary } from "@/features/company/scorecards/services/scorecardService";
 
 /**
  * GET /api/applications/[id]/scorecards/summary — average scores and recommendation breakdown

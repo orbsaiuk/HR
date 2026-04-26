@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useHasDraft } from "@/features/organization-requests/model/useHasDraft";
-import { ORG_REGISTRATION_FORM_ID } from "@/features/organization-requests/model/orgDraftStorage";
+import { useHasDraft } from "@/features/public/organization-requests/model/useHasDraft";
+import { ORG_REGISTRATION_FORM_ID } from "@/features/public/organization-requests/model/orgDraftStorage";
 
 export function ContinueRegistrationBanner({
   userId,

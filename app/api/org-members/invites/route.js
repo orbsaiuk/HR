@@ -5,8 +5,8 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getInvites,
   createInvite,
-} from "@/features/org-members-management/services/orgMembersManagementService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/company/org-members/services/orgMembersManagementService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function GET() {
   try {

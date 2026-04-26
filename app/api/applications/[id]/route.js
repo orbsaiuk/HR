@@ -5,8 +5,8 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getApplicationById,
   updateApplication,
-} from "@/features/applications/services/applicationService";
-import { notifyApplicationStatusChange } from "@/features/applications/services/applicationNotificationService";
+} from "@/features/company/applications/services/applicationService";
+import { notifyApplicationStatusChange } from "@/features/company/applications/services/applicationNotificationService";
 
 export async function GET(request, { params }) {
   try {

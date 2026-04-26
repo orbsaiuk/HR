@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getApiKeyById, revokeApiKey } from "@/features/api-keys/services/apiKeyService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { getApiKeyById, revokeApiKey } from "@/features/shared/api-keys/services/apiKeyService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 /**
  * GET /api/api-keys/[id] — Get a single API key by ID.

@@ -7,7 +7,7 @@ import {
   findOrCreateConversation,
   getUserIdByClerkId,
   getConversations,
-} from "@/features/chat/services/chatService";
+} from "@/features/shared/messaging/services/chatService";
 
 export async function GET(request) {
   try {

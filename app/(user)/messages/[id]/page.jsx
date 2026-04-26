@@ -5,9 +5,9 @@
 'use client';
 
 import { use } from 'react';
-import { ConversationPage } from '@/features/chat/ui/ConversationPage';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useSanityUser } from '@/features/auth/hooks/useSanityUser';
+import { ConversationPage } from '@/features/company/messages';
+import { useAuth } from '@/features/shared/auth/hooks/useAuth';
+import { useSanityUser } from '@/features/shared/auth/hooks/useSanityUser';
 import { Loading } from '@/shared/components/feedback/Loading';
 
 export default function Page({ params }) {

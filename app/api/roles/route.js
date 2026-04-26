@@ -8,9 +8,9 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getOrganizationRoles,
   createRole,
-} from "@/features/roles/services/rolesService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
-import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
+} from "@/features/company/roles/services/rolesService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/roles — List all roles for the organization

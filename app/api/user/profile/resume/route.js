@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "@/features/auth/services/userService";
-import { userProfileService } from "@/features/user-profile/services";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
+import { userProfileService } from "@/features/user/profile/services";
 
 /**
  * POST /api/user/profile/resume — Upload a resume file for the current user

@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission, getUserPermissions } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { createApiKey, getApiKeys } from "@/features/api-keys/services/apiKeyService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { createApiKey, getApiKeys } from "@/features/shared/api-keys/services/apiKeyService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 /**
  * GET /api/api-keys — List all API keys for the organization.

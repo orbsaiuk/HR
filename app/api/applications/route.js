@@ -5,7 +5,7 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getApplications,
   createApplication,
-} from "@/features/applications/services/applicationService";
+} from "@/features/company/applications/services/applicationService";
 
 export async function GET(request) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request) {
     // If a positionId filter is provided, use the position-scoped query
     if (positionId) {
       const { getApplicationsByPosition } =
-        await import("@/features/applications/services/applicationService");
+        await import("@/features/company/applications/services/applicationService");
       const apps = await getApplicationsByPosition(positionId);
       return NextResponse.json(apps);
     }

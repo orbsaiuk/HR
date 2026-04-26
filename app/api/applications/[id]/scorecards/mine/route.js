@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getScorecardByEvaluatorAndApplication } from "@/features/scorecards/services/scorecardService";
+import { getScorecardByEvaluatorAndApplication } from "@/features/company/scorecards/services/scorecardService";
 
 /**
  * GET /api/applications/[id]/scorecards/mine — get the current user's scorecard for this application

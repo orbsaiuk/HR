@@ -5,8 +5,8 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   createTemplate,
   getTemplatesByOrg,
-} from "@/features/contracts/services/contractService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/company/contracts/services/contractService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 function validateTemplateInput(input = {}) {
   const title = String(input.title || "").trim();

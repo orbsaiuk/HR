@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "@/features/auth/services/userService";
-import { careerService } from "@/features/careers/services/careerService";
-import { userProfileService } from "@/features/user-profile/services/userProfileService";
-import { notifyNewApplication } from "@/features/applications/services/applicationNotificationService";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
+import { careerService } from "@/features/public/careers/services/careerService";
+import { userProfileService } from "@/features/user/profile/services/userProfileService";
+import { notifyNewApplication } from "@/features/company/applications/services/applicationNotificationService";
 
 /**
  * Build a profileSnapshot object from a full user profile.
@@ -109,7 +109,7 @@ export async function POST(request, { params }) {
       typeof answers === "object"
     ) {
       const { getFormFields } =
-        await import("@/features/forms/services/formService");
+        await import("@/features/company/forms/services/formService");
       const form = await getFormFields(formId);
 
       processedAnswers = Object.entries(answers).map(([key, value]) => {
@@ -189,7 +189,7 @@ export async function GET(request, { params }) {
     }
 
     const { checkApplicationExists } =
-      await import("@/features/careers/services/careersService");
+      await import("@/features/public/careers/services/careersService");
     const alreadyApplied = await checkApplicationExists(id, sanityUser._id);
 
     return NextResponse.json({ alreadyApplied: Boolean(alreadyApplied) });

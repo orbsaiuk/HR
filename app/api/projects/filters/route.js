@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { MOCK_PROJECTS } from "@/features/projects/ui/components/project-card/MockProjectCard";
+import { MOCK_PROJECTS } from "@/features/shared/projects/ui/components/project-card/MockProjectCard";
 
 /**
  * GET /api/projects/filters — Get available filter options

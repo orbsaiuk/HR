@@ -9,16 +9,16 @@ import {
   addTeamMemberToOrg,
   updateTeamMemberRole,
   removeTeamMemberFromOrg,
-} from "@/features/organizations/services/organizationService";
+} from "@/features/shared/organizations/services/organizationService";
 import {
   getUserByClerkId,
   createUser,
   updateUser,
   setAccountType,
-} from "@/features/auth/services/userService";
-import { seedDefaultRoles } from "@/features/roles/services/rolesService";
+} from "@/features/shared/auth/services/userService";
+import { seedDefaultRoles } from "@/features/company/roles/services/rolesService";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
-import { getInviteByEmail } from "@/features/org-members-management/services/orgMembersManagementService";
+import { getInviteByEmail } from "@/features/company/org-members/services/orgMembersManagementService";
 
 function mapClerkRoleToRoleKey(clerkRole) {
   switch (clerkRole) {

@@ -4,11 +4,11 @@ import {
   getFormById,
   getUserByClerkId,
   getExistingResponse,
-} from "@/features/forms/services/formService";
+} from "@/features/company/forms/services/formService";
 import {
   createResponse,
   processFormAnswers,
-} from "@/features/responses/services/responseService";
+} from "@/features/company/responses/services/responseService";
 
 export async function POST(request, { params }) {
   try {

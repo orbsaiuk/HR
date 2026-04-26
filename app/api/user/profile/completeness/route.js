@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { userProfileService } from "@/features/user-profile/services";
+import { userProfileService } from "@/features/user/profile/services";
 
 /**
  * GET /api/user/profile/completeness — Get profile completion status for the current user

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormCreatePage } from "@/features/forms";
+import { FormCreatePage } from "@/features/company/forms";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

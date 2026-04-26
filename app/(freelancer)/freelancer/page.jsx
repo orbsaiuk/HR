@@ -1,4 +1,4 @@
-import { FreelancerDashboardPage } from "@/features/freelancer-dashboard";
+import { FreelancerDashboardPage } from "@/features/freelancer/dashboard" ;
 
 export const metadata = {
   title: "لوحة تحكم المستقل",

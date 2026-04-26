@@ -1,4 +1,4 @@
-import { FreelancerProjectsPage } from "@/features/freelancer-dashboard";
+import { FreelancerProjectsPage } from "@/features/shared/projects";
 
 export const metadata = {
   title: "مشاريعي | لوحة المستقل",

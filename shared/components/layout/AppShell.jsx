@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Header } from "./Header";
-import { Footer } from "@/features/landing/ui/Footer";
+import { Footer } from "@/features/public/landing/ui/Footer";
 
 /**
  * Persistent shell rendered in the root layout.

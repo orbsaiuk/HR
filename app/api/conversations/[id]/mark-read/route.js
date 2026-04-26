@@ -6,7 +6,7 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   markAsRead,
   getConversationById,
-} from "@/features/chat/services/chatService";
+} from "@/features/shared/messaging/services/chatService";
 
 // PATCH - Mark messages as read
 export async function PATCH(request, { params }) {

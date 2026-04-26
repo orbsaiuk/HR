@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS, ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
-import { updateTeamMemberRole } from "@/features/org-members-management/services/orgMemberService";
-import { getRoleByKey } from "@/features/roles/services/rolesService";
-import { getOwnerTeamMember } from "@/features/org-members-management/services/orgMembersManagementService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
-import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
+import { updateTeamMemberRole } from "@/features/company/org-members/services/orgMemberService";
+import { getRoleByKey } from "@/features/company/roles/services/rolesService";
+import { getOwnerTeamMember } from "@/features/company/org-members/services/orgMembersManagementService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * PATCH /api/org-members/[id]/role — Change a team member's role

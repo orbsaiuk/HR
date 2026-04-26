@@ -1,4 +1,4 @@
-import { ContractsPage } from "@/features/contracts";
+import { ContractsPage } from "@/features/company/contracts";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

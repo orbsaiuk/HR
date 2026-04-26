@@ -5,8 +5,8 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getOrganizationById,
   updateOrganization,
-} from "@/features/organizations/services/organizationService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/shared/organizations/services/organizationService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 /**
  * GET /api/organizations/[id] — Get organization details by ID

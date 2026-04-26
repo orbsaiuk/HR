@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getContractByIdScoped } from "@/features/contracts/services/contractService";
-import { generateContractPdfBuffer } from "@/features/contracts/services/contractPdfService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { getContractByIdScoped } from "@/features/company/contracts/services/contractService";
+import { generateContractPdfBuffer } from "@/features/company/contracts/services/contractPdfService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export const runtime = "nodejs";
 

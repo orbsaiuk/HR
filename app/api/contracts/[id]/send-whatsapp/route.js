@@ -6,8 +6,8 @@ import {
   buildContractWhatsAppUrl,
   getContractByIdScoped,
   markContractAsSent,
-} from "@/features/contracts/services/contractService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/company/contracts/services/contractService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function POST(request, { params }) {
   try {

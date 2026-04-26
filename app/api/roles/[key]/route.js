@@ -10,9 +10,9 @@ import {
   updateRole,
   deleteRole,
   getRoleMemberCount,
-} from "@/features/roles/services/rolesService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
-import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
+} from "@/features/company/roles/services/rolesService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/roles/[key] — Get a single role by key

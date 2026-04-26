@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "@/features/auth/services/userService";
-import { candidatePortalService } from "@/features/candidate-portal/services/candidatePortalService";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
+import { candidatePortalService } from "@/features/user/applications/services/candidatePortalService";
 
 /**
  * GET /api/user/applications — Get all applications for the current user

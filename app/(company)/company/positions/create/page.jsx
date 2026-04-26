@@ -1,6 +1,6 @@
 "use client";
 
-import { JobPositionCreatePage } from "@/features/job-positions";
+import { JobPositionCreatePage } from "@/features/company/job-positions";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

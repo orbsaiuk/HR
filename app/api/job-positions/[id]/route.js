@@ -6,8 +6,8 @@ import {
   getJobPositionById,
   updateJobPosition,
   deleteJobPosition,
-} from "@/features/job-positions/services/jobPositionService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/company/job-positions/services/jobPositionService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function GET(request, { params }) {
   try {

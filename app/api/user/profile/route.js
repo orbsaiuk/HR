@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "@/features/auth/services/userService";
-import { userProfileService } from "@/features/user-profile/services";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
+import { userProfileService } from "@/features/user/profile/services";
 
 /**
  * GET /api/user/profile — Get the current user's full profile

@@ -5,7 +5,7 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
   getResponseById,
   deleteResponse,
-} from "@/features/responses/services/responseService";
+} from "@/features/company/responses/services/responseService";
 
 export async function GET(request, { params }) {
   try {

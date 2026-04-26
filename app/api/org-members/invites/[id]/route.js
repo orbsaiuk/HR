@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { deleteInvite } from "@/features/org-members-management/services/orgMembersManagementService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { deleteInvite } from "@/features/company/org-members/services/orgMembersManagementService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function DELETE(request, { params }) {
   try {

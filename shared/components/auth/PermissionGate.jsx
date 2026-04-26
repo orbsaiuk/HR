@@ -1,7 +1,7 @@
 "use client";
 
 import { Children, cloneElement, isValidElement } from "react";
-import { usePermissions } from "@/features/org-members-management/model/usePermissions";
+import { usePermissions } from "@/features/company/org-members/model/usePermissions";
 import { Loading } from "@/shared/components/feedback/Loading";
 import { AccessDenied } from "./AccessDenied";
 import { PERMISSION_METADATA } from "@/shared/lib/permissions";

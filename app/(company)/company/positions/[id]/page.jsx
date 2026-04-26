@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { JobPositionDetailPage } from "@/features/job-positions";
+import { JobPositionDetailPage } from "@/features/company/job-positions";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 

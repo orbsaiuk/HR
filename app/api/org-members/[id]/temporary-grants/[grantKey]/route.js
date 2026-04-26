@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { revokeTemporaryGrant } from "@/features/org-members-management/services/temporaryGrantsService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
-import { incrementPermissionsVersion } from "@/features/organizations/services/organizationService";
+import { revokeTemporaryGrant } from "@/features/company/org-members/services/temporaryGrantsService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
+import { incrementPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * DELETE /api/org-members/[id]/temporary-grants/[grantKey]

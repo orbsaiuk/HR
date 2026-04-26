@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "@/features/auth/services/userService";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
 import {
   createRequest,
   getRequestsByUser,
-} from "@/features/organization-requests/services/orgRequestService";
+} from "@/features/public/organization-requests/services/orgRequestService";
 import { uploadImageAsset } from "@/shared/services/assetService";
 
 /**

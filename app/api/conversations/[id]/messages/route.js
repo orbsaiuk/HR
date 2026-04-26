@@ -7,7 +7,7 @@ import {
   getMessages,
   sendMessage,
   getConversationById,
-} from "@/features/chat/services/chatService";
+} from "@/features/shared/messaging/services/chatService";
 
 // GET messages for a conversation
 export async function GET(request, { params }) {

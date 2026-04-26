@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPlatformStats } from "@/features/organizations/services/organizationService";
+import { getPlatformStats } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/platform/stats — Get platform-wide stats for the landing page

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { apiClient } from "@/shared/api/client";
 import { useCurrentOrg } from "@/shared/hooks/useCurrentOrg";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/shared/auth/hooks/useAuth";
 import { ADMIN_ROLE_KEY } from "@/shared/lib/permissions";
 
 export function AssignedTeamMembersField({ value = [], onChange }) {

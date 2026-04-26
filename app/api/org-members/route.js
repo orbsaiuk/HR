@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { getAllTeamMembers } from "@/features/org-members-management/services/orgMembersManagementService";
+import { getAllTeamMembers } from "@/features/company/org-members/services/orgMembersManagementService";
 
 export async function GET() {
   try {

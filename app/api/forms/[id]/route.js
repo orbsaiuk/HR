@@ -8,9 +8,9 @@ import {
   deleteForm,
   getUserByClerkId,
   getExistingResponse,
-} from "@/features/forms/services/formService";
+} from "@/features/company/forms/services/formService";
 import { currentUser } from "@clerk/nextjs/server";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function GET(request, { params }) {
   try {

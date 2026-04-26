@@ -4,9 +4,9 @@ import {
   CompanyLandingPage,
   UserLandingPage,
   FreelancerLandingPage,
-} from "@/features/landing";
-import { getUserByClerkId } from "@/features/auth/services/userService";
-import { countActiveRequestsByUser } from "@/features/organization-requests/repositories/orgRequestRepository";
+} from "@/features/public/landing";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
+import { countActiveRequestsByUser } from "@/features/public/organization-requests/repositories/orgRequestRepository";
 
 export default async function HomePage() {
   const { userId, orgId, sessionClaims } = await auth();

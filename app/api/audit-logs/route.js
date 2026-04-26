@@ -5,7 +5,7 @@ import { PERMISSIONS } from "@/shared/lib/permissions";
 import {
     getAuditLogs,
     getAuditLogCount,
-} from "@/features/audit/services/auditService";
+} from "@/features/company/audit/services/auditService";
 
 /**
  * GET /api/audit-logs

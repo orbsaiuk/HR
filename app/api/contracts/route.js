@@ -7,8 +7,8 @@ import {
   getContractsByCreator,
   getTemplateByIdScoped,
   incrementTemplateUsage,
-} from "@/features/contracts/services/contractService";
-import { logAuditEvent } from "@/features/audit/services/auditService";
+} from "@/features/company/contracts/services/contractService";
+import { logAuditEvent } from "@/features/company/audit/services/auditService";
 
 export async function GET() {
   try {

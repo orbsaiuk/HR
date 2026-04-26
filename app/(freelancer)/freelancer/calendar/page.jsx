@@ -1,4 +1,4 @@
-import { FreelancerCalendarPage } from "@/features/freelancer-dashboard";
+import { FreelancerCalendarPage } from "@/features/freelancer/calendar";
 
 export const metadata = {
   title: "التقويم | لوحة المستقل",

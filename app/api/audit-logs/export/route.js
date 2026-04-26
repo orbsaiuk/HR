@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { exportAuditLogs } from "@/features/audit/services/auditService";
-import { CATEGORY_LABELS } from "@/features/audit/ui/auditLogCategories";
+import { exportAuditLogs } from "@/features/company/audit/services/auditService";
+import { CATEGORY_LABELS } from "@/features/company/audit/ui/auditLogCategories";
 import {
   formatAuditDate,
   localizeAuditDescription,
-} from "@/features/audit/ui/auditLogLocalization";
+} from "@/features/company/audit/ui/auditLogLocalization";
 
 export async function GET(request) {
   try {

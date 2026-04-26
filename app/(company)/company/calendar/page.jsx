@@ -1,4 +1,4 @@
-import { CalendarDashboard } from "@/features/calendar/ui/CalendarDashboard";
+import { CalendarDashboard } from "@/features/company/calendar/ui/CalendarDashboard";
 
 export const metadata = {
   title: "التقويم | لوحة تحكم الشركة",

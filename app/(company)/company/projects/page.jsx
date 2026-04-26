@@ -1,4 +1,4 @@
-import { CompanyProjectsPage } from "@/features/projects";
+import { CompanyProjectsPage } from "@/features/shared/projects";
 
 export const metadata = {
   title: "المشاريع | لوحة تحكم الشركة",

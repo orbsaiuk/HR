@@ -9,7 +9,7 @@ import {
   useRef,
 } from "react";
 import { usePathname } from "next/navigation";
-import { orgMembersManagementApi } from "@/features/org-members-management/api/orgMembersManagementApi";
+import { orgMembersManagementApi } from "@/features/company/org-members/api/orgMembersManagementApi";
 import { apiClient } from "@/shared/api/client";
 import { API_ENDPOINTS } from "@/shared/api/endpoints";
 
