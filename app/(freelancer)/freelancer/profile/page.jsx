@@ -1,4 +1,4 @@
-import { FreelancerPagePlaceholder } from "@/features/shared/components/FreelancerPagePlaceholder";
+import { FreelancerProfilePage } from "@/features/freelancer/profile";
 
 export const metadata = {
   title: "الملف الشخصي | لوحة المستقل",
@@ -6,10 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <FreelancerPagePlaceholder
-      title="الملف الشخصي"
-      description="حدّث بياناتك المهنية ومهاراتك وروابط أعمالك لزيادة فرصك في الحصول على مشاريع."
-    />
-  );
+  return <FreelancerProfilePage />;
 }

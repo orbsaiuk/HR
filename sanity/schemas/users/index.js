@@ -1,5 +1,6 @@
 import user from "./user";
+import freelancerProfile from "./freelancerProfile";
 
-export { user };
+export { user, freelancerProfile };
 
-export default [user];
+export default [user, freelancerProfile];

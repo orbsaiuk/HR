@@ -40,7 +40,7 @@ export const schema = {
 
 // Re-export individual schemas for convenience
 export { organization, organizationRequest } from "./organizations";
-export { user } from "./users";
+export { user, freelancerProfile } from "./users";
 export { form, formField } from "./forms";
 export { conversation, message } from "./messaging";
 export {

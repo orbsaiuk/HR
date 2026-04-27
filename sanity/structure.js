@@ -90,7 +90,24 @@ export const structure = (S) =>
       S.listItem()
         .title("Users")
         .icon(() => "👤")
-        .child(S.documentTypeList("user").title("Users")),
+        .child(
+          S.list()
+            .title("Users")
+            .items([
+              S.listItem()
+                .title("Users")
+                .icon(() => "🧑")
+                .child(S.documentTypeList("user").title("Users")),
+              S.listItem()
+                .title("Freelancer Profiles")
+                .icon(() => "🧰")
+                .child(
+                  S.documentTypeList("freelancerProfile").title(
+                    "Freelancer Profiles",
+                  ),
+                ),
+            ]),
+        ),
 
       // Forms Group
       S.listItem()

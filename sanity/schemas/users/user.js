@@ -10,26 +10,37 @@ export default {
   },
   fieldsets: [
     {
-      name: "profile",
-      title: "Profile Information",
+      name: "basic",
+      title: "Basic Profile",
       options: { collapsible: true },
     },
-    { name: "resume", title: "Resume / CV", options: { collapsible: true } },
+    {
+      name: "resume",
+      title: "Resume",
+      options: { collapsible: true },
+    },
     {
       name: "experience",
       title: "Work Experience",
       options: { collapsible: true },
     },
-    { name: "education", title: "Education", options: { collapsible: true } },
+    {
+      name: "education",
+      title: "Education",
+      options: { collapsible: true },
+    },
     {
       name: "skills",
       title: "Skills & Languages",
       options: { collapsible: true },
     },
-    { name: "social", title: "Social / Links", options: { collapsible: true } },
+    {
+      name: "social",
+      title: "Social Links",
+      options: { collapsible: true },
+    },
   ],
   fields: [
-    // ── Existing fields (unchanged) ──────────────────────────────
     {
       name: "clerkId",
       title: "Clerk ID",
@@ -66,56 +77,41 @@ export default {
           { title: "Organization Member", value: "orgMember" },
         ],
       },
+      validation: (Rule) => Rule.required(),
     },
-    {
-      name: "createdAt",
-      title: "Created At",
-      type: "datetime",
-      initialValue: () => new Date().toISOString(),
-    },
-    {
-      name: "updatedAt",
-      title: "Updated At",
-      type: "datetime",
-      initialValue: () => new Date().toISOString(),
-    },
-
-    // ── NEW: Profile fields ──────────────────────────────────────
     {
       name: "phone",
       title: "Phone",
       type: "string",
-      fieldset: "profile",
+      fieldset: "basic",
     },
     {
       name: "headline",
       title: "Headline",
       type: "string",
-      fieldset: "profile",
-      description: 'e.g. "Senior Software Engineer"',
+      fieldset: "basic",
+      description: 'e.g. "Frontend Developer | React Specialist"',
     },
     {
       name: "bio",
       title: "Bio",
       type: "text",
-      fieldset: "profile",
-      description: "Short summary / about me",
+      fieldset: "basic",
+      rows: 4,
     },
     {
       name: "location",
       title: "Location",
       type: "string",
-      fieldset: "profile",
+      fieldset: "basic",
       description: "City, Country",
     },
     {
       name: "dateOfBirth",
       title: "Date of Birth",
       type: "date",
-      fieldset: "profile",
+      fieldset: "basic",
     },
-
-    // ── NEW: Resume / CV ─────────────────────────────────────────
     {
       name: "resume",
       title: "Resume",
@@ -131,10 +127,8 @@ export default {
       title: "Resume URL",
       type: "url",
       fieldset: "resume",
-      description: "Or provide an external link to your resume",
+      description: "Optional external link to your resume",
     },
-
-    // ── NEW: Work Experience ─────────────────────────────────────
     {
       name: "workExperience",
       title: "Work Experience",
@@ -191,8 +185,6 @@ export default {
         },
       ],
     },
-
-    // ── NEW: Education ───────────────────────────────────────────
     {
       name: "education",
       title: "Education",
@@ -220,7 +212,6 @@ export default {
               name: "degree",
               title: "Degree",
               type: "string",
-              description: 'e.g. "Bachelor of Science"',
               validation: (Rule) => Rule.required(),
             },
             {
@@ -242,14 +233,11 @@ export default {
               name: "grade",
               title: "Grade",
               type: "string",
-              description: "Optional GPA or grade",
             },
           ],
         },
       ],
     },
-
-    // ── NEW: Skills ──────────────────────────────────────────────
     {
       name: "skills",
       title: "Skills",
@@ -260,51 +248,16 @@ export default {
         layout: "tags",
       },
     },
-
-    // ── NEW: Languages ───────────────────────────────────────────
     {
       name: "languages",
       title: "Languages",
       type: "array",
       fieldset: "skills",
-      of: [
-        {
-          type: "object",
-          name: "languageEntry",
-          title: "Language",
-          preview: {
-            select: {
-              title: "language",
-              subtitle: "proficiency",
-            },
-          },
-          fields: [
-            {
-              name: "language",
-              title: "Language",
-              type: "string",
-              validation: (Rule) => Rule.required(),
-            },
-            {
-              name: "proficiency",
-              title: "Proficiency",
-              type: "string",
-              options: {
-                list: [
-                  { title: "Native", value: "native" },
-                  { title: "Fluent", value: "fluent" },
-                  { title: "Intermediate", value: "intermediate" },
-                  { title: "Basic", value: "basic" },
-                ],
-              },
-              validation: (Rule) => Rule.required(),
-            },
-          ],
-        },
-      ],
+      of: [{ type: "string" }],
+      options: {
+        layout: "tags",
+      },
     },
-
-    // ── NEW: Social / Links ──────────────────────────────────────
     {
       name: "linkedinUrl",
       title: "LinkedIn URL",
@@ -323,14 +276,23 @@ export default {
       type: "url",
       fieldset: "social",
     },
-
-    // ── NEW: Profile completeness ────────────────────────────────
     {
       name: "profileComplete",
       title: "Profile Complete",
       type: "boolean",
-      description: "Set when all required profile fields are filled",
       initialValue: false,
+    },
+    {
+      name: "createdAt",
+      title: "Created At",
+      type: "datetime",
+      initialValue: () => new Date().toISOString(),
+    },
+    {
+      name: "updatedAt",
+      title: "Updated At",
+      type: "datetime",
+      initialValue: () => new Date().toISOString(),
     },
   ],
 };

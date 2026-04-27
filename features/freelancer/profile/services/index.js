@@ -1,0 +1,1 @@
+export { freelancerProfileService } from "./freelancerProfileService";

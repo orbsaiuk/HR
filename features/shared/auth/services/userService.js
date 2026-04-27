@@ -1,8 +1,8 @@
-import { client } from "@/sanity/client";
+import { client, clientRead } from "@/sanity/client";
 import { userProfileQueries } from "@/sanity/queries";
 
 export async function getUserByClerkId(clerkId) {
-  return client.fetch(userProfileQueries.getByClerkId, { clerkId });
+  return clientRead.fetch(userProfileQueries.getByClerkId, { clerkId });
 }
 
 /**
