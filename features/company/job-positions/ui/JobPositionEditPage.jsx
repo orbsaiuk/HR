@@ -1,7 +1,7 @@
 "use client";
 
 import { useEditPositionPage } from "../model/useEditPositionPage";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { JobPositionFormSkeleton } from "./JobPositionFormSkeleton";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import {
@@ -36,7 +36,7 @@ export function JobPositionEditPage({ positionId }) {
     handleSubmit,
   } = useEditPositionPage(positionId);
 
-  if (loading) return <Loading />;
+  if (loading) return <JobPositionFormSkeleton />;
   if (error) return <Error message={error} />;
   if (!position) return <Error message="المنصب غير موجود" />;
 

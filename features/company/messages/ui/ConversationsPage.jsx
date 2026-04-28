@@ -6,7 +6,8 @@ import { useConversations } from "@/features/shared/messaging";
 import { ConversationCard } from "@/features/shared/messaging";
 import { MessagesSearch } from "@/features/shared/messaging";
 import { MessagesEmpty } from "@/features/shared/messaging";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 import { Error } from "@/shared/components/feedback/Error";
 
 export function ConversationsPage() {
@@ -41,7 +42,31 @@ export function ConversationsPage() {
     );
   });
 
-  if (loading) return <Loading fullPage />;
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <Skeleton className="h-9 w-32" />
+          <Skeleton className="mt-1 h-5 w-48" />
+        </div>
+        <Skeleton className="h-10 w-full rounded-lg" />
+        <Card className="rounded-lg">
+          <CardContent className="p-0">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-4 border-b border-gray-100 last:border-0">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="flex-1 space-y-1">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-48" />
+                </div>
+                <Skeleton className="h-3 w-20" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   if (error) return <Error message={error} onRetry={refetch} />;
 
   return (

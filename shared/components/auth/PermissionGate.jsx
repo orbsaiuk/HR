@@ -2,7 +2,7 @@
 
 import { Children, cloneElement, isValidElement } from "react";
 import { usePermissions } from "@/features/company/org-members/model/usePermissions";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AccessDenied } from "./AccessDenied";
 import { PERMISSION_METADATA } from "@/shared/lib/permissions";
 import {
@@ -52,7 +52,7 @@ export function PermissionGate({
     // Show loading state
     if (loading) {
         if (behavior === "block") {
-            return <Loading fullPage />;
+            return <Skeleton className="h-64 w-full rounded-xl" />;
         }
         // For hide/disable behaviors, render nothing while loading
         return null;

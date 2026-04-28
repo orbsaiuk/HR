@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { scorecardsApi } from "../api/scorecardsApi";
 import { ScorecardForm } from "./ScorecardForm";
 import { ScorecardsList } from "./ScorecardsList";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ClipboardCheck, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePermissions } from "@/features/company/org-members/model/usePermissions";
@@ -69,7 +69,7 @@ export function ScorecardPanel({ applicationId }) {
 
       {tab === "mine" &&
         (loadingMine ? (
-          <Loading />
+          <div className="space-y-3"><Skeleton className="h-10 w-full rounded-lg" /><Skeleton className="h-10 w-full rounded-lg" /><Skeleton className="h-10 w-full rounded-lg" /></div>
         ) : (
           <ScorecardForm
             applicationId={applicationId}

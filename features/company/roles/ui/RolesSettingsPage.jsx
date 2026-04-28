@@ -7,7 +7,8 @@ import { CreateRoleDialog } from "./CreateRoleDialog";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Fetch the user's permissions from an API
 async function fetchUserPermissions() {
@@ -69,7 +70,11 @@ export function RolesSettingsPage() {
       )}
 
       {isContentLoading ? (
-        <Loading />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} className="rounded-xl"><CardContent className="p-5 space-y-3"><Skeleton className="h-5 w-32" /><Skeleton className="h-4 w-48" /><Skeleton className="h-4 w-24" /></CardContent></Card>
+          ))}
+        </div>
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

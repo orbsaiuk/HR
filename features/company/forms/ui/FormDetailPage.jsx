@@ -16,7 +16,8 @@ import {
   FileText,
 } from "lucide-react";
 import { useFormDetail } from "../model/useFormDetail";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
@@ -105,7 +106,21 @@ export function FormDetailPage({ formId }) {
       : new Intl.NumberFormat("ar-SA").format(normalized);
   };
 
-  if (loading) return <Loading fullPage />;
+  if (loading) {
+    return (
+      <div className="space-y-6 p-6" dir="rtl">
+        <Skeleton className="h-28 rounded-2xl w-full" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="rounded-xl"><CardContent className="p-5 space-y-3"><Skeleton className="h-5 w-32" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-3/4" /></CardContent></Card>
+          </div>
+          <div className="space-y-6">
+            <Card className="rounded-xl"><CardContent className="p-5 space-y-2"><Skeleton className="h-5 w-24" /><Skeleton className="h-4 w-20" /><Skeleton className="h-4 w-20" /><Skeleton className="h-4 w-20" /></CardContent></Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (error) return <Error message={error} onRetry={refetch} />;
   if (!form) return <Error message="النموذج غير موجود" />;
 

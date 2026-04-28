@@ -3,7 +3,7 @@
 import { useScorecards } from "../model/useScorecards";
 import { StarRating, RecommendationBadge } from "./ScorecardHelpers";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { User, ClipboardCheck } from "lucide-react";
@@ -11,7 +11,15 @@ import { User, ClipboardCheck } from "lucide-react";
 export function ScorecardsList({ applicationId }) {
   const { scorecards, loading } = useScorecards(applicationId);
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return (
+      <Card><CardContent className="space-y-4 p-5">
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3"><Skeleton className="h-10 w-10 rounded-full" /><div className="flex-1 space-y-1"><Skeleton className="h-4 w-24" /><Skeleton className="h-3 w-16" /></div></div>
+        ))}
+      </CardContent></Card>
+    );
+  }
 
   if (!scorecards || scorecards.length === 0) {
     return (

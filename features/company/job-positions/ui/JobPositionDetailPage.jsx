@@ -1,25 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Briefcase,
-  MapPin,
-  Calendar,
-  Users,
-  FileText,
-  DollarSign,
-  Edit,
-  Trash2,
-  Play,
-  Pause,
-  XCircle,
-} from "lucide-react";
 import { useJobPositionDetail } from "../model/useJobPositionDetail";
 import { useJobPositionActions } from "../model/useJobPositionActions";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { JobPositionDetailSkeleton } from "./JobPositionDetailSkeleton";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
@@ -49,7 +34,7 @@ export function JobPositionDetailPage({ positionId }) {
   const { toast, showToast, hideToast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  if (loading) return <Loading />;
+  if (loading) return <JobPositionDetailSkeleton />;
   if (error) return <Error message={error} onRetry={refetch} />;
   if (!position) return <Error message="المنصب الوظيفي غير موجود" />;
 

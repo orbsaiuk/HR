@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useConversations } from "@/features/shared/messaging";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatRelativeDateAr } from "@/shared/utils/dateUtils";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -59,8 +59,13 @@ export function CompanyMessagesSidebar() {
       {/* Conversation List */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loading />
+          <div className="space-y-2 p-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 py-2">
+                <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-1"><Skeleton className="h-4 w-28" /><Skeleton className="h-3 w-40" /></div>
+              </div>
+            ))}
           </div>
         ) : filteredConversations.length === 0 ? (
           <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">

@@ -1,0 +1,47 @@
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+
+export default function CalendarLoading() {
+  return (
+    <div className="p-6 md:p-8" dir="rtl">
+      <div className="space-y-8">
+        <header className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          <Skeleton className="h-10 w-36 rounded-md" />
+        </header>
+
+        <Card className="rounded-xl border-[#E6E8F0]">
+          <CardContent className="p-3 md:p-4">
+            <Skeleton className="mb-5 h-8 w-56" />
+
+            <section className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              <Skeleton className="h-80 rounded-lg" />
+              <div className="space-y-3 lg:col-span-2">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-20 rounded-lg" />
+                ))}
+              </div>
+            </section>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+          <Card className="rounded-xl border-[#E6E8F0]">
+            <CardContent className="p-3 md:p-4 space-y-3">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 rounded-lg" />
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

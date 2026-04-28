@@ -30,7 +30,7 @@ export const sendContractSchema = z
       .trim()
       .min(2, "الممثل القانوني مطلوب"),
 
-    secondPartyFirstName: z.string().trim().min(2, "الاسم الأول مطلوب"),
+    secondPartyFirstName: z.string().trim().min(2, "السم الأول مطلوب"),
     secondPartyLastName: z.string().trim().min(2, "اسم العائلة مطلوب"),
     secondPartyNationalId: nationalIdSchema,
     secondPartyAddress: z.string().trim().min(6, "العنوان مطلوب"),
@@ -39,6 +39,7 @@ export const sendContractSchema = z
       .string()
       .trim()
       .email("البريد الإلكتروني غير صحيح"),
+    secondPartyUserId: z.string().trim().min(1, "معرّف المستقل مطلوب"),
 
     jobTitle: z.string().trim().min(2, "المسمى الوظيفي مطلوب"),
     compensationAmount: z.coerce
@@ -97,6 +98,7 @@ export const sendContractDefaults = {
   secondPartyAddress: "",
   secondPartyPhone: "",
   secondPartyEmail: "",
+  secondPartyUserId: "",
 
   jobTitle: "",
   compensationAmount: "",

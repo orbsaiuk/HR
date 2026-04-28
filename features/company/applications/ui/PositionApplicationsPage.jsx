@@ -10,7 +10,7 @@ import { ApplicationsEmptyState } from "./ApplicationsEmptyState";
 import { ApplicationsTable } from "./ApplicationsTable";
 import { KanbanBoard } from "./KanbanBoard";
 import { useJobPositionDetail } from "@/features/company/job-positions";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { PositionApplicationsSkeleton } from "./PositionApplicationsSkeleton";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
@@ -38,13 +38,11 @@ export function PositionApplicationsPage({ positionId }) {
     };
   }, [applications]);
 
-  if (loading) return <Loading />;
+  if (loading) return <PositionApplicationsSkeleton />;
   if (error) return <Error message={error} onRetry={refetch} />;
 
   const handleStatusChange = async (appId, newStatus) => {
-    // Optimistic update
     const previous = applications;
-    const targetApplication = applications.find((a) => a._id === appId);
 
     setApplications(
       applications.map((a) =>
@@ -52,12 +50,6 @@ export function PositionApplicationsPage({ positionId }) {
       ),
     );
 
-    if (targetApplication?.isMock) {
-      showToast("تم تحديث حالة الطلب", "success");
-      return;
-    }
-
-    // Persist in background, revert on failure
     const result = await updateStatus(appId, newStatus);
     if (!result.success) {
       setApplications(previous);
@@ -67,7 +59,6 @@ export function PositionApplicationsPage({ positionId }) {
 
   return (
     <div className="space-y-6" dir="rtl">
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <ApplicationsPageHeader
           positionId={positionId}
@@ -77,10 +68,8 @@ export function PositionApplicationsPage({ positionId }) {
         <ApplicationsViewToggle view={view} onViewChange={setView} />
       </div>
 
-      {/* Stats Bar */}
       {applications.length > 0 && <ApplicationsStatsBar stats={stats} />}
 
-      {/* Content */}
       {applications.length === 0 ? (
         <ApplicationsEmptyState />
       ) : view === "kanban" ? (

@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useJobPositionsList } from "../model/useJobPositionsList";
 import { useJobPositionActions } from "../model/useJobPositionActions";
 import { useJobPositionsFilters } from "../model/useJobPositionsFilters";
-import { MOCK_POSITION_CARDS } from "../lib/mockPositions";
 import { JobPositionCard } from "./JobPositionCard";
 import { JobPositionsFilters, JobPositionsPagination } from "./components";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { JobPositionsListSkeleton } from "./JobPositionsListSkeleton";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
@@ -35,17 +34,7 @@ export function JobPositionsListPage() {
   const { toast, showToast, hideToast } = useToast();
   const { hasPermission } = usePermissions();
   const canManagePositions = hasPermission(PERMISSIONS.MANAGE_POSITIONS);
-  const [mockPositions, setMockPositions] = useState(() =>
-    MOCK_POSITION_CARDS.map((position) => ({ ...position })),
-  );
   const [positionToDelete, setPositionToDelete] = useState(null);
-
-  const getPositionKey = (position) => position._id || position.id;
-  const getPositionSlug = (position) =>
-    position.slug || position._id || position.id;
-
-  const isUsingMockData = positions.length === 0;
-  const displayedPositions = isUsingMockData ? mockPositions : positions;
 
   const {
     searchQuery,
@@ -64,7 +53,7 @@ export function JobPositionsListPage() {
     filteredCount,
     resetFilters,
     goToPage,
-  } = useJobPositionsFilters(displayedPositions);
+  } = useJobPositionsFilters(positions);
 
   const handleDeleteConfirm = (id) => {
     setPositionToDelete(id);
@@ -74,14 +63,6 @@ export function JobPositionsListPage() {
     if (!positionToDelete) return;
     const id = positionToDelete;
     setPositionToDelete(null);
-
-    if (isUsingMockData) {
-      setMockPositions((prev) =>
-        prev.filter((position) => getPositionKey(position) !== id),
-      );
-      showToast("تم حذف الوظيفة بنجاح", "success");
-      return;
-    }
 
     const result = await deletePosition(id);
 
@@ -95,16 +76,6 @@ export function JobPositionsListPage() {
   };
 
   const handleStatusChange = async (id, status) => {
-    if (isUsingMockData) {
-      setMockPositions((prev) =>
-        prev.map((position) =>
-          getPositionKey(position) === id ? { ...position, status } : position,
-        ),
-      );
-      showToast("تم تحديث حالة الوظيفة", "success");
-      return;
-    }
-
     const result = await updateStatus(id, status);
 
     if (result.success) {
@@ -116,7 +87,7 @@ export function JobPositionsListPage() {
     showToast(result.error, "error");
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <JobPositionsListSkeleton />;
   if (error) return <Error message={error} onRetry={refetch} />;
 
   return (
@@ -164,12 +135,6 @@ export function JobPositionsListPage() {
                 showActions={canManagePositions}
                 onDelete={handleDeleteConfirm}
                 onStatusChange={handleStatusChange}
-                detailsHref={
-                  isUsingMockData
-                    ? `/company/positions/${getPositionSlug(position)}`
-                    : undefined
-                }
-                editHref={isUsingMockData ? "/company/positions" : undefined}
               />
             ))}
           </div>

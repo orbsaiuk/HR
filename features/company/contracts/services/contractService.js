@@ -23,6 +23,7 @@ const CONTRACT_FORM_DATA_KEYS = [
   "secondPartyAddress",
   "secondPartyPhone",
   "secondPartyEmail",
+  "secondPartyUserId",
   "secondPartyWhatsapp",
   "jobTitle",
   "compensationAmount",

@@ -6,7 +6,7 @@ import { AuditLogFilters } from "./AuditLogFilters";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2, ScrollText } from "lucide-react";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Main audit log page component.

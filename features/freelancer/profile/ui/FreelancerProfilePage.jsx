@@ -6,38 +6,12 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileHeader } from "../components/ProfileHeader";
 import { ProfileSidebar } from "../components/ProfileSidebar";
 import { ProfileContent } from "../components/ProfileContent";
-import { ProfileCompletionBanner } from "../components/ProfileCompletionBanner";
 import { FreelancerProfileEditDialog } from "../components/FreelancerProfileEditDialog";
 import { useFreelancerProfile } from "../model/useFreelancerProfile";
-
-function ProfileSkeleton() {
-  return (
-    <div dir="rtl" className="min-h-screen p-3 sm:p-4 lg:p-6">
-      <div className="mb-4 h-8 w-32 animate-pulse rounded-lg bg-slate-100 sm:mb-6" />
-      <Card className="mb-4 h-28 animate-pulse rounded-2xl border-slate-200 bg-slate-100 shadow-none sm:mb-6" />
-      <div
-        className="grid gap-4 sm:gap-6 lg:grid-cols-[19rem_minmax(0,1fr)]"
-        style={{ direction: "ltr" }}
-      >
-        <aside dir="rtl" className="order-2 space-y-4 sm:space-y-6 lg:order-1">
-          <Card className="h-64 animate-pulse rounded-2xl border-slate-200 bg-slate-100 shadow-none" />
-          <Card className="h-40 animate-pulse rounded-2xl border-slate-200 bg-slate-100 shadow-none" />
-        </aside>
-        <section
-          dir="rtl"
-          className="order-1 space-y-4 sm:space-y-6 lg:order-2"
-        >
-          <Card className="h-72 animate-pulse rounded-2xl border-slate-200 bg-slate-100 shadow-none" />
-          <Card className="h-44 animate-pulse rounded-2xl border-slate-200 bg-slate-100 shadow-none" />
-          <Card className="h-56 animate-pulse rounded-2xl border-slate-200 bg-slate-100 shadow-none" />
-        </section>
-      </div>
-    </div>
-  );
-}
 
 export function FreelancerProfilePage() {
   const {
@@ -72,7 +46,29 @@ export function FreelancerProfilePage() {
   }
 
   if (loading) {
-    return <ProfileSkeleton />;
+    return (
+      <div dir="rtl" className="min-h-screen p-3 sm:p-4 lg:p-6">
+        <Skeleton className="mb-4 h-8 w-32 sm:mb-6" />
+        <Skeleton className="mb-4 h-28 rounded-2xl sm:mb-6" />
+        <div
+          className="grid gap-4 sm:gap-6 lg:grid-cols-[19rem_minmax(0,1fr)]"
+          style={{ direction: "ltr" }}
+        >
+          <aside dir="rtl" className="order-2 space-y-4 sm:space-y-6 lg:order-1">
+            <Skeleton className="h-64 rounded-2xl" />
+            <Skeleton className="h-40 rounded-2xl" />
+          </aside>
+          <section
+            dir="rtl"
+            className="order-1 space-y-4 sm:space-y-6 lg:order-2"
+          >
+            <Skeleton className="h-72 rounded-2xl" />
+            <Skeleton className="h-44 rounded-2xl" />
+            <Skeleton className="h-56 rounded-2xl" />
+          </section>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -115,8 +111,6 @@ export function FreelancerProfilePage() {
           البروفايل
         </h1>
       </header>
-
-      <ProfileCompletionBanner profile={profile} onEdit={handleEdit} />
 
       <div
         className="grid gap-4 sm:gap-6 lg:grid-cols-[19rem_minmax(0,1fr)]"

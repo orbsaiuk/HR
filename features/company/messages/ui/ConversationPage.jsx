@@ -7,7 +7,7 @@ import { useMessages } from "@/features/shared/messaging";
 import { useConversation } from "@/features/shared/messaging";
 import { MessageList } from "@/features/shared/messaging";
 import { MessageInput } from "@/features/shared/messaging";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Error } from "@/shared/components/feedback/Error";
 import { PermissionGate } from "@/shared/components/auth/PermissionGate";
 import { PERMISSIONS } from "@/shared/lib/permissions";
@@ -71,7 +71,24 @@ export function ConversationPage({ conversationId, currentUserId }) {
   const loading = messagesLoading || conversationLoading;
   const error = messagesError || conversationError;
 
-  if (loading) return <Loading fullPage />;
+  if (loading) {
+    return (
+      <div className="flex h-full flex-col">
+        <div className="flex items-center gap-3 border-b border-slate-100 bg-white px-5 py-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="flex-1 space-y-1"><Skeleton className="h-4 w-32" /><Skeleton className="h-3 w-20" /></div>
+        </div>
+        <div className="flex-1 space-y-4 p-5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={i % 2 === 0 ? "flex justify-start" : "flex justify-end"}>
+              <Skeleton className="h-12 w-48 rounded-xl" />
+            </div>
+          ))}
+        </div>
+        <div className="border-t border-slate-100 p-4"><Skeleton className="h-10 w-full rounded-lg" /></div>
+      </div>
+    );
+  }
   if (error) return <Error message={error} onRetry={refetch} />;
 
   return (

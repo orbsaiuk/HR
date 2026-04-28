@@ -11,7 +11,7 @@ import { PositionInfoCard } from "./PositionInfoCard";
 import { StatusActionsCard } from "./StatusActionsCard";
 import { RatingAndNotesCard } from "./RatingAndNotesCard";
 import { ScorecardPanel } from "@/features/company/scorecards";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { ApplicationDetailSkeleton } from "./ApplicationDetailSkeleton";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
@@ -44,26 +44,15 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
     }
   }, [application]);
 
+  if (loading) return <ApplicationDetailSkeleton />;
+  if (error) return <Error message={error} />;
+  if (!application) return <Error message="لم يتم العثور على طلب التقديم" />;
+
   const handleStatusChange = async (newStatus) => {
     const extra = {};
     if (newStatus === "rejected") extra.rejectionReason = rejectionReason;
     extra.notes = notes;
     extra.rating = rating;
-
-    if (application?.isMock) {
-      setApplication({
-        ...application,
-        status: newStatus,
-        notes,
-        rating,
-        rejectionReason,
-      });
-      showToast(
-        `تم تحديث الحالة إلى ${STATUS_LABELS[newStatus] || newStatus}`,
-        "success",
-      );
-      return;
-    }
 
     const result = await updateStatus(applicationId, newStatus, extra);
     if (result.success) {
@@ -84,17 +73,6 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
   };
 
   const handleSaveNotes = async () => {
-    if (application?.isMock) {
-      setApplication({
-        ...application,
-        notes,
-        rating,
-        rejectionReason,
-      });
-      showToast("تم حفظ الملاحظات", "success");
-      return;
-    }
-
     const result = await updateApplication(applicationId, {
       notes,
       rating,
@@ -106,10 +84,6 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
       showToast(result.error, "error");
     }
   };
-
-  if (loading) return <Loading />;
-  if (error) return <Error message={error} />;
-  if (!application) return <Error message="لم يتم العثور على طلب التقديم" />;
 
   const {
     applicant,
@@ -131,7 +105,6 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <ApplicantInfoCard name={applicant?.name} email={applicant?.email} />
 
@@ -145,7 +118,6 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
 
           <ApplicationAnswersCard answers={answers} />
 
-          {/* Evaluation Scorecards */}
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">
               بطاقات التقييم
@@ -154,7 +126,6 @@ export function ApplicationDetailPage({ applicationId, positionId }) {
           </div>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
           <PositionInfoCard position={jobPosition} />
           <StatusActionsCard

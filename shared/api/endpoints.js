@@ -97,6 +97,10 @@ export const API_ENDPOINTS = {
   FREELANCER_PROFILE: "/api/freelancer/profile",
   FREELANCER_PROFILE_PORTFOLIO_IMAGE: "/api/freelancer/profile/portfolio-image",
 
+  // Freelancer Contracts
+  FREELANCER_CONTRACTS: "/api/freelancer/contracts",
+  FREELANCER_CONTRACT_BY_ID: (id) => `/api/freelancer/contracts/${id}`,
+
   // Candidate Portal (user)
   MY_APPLICATIONS: "/api/user/applications",
   MY_APPLICATION_BY_ID: (id) => `/api/user/applications/${id}`,

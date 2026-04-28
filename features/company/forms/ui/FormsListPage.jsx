@@ -14,7 +14,8 @@ import { FormsFilters } from "./FormsFilters";
 import { FormCard } from "./FormCard";
 import { FormsPagination } from "./FormsPagination";
 import { MOCK_FORMS } from "../lib/mockForms";
-import { Loading } from "@/shared/components/feedback/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 import { Error } from "@/shared/components/feedback/Error";
 import { Toast } from "@/shared/components/feedback/Toast";
 import { useToast } from "@/shared/hooks/useToast";
@@ -107,7 +108,17 @@ export function FormsListPage() {
   };
 
   if (loading) {
-    return <Loading fullPage />;
+    return (
+      <div className="space-y-6" dir="rtl">
+        <Skeleton className="h-28 rounded-2xl w-full" />
+        <Card className="rounded-xl"><CardContent className="p-5"><div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-10 rounded-lg" />)}</div></CardContent></Card>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i} className="rounded-2xl"><CardContent className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><div className="flex gap-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-4 w-24" /></div></CardContent></Card>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (error) {
