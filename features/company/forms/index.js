@@ -1,10 +1,8 @@
-export * from './components';
-export { FormsListPage } from './ui';
-export { FormCreatePage } from './ui/FormCreatePage';
-export { FormEditPage } from './ui/FormEditPage';
-export { FormDetailPage } from './ui/FormDetailPage';
-export { useFormsList } from './model/useFormsList';
-export { useFormActions } from './model/useFormActions';
-export { useFormCreate } from './model/useFormCreate';
-export { useFormEdit } from './model/useFormEdit';
-export { useFormDetail } from './model/useFormDetail';
+export * from "./components";
+export * from "./ui";
+export { useFormsList } from "./model/useFormsList";
+export { useFormActions } from "./model/useFormActions";
+export { useFormCreate } from "./model/useFormCreate";
+export { useFormEdit } from "./model/useFormEdit";
+export { useFormDetail } from "./model/useFormDetail";
+export { useFormPagination } from "./model/useFormPagination";

@@ -3,11 +3,11 @@ import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
 import { exportAuditLogs } from "@/features/company/audit/services/auditService";
-import { CATEGORY_LABELS } from "@/features/company/audit/ui/auditLogCategories";
+import { CATEGORY_LABELS } from "@/features/company/audit/ui/lib/auditLogCategories";
 import {
   formatAuditDate,
   localizeAuditDescription,
-} from "@/features/company/audit/ui/auditLogLocalization";
+} from "@/features/company/audit/ui/lib/auditLogLocalization";
 
 export async function GET(request) {
   try {

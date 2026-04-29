@@ -7,6 +7,9 @@ export * from "./users";
 // Form queries
 export * from "./forms";
 
+// Survey queries
+export * from "./surveys";
+
 // Messaging queries
 export * from "./messaging";
 

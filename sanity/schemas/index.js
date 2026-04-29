@@ -7,6 +7,9 @@ import userSchemas from "./users";
 // Form schemas
 import formSchemas from "./forms";
 
+// Survey schemas
+import surveySchemas from "./surveys";
+
 // Messaging schemas
 import messagingSchemas from "./messaging";
 
@@ -27,6 +30,7 @@ export const schemaTypes = [
   ...organizationSchemas,
   ...userSchemas,
   ...formSchemas,
+  ...surveySchemas,
   ...messagingSchemas,
   ...recruitmentSchemas,
   ...contractSchemas,
@@ -42,6 +46,7 @@ export const schema = {
 export { organization, organizationRequest } from "./organizations";
 export { user, freelancerProfile } from "./users";
 export { form, formField } from "./forms";
+export { survey, surveyQuestion, surveyResponse, surveyAnswer } from "./surveys";
 export { conversation, message } from "./messaging";
 export {
   jobPosition,

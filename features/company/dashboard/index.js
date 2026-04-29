@@ -3,5 +3,5 @@
  * Only export what other features need to use
  */
 
-export { DashboardPage } from './ui/DashboardPage';
-export { useDashboardStats } from './model/useDashboardStats';
+export { DashboardPage } from "./ui";
+export { useDashboardStats } from "./model/useDashboardStats";

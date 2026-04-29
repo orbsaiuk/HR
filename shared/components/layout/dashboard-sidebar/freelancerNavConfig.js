@@ -3,7 +3,7 @@ import {
   Briefcase,
   FileText,
   MessageSquare,
-  Wallet,
+  ClipboardList,
   CalendarDays,
   UserCircle2,
   Settings,
@@ -37,9 +37,9 @@ export const FREELANCER_NAV_ITEMS = [
     icon: MessageSquare,
   },
   {
-    name: "الأرباح",
-    href: "/freelancer/earnings",
-    icon: Wallet,
+    name: "الاستبيانات",
+    href: "/freelancer/surveys",
+    icon: ClipboardList,
   },
   {
     name: "التقويم",

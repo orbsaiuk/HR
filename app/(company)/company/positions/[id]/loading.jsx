@@ -1,4 +1,4 @@
-import { JobPositionDetailSkeleton } from "@/features/company/job-positions/ui/JobPositionDetailSkeleton";
+import { JobPositionDetailSkeleton } from "@/features/company/job-positions";
 
 export default function PositionDetailLoading() {
   return <JobPositionDetailSkeleton />;

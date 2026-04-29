@@ -1,1 +1,1 @@
-export { FreelancerCalendarPage } from './ui/FreelancerCalendarPage';
+export { FreelancerCalendarPage } from "./ui";

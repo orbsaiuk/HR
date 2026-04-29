@@ -1,10 +1,9 @@
-export { OrgMembersManagementPage } from "./ui/OrgMembersManagementPage";
+export { OrgMembersManagementPage } from "./ui";
 export { useOrgMembersManagement } from "./model/useOrgMembersManagement";
-export { OrgMembersManagementPage as TeamMemberManagementPage } from "./ui/OrgMembersManagementPage";
+export { OrgMembersManagementPage as TeamMemberManagementPage } from "./ui";
 export { useOrgMembersManagement as useTeamMemberManagement } from "./model/useOrgMembersManagement";
 export { usePermissions } from "./model/usePermissions";
-export { PermissionGuard } from "./ui/PermissionGuard";
-export { TemporaryGrantDialog } from "./ui/TemporaryGrantDialog";
+export { PermissionGuard, TemporaryGrantDialog } from "./ui";
 
 // Re-export new shared auth components for convenience
 export { PermissionGate } from "@/shared/components/auth/PermissionGate";

@@ -1,11 +1,13 @@
-export { JobPositionsListPage } from "./ui/JobPositionsListPage";
-export { JobPositionCard } from "./ui/JobPositionCard";
-export { JobPositionCreatePage } from "./ui/JobPositionCreatePage";
-export { JobPositionEditPage } from "./ui/JobPositionEditPage";
-export { JobPositionDetailPage } from "./ui/JobPositionDetailPage";
-export { JobPositionsListSkeleton } from "./ui/JobPositionsListSkeleton";
-export { JobPositionDetailSkeleton } from "./ui/JobPositionDetailSkeleton";
-export { JobPositionFormSkeleton } from "./ui/JobPositionFormSkeleton";
+export {
+  JobPositionsListPage,
+  JobPositionCard,
+  JobPositionCreatePage,
+  JobPositionEditPage,
+  JobPositionDetailPage,
+  JobPositionsListSkeleton,
+  JobPositionDetailSkeleton,
+  JobPositionFormSkeleton,
+} from "./ui";
 export { useJobPositionsList } from "./model/useJobPositionsList";
 export { useJobPositionActions } from "./model/useJobPositionActions";
 export { useJobPositionDetail } from "./model/useJobPositionDetail";

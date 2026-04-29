@@ -1,1 +1,2 @@
-export { FreelancerContractsPage } from "./FreelancerContractsPage";
+export * from "./pages";
+export * from "./components";

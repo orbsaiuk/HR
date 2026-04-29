@@ -4,3 +4,4 @@ export { ProjectsResults } from "./ProjectsResults";
 export { ProjectsPagination } from "./ProjectsPagination";
 export * from "./filters";
 export * from "./project-card";
+export * from "./skeletons";

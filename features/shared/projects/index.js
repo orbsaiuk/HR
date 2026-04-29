@@ -1,5 +1,4 @@
-export { ProjectsPage } from "./ui/ProjectsPage";
-export { ProjectDetailPage } from "./ui/ProjectDetailPage";
+export { ProjectsPage, ProjectDetailPage } from "./ui";
 export { CompanyProjectsPage } from "./ui/company";
 export { useProjectsList } from "./model/useProjectsList";
 export { useCompanyProjectsFilters } from "./model/useCompanyProjectsFilters";

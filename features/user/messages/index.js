@@ -2,6 +2,5 @@
  * User messages feature public API
  */
 
-export { UserMessagesPage } from './ui/UserMessagesPage';
-export { MessagesSidebar } from './ui/MessagesSidebar';
+export { UserMessagesPage, MessagesSidebar } from "./ui";
 export { useUserMessages } from './model/useUserMessages';

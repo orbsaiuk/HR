@@ -101,6 +101,14 @@ export const API_ENDPOINTS = {
   FREELANCER_CONTRACTS: "/api/freelancer/contracts",
   FREELANCER_CONTRACT_BY_ID: (id) => `/api/freelancer/contracts/${id}`,
 
+  // Freelancer Surveys
+  FREELANCER_SURVEYS: "/api/freelancer/surveys",
+  FREELANCER_SURVEY_BY_ID: (id) => `/api/freelancer/surveys/${id}`,
+  FREELANCER_SURVEY_RESPONSES: (id) =>
+    `/api/freelancer/surveys/${id}/responses`,
+  FREELANCER_SURVEY_RESPONSE_BY_ID: (id, responseId) =>
+    `/api/freelancer/surveys/${id}/responses/${responseId}`,
+
   // Candidate Portal (user)
   MY_APPLICATIONS: "/api/user/applications",
   MY_APPLICATION_BY_ID: (id) => `/api/user/applications/${id}`,

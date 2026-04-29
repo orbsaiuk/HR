@@ -5,8 +5,10 @@ export { FormField } from "./FormField";
 export { ProfileHeader } from "./ProfileHeader";
 
 // View-mode components
+export { ProfileCompletionBanner } from "./ProfileCompletionBanner";
 export { ProfileHeaderCard } from "./ProfileHeaderCard";
 export { ProfileSectionTabs } from "./ProfileSectionTabs";
+export { UserProfileSkeleton } from "./UserProfileSkeleton";
 
 // Edit-mode components
 export { EditProfileHeader } from "./EditProfileHeader";

@@ -1,0 +1,1 @@
+export { ProjectDetailSkeleton } from "./ProjectDetailSkeleton";

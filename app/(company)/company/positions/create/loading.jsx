@@ -1,4 +1,4 @@
-import { JobPositionFormSkeleton } from "@/features/company/job-positions/ui/JobPositionFormSkeleton";
+import { JobPositionFormSkeleton } from "@/features/company/job-positions";
 
 export default function PositionCreateLoading() {
   return <JobPositionFormSkeleton />;
