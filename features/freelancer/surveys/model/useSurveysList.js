@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { freelancerSurveysApi } from "../api/freelancerSurveysApi";
 
 export function useSurveysList() {
   const [surveys, setSurveys] = useState([]);
@@ -13,7 +12,7 @@ export function useSurveysList() {
     try {
       setLoading(true);
       setError(null);
-      const data = await apiClient.get(API_ENDPOINTS.FREELANCER_SURVEYS);
+      const data = await freelancerSurveysApi.getSurveys();
       setSurveys(data);
     } catch (err) {
       setError(err.message || "تعذر جلب الاستبيانات");

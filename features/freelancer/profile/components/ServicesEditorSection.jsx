@@ -70,7 +70,7 @@ export function ServicesEditorSection() {
               <p className="text-sm font-black text-slate-700">
                 خدمة {index + 1}
               </p>
-              <p className="mt-1 break-words text-xs text-slate-400">
+              <p className="mt-1 wrap-break-word text-xs text-slate-400">
                 {field.title?.trim() || "أضف عنواناً واضحاً للخدمة"}
               </p>
             </div>

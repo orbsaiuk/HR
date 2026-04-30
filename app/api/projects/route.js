@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { MOCK_PROJECTS } from "@/features/shared/projects/ui/components/project-card/MockProjectCard";
+import { projectService } from "@/features/shared/projects/services/projectService";
 
 /**
  * GET /api/projects — List all projects (public)
@@ -11,9 +11,9 @@ export async function GET(request) {
     const projectType = searchParams.get("projectType") || "";
     const industry = searchParams.get("industry") || "";
     const technology = searchParams.get("technology") || "";
-    const status = searchParams.get("status") || "";
+    const status = searchParams.get("status") || "open";
 
-    let projects = [...MOCK_PROJECTS];
+    let projects = await projectService.getProjects({ status });
 
     // Apply filters
     if (search) {
@@ -40,10 +40,6 @@ export async function GET(request) {
           (t) => t.toLowerCase() === technology.toLowerCase(),
         ),
       );
-    }
-
-    if (status) {
-      projects = projects.filter((p) => p.status === status);
     }
 
     return NextResponse.json(projects);

@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
-import { client } from "@/sanity/client";
-import { organizationQueries } from "@/sanity/queries";
+import { getPermissionsVersion } from "@/features/shared/organizations/services/organizationService";
 
 /**
  * GET /api/user/permissions-version
@@ -18,10 +17,7 @@ export async function GET() {
     try {
         const context = await resolveOrgContext();
 
-        const version = await client.fetch(
-            organizationQueries.getPermissionsVersion,
-            { orgId: context.orgId },
-        );
+        const version = await getPermissionsVersion(context.orgId);
 
         return NextResponse.json({ version: version ?? 1 });
     } catch (error) {

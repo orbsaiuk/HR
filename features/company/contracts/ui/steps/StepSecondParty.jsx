@@ -115,6 +115,21 @@ export function StepSecondParty({ register, errors }) {
           <FieldError message={errors.secondPartyEmail?.message} />
         </div>
       </div>
+
+      <div className="grid gap-2 md:gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="second-party-user-id" className="text-sm text-[#344054]">
+            معرّف المستقل (User ID)
+          </Label>
+          <Input
+            id="second-party-user-id"
+            className="mt-2 h-10 border-[#D8DFEC] text-right text-sm md:text-base"
+            placeholder="مثال: user_..."
+            {...register("secondPartyUserId")}
+          />
+          <FieldError message={errors.secondPartyUserId?.message} />
+        </div>
+      </div>
     </div>
   );
 }

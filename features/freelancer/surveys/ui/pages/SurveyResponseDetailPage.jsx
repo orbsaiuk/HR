@@ -6,8 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { freelancerSurveysApi } from "../../api/freelancerSurveysApi";
 
 function renderAnswer(answer) {
   if (Array.isArray(answer.values) && answer.values.length > 0) return answer.values.join("، ");
@@ -24,9 +23,7 @@ export function SurveyResponseDetailPage({ surveyId, responseId }) {
     try {
       setLoading(true);
       setError(null);
-      const data = await apiClient.get(
-        API_ENDPOINTS.FREELANCER_SURVEY_RESPONSE_BY_ID(surveyId, responseId),
-      );
+      const data = await freelancerSurveysApi.getResponseById(surveyId, responseId);
       setResponse(data);
     } catch (err) {
       setError(err.message || "تعذر جلب تفاصيل الرد");

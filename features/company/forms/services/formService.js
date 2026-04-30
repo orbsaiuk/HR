@@ -1,65 +1,54 @@
-import { client } from "@/sanity/client";
+import {
+  getFormsByOrg,
+  getFormsAssignedToUser as repoGetFormsAssignedToUser,
+  getFormsByTeamMember as repoGetFormsByTeamMember,
+  getFormById as repoGetFormById,
+  createForm as repoCreateForm,
+  updateForm as repoUpdateForm,
+  deleteForm as repoDeleteForm,
+  getPublishedFormsByUser as repoGetPublishedFormsByUser,
+  getFormFields as repoGetFormFields,
+  checkUserResponse,
+  getUserByClerkId,
+} from "../repositories/formRepository";
 import { currentUser } from "@clerk/nextjs/server";
-import { formsQueries } from "@/sanity/queries";
 
 export async function getForms(orgId) {
-  return client.fetch(formsQueries.getAll, { orgId });
+  return getFormsByOrg(orgId);
 }
 
-/**
- * Get forms assigned to a specific user (as creator or in assignedTo).
- * Used for resource-level permissions: users with view_forms but not manage_forms.
- */
 export async function getFormsAssignedToUser(orgId, userId) {
-  return client.fetch(formsQueries.getAssignedToUser, { orgId, userId });
+  return repoGetFormsAssignedToUser(orgId, userId);
 }
 
 export async function getFormsByTeamMember(orgId, userId) {
-  return client.fetch(formsQueries.getByTeamMember, { orgId, userId });
+  return repoGetFormsByTeamMember(orgId, userId);
 }
 
 export async function getFormById(id) {
-  return client.fetch(formsQueries.getById, { id });
+  return repoGetFormById(id);
 }
 
 export async function createForm(input, orgId) {
   const user = await currentUser();
   if (!user) throw new Error("Unauthorized");
 
-  // Get the user document from Sanity by clerkId
-  const userDoc = await client.fetch(formsQueries.getUserByClerkId, {
-    clerkId: user.id,
-  });
-
+  const userDoc = await getUserByClerkId(user.id);
   if (!userDoc) throw new Error("User not found");
 
-  return client.create({
-    _type: "form",
-    createdBy: { _type: "reference", _ref: userDoc._id },
-    organization: { _type: "reference", _ref: orgId },
+  return repoCreateForm({
     ...input,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdBy: { _ref: userDoc._id },
+    organization: { _ref: orgId },
   });
 }
 
 export async function updateForm(id, input) {
-  const updates = { ...input, updatedAt: new Date().toISOString() };
-
-  // Handle assignedTo — convert user IDs to Sanity references
-  if (input.assignedTo !== undefined) {
-    updates.assignedTo = (input.assignedTo || []).map((userId) => ({
-      _type: "reference",
-      _ref: userId,
-      _key: userId,
-    }));
-  }
-
-  return client.patch(id).set(updates).commit();
+  return repoUpdateForm(id, input);
 }
 
 export async function getPublishedFormsByUser(userId) {
-  return client.fetch(formsQueries.getPublishedByUser, { userId });
+  return repoGetPublishedFormsByUser(userId);
 }
 
 /**
@@ -70,34 +59,17 @@ export async function getPublishedFormsByTeamMember(teamMemberId) {
 }
 
 export async function getFormFields(formId) {
-  return client.fetch(formsQueries.getFormFields, { formId });
+  return repoGetFormFields(formId);
 }
 
-export async function getUserByClerkId(clerkId) {
-  return client.fetch(formsQueries.getUserByClerkId, { clerkId });
-}
+export { getUserByClerkId };
 
 export async function getExistingResponse(formId, userId) {
-  return client.fetch(formsQueries.checkUserResponse, { formId, userId });
+  return checkUserResponse(formId, userId);
 }
 
 export async function deleteForm(id) {
-  // First, check if there are any responses associated with this form
-  const responses = await client.fetch(formsQueries.getResponsesByFormId, {
-    formId: id,
-  });
-
-  // Delete all responses first
-  if (responses.length > 0) {
-    const transaction = client.transaction();
-    responses.forEach((response) => {
-      transaction.delete(response._id);
-    });
-    await transaction.commit();
-  }
-
-  // Then delete the form
-  await client.delete(id);
+  return repoDeleteForm(id);
 }
 
 export const formService = {

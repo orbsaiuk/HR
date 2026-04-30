@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { projectsApi } from "../api/projectsApi";
-import { MOCK_PROJECTS } from "../ui/components/project-card/MockProjectCard";
 import {
   computeFilterCounts,
   filterProjects,
@@ -62,12 +61,10 @@ export function useProjectsList() {
       setLoading(true);
       setError(null);
       const data = await projectsApi.getProjects({});
-      // Use mock data as fallback when API returns no projects
-      setAllProjects(data && data.length > 0 ? data : MOCK_PROJECTS);
+      setAllProjects(data || []);
     } catch (err) {
-      // Fall back to mock data on error so the page still renders
-      setAllProjects(MOCK_PROJECTS);
-      setError(null);
+      setAllProjects([]);
+      setError(err.message || "Failed to load projects");
     } finally {
       setLoading(false);
     }

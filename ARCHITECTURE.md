@@ -1,5 +1,36 @@
 # Form Builder App - Architecture Overview
 
+## Target Architecture Flow
+
+Use this default flow for client-driven data:
+
+```txt
+UI component
+-> feature model hook
+-> feature API wrapper
+-> Next.js app/api route
+-> feature service
+-> feature repository
+-> external data source
+```
+
+Use this default flow for server-rendered or server-only work:
+
+```txt
+Server component / route handler / server action
+-> feature service
+-> feature repository
+-> external data source
+```
+
+## Feature Architecture Checklist
+Before creating a new feature or adding an endpoint, ask these questions:
+- [ ] Does the UI hook call a feature API wrapper instead of a raw `apiClient.get('/api/...')`?
+- [ ] Are API route string constants centralized in `shared/api/endpoints.js`?
+- [ ] Does the `app/api/**/route.js` call a service instead of querying the database directly?
+- [ ] Does the repository hide storage-specific fields/columns from the business logic?
+- [ ] Is the data object shape standardized before passing it to the UI?
+
 ## 🏛️ Clean Architecture Layers
 
 ```

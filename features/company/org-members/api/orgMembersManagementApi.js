@@ -43,4 +43,16 @@ export const orgMembersManagementApi = {
   async checkIsOwner() {
     return apiClient.get(API_ENDPOINTS.TEAM_MEMBER_IS_OWNER);
   },
+
+  async getTemporaryGrants(memberId) {
+    return apiClient.get(API_ENDPOINTS.TEMPORARY_GRANTS(memberId));
+  },
+
+  async createTemporaryGrant(memberId, payload) {
+    return apiClient.post(API_ENDPOINTS.TEMPORARY_GRANTS(memberId), payload);
+  },
+
+  async revokeTemporaryGrant(memberId, key) {
+    return apiClient.delete(API_ENDPOINTS.TEMPORARY_GRANT_BY_KEY(memberId, key));
+  }
 };

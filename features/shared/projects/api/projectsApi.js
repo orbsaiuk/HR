@@ -31,4 +31,25 @@ export const projectsApi = {
   async getFilters() {
     return apiClient.get(API_ENDPOINTS.PROJECT_FILTERS);
   },
+
+  // --- Company Endpoints ---
+
+  async getCompanyProjects() {
+    return apiClient.get(API_ENDPOINTS.COMPANY_PROJECTS);
+  },
+  async createCompanyProject(payload) {
+    return apiClient.post(API_ENDPOINTS.COMPANY_PROJECTS, payload);
+  },
+  async updateCompanyProject(id, payload) {
+    return apiClient.put(API_ENDPOINTS.COMPANY_PROJECT_BY_ID(id), payload);
+  },
+  async deleteCompanyProject(id) {
+    return apiClient.delete(API_ENDPOINTS.COMPANY_PROJECT_BY_ID(id));
+  },
+
+  // --- Freelancer Endpoints ---
+
+  async getFreelancerProjects() {
+    return apiClient.get(API_ENDPOINTS.FREELANCER_PROJECTS);
+  },
 };

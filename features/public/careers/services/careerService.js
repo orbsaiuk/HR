@@ -1,15 +1,20 @@
-import { client, clientRead } from "@/sanity/client";
 import {
-  careerQueries,
-  applicationQueries,
-} from "@/sanity/queries/recruitment";
+  getPublicPositions as repoGetPublicPositions,
+  getPublicPositionById as repoGetPublicPositionById,
+  getDepartments as repoGetDepartments,
+  getLocations as repoGetLocations,
+} from "../repositories/careerRepository";
+import {
+  createApplication,
+  checkDuplicate,
+} from "@/features/company/applications/repositories/applicationRepository";
 
 /**
  * Get all published/open positions for the public careers page.
  * Cross-org — shows all publicly available positions with organization info.
  */
 export async function getPublicPositions() {
-  return clientRead.fetch(careerQueries.getPublicPositions);
+  return repoGetPublicPositions();
 }
 
 /**
@@ -17,23 +22,21 @@ export async function getPublicPositions() {
  * Includes organization info for display.
  */
 export async function getPublicPositionById(id) {
-  return clientRead.fetch(careerQueries.getPublicPositionById, { id });
+  return repoGetPublicPositionById(id);
 }
 
 /**
  * Get unique departments for filter
  */
 export async function getDepartments() {
-  const departments = await clientRead.fetch(careerQueries.getDepartments);
-  return departments.filter(Boolean);
+  return repoGetDepartments();
 }
 
 /**
  * Get unique locations for filter
  */
 export async function getLocations() {
-  const locations = await clientRead.fetch(careerQueries.getLocations);
-  return locations.filter(Boolean);
+  return repoGetLocations();
 }
 
 /**
@@ -43,37 +46,22 @@ export async function getLocations() {
 export async function submitApplication(input) {
   // Check for duplicate application
   if (input.applicantId) {
-    const existing = await client.fetch(applicationQueries.checkDuplicate, {
-      positionId: input.jobPositionId,
-      userId: input.applicantId,
-    });
+    const existing = await checkDuplicate(input.jobPositionId, input.applicantId);
     if (existing > 0) {
       throw new Error("You have already applied to this position");
     }
   }
 
   const doc = {
-    _type: "application",
-    jobPosition: { _type: "reference", _ref: input.jobPositionId },
+    job_position_id: input.jobPositionId,
+    org_id: input.organizationId || null,
+    applicant_id: input.applicantId || null,
+    form_id: input.formId || null,
     answers: input.answers || [],
-    status: "new",
-    appliedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    profileSnapshot: input.profileSnapshot || {},
   };
 
-  if (input.applicantId) {
-    doc.applicant = { _type: "reference", _ref: input.applicantId };
-  }
-
-  if (input.formId) {
-    doc.form = { _type: "reference", _ref: input.formId };
-  }
-
-  if (input.profileSnapshot) {
-    doc.profileSnapshot = input.profileSnapshot;
-  }
-
-  return client.create(doc);
+  return createApplication(doc);
 }
 
 export const careerService = {

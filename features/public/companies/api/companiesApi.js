@@ -25,4 +25,18 @@ export const companiesApi = {
     async getFeaturedPositions() {
         return apiClient.get(API_ENDPOINTS.FEATURED_POSITIONS);
     },
+
+    /**
+     * Get company profile.
+     */
+    async getProfile() {
+        return apiClient.get(API_ENDPOINTS.COMPANY_PROFILE);
+    },
+
+    /**
+     * Update company profile.
+     */
+    async updateProfile(updates) {
+        return apiClient.put(API_ENDPOINTS.COMPANY_PROFILE, updates);
+    },
 };

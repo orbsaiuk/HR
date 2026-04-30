@@ -4,6 +4,8 @@ import { Download, X } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { toast } from "sonner";
+import { useState } from "react";
+import { API_ENDPOINTS } from "@/shared/api/endpoints";
 
 import {
   Dialog,
@@ -77,6 +79,59 @@ export function FreelancerContractDetailSheet({
     formData.penaltyClauseAmount > 0
       ? formatAmount(formData.penaltyClauseAmount, formData.penaltyClauseCurrency)
       : null;
+
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!contractKey) return;
+    setIsDownloading(true);
+    const toastId = toast.loading("جاري تحميل العقد PDF...");
+
+    try {
+      const response = await fetch(API_ENDPOINTS.FREELANCER_CONTRACT_DOWNLOAD_PDF(contractKey), {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        let errorMessage = "فشل في تحميل العقد PDF";
+        try {
+          const errorBody = await response.json();
+          errorMessage = errorBody?.error || errorBody?.message || errorMessage;
+        } catch {}
+        throw new Error(errorMessage);
+      }
+
+      const blob = await response.blob();
+      
+      let fileName = "contract.pdf";
+      const contentDisposition = response.headers.get("content-disposition");
+      if (contentDisposition) {
+        const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+        if (utf8Match?.[1]) {
+          try { fileName = decodeURIComponent(utf8Match[1]); } catch {}
+        } else {
+          const basicMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
+          if (basicMatch?.[1]) fileName = basicMatch[1];
+        }
+      }
+
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+
+      toast.success("تم تحميل العقد بنجاح", { id: toastId });
+    } catch (error) {
+      console.error("Download error:", error);
+      toast.error(error.message || "حدث خطأ أثناء تحميل العقد", { id: toastId });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -221,10 +276,11 @@ export function FreelancerContractDetailSheet({
             <Button
               variant="outline"
               className="w-full items-center gap-2 rounded-xl"
-              onClick={() => toast.info("جاري تحميل العقد PDF...")}
+              onClick={handleDownload}
+              disabled={isDownloading}
             >
               <Download className="h-4 w-4" />
-              تحميل العقد PDF
+              {isDownloading ? "جاري التحميل..." : "تحميل العقد PDF"}
             </Button>
 
             {isReceived && (

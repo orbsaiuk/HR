@@ -27,8 +27,7 @@ export async function GET(request, { params }) {
     }
 
     const { id } = await params;
-    const contracts = await freelancerContractService.getContractsByFreelancer(clerkUser.id);
-    const contract = contracts.find((c) => c.id === id || c._id === id);
+    const contract = await freelancerContractService.getContractById(id, clerkUser.id);
 
     if (!contract) {
       return NextResponse.json({ error: "Contract not found" }, { status: 404 });
@@ -75,6 +74,7 @@ export async function PATCH(request, { params }) {
     const { id } = await params;
     const updated = await freelancerContractService.updateContractFreelancerStatus(
       id,
+      clerkUser.id,
       status,
     );
 

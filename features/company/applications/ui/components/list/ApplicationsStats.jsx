@@ -2,7 +2,7 @@
 
 import { Users, UserCheck, Clock, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useApplicationStats } from "../../../../model/useApplicationStats";
+import { useApplicationStats } from "../../../model/useApplicationStats";
 
 export function ApplicationsStats() {
   const { stats, loading } = useApplicationStats();

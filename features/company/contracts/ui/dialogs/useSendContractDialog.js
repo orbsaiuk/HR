@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { apiClient } from "@/shared/api/client";
+import { companiesApi } from "@/features/public/companies/api/companiesApi";
 import { API_ENDPOINTS } from "@/shared/api/endpoints";
 import { contractsApi } from "../../api/contractsApi";
 import { generateContractClauses } from "../../model/contractClauseGenerator";
@@ -157,7 +157,7 @@ export function useSendContractDialog({
 
     async function loadCompanyContext() {
       try {
-        const companyResult = await apiClient.get(API_ENDPOINTS.COMPANY_PROFILE);
+        const companyResult = await companiesApi.getProfile();
 
         if (!mounted) return;
 
@@ -260,6 +260,7 @@ export function useSendContractDialog({
             "secondPartyAddress",
             "secondPartyPhone",
             "secondPartyEmail",
+            "secondPartyUserId",
           ]
         : stepId === "details"
           ? [

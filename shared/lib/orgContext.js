@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { client } from "@/sanity/client";
 import { organizationQueries } from "@/sanity/queries";
-import { resolveApiKeyContext } from "@/shared/lib/apiKeyContext";
 import { createCache, invalidateWhere } from "@/shared/lib/cache";
 
 /**
@@ -18,11 +17,7 @@ export class OrgContextError extends Error {
 const orgContextCache = createCache({ max: 500, ttl: 60_000 });
 
 export async function resolveContext(request) {
-  // Try API key first (API keys are not cached — they're already validated once)
-  const apiKeyCtx = await resolveApiKeyContext(request);
-  if (apiKeyCtx) return apiKeyCtx;
-
-  // Fall back to Clerk session (with caching)
+  // Proceed with user-based context resolution
   return resolveOrgContext();
 }
 

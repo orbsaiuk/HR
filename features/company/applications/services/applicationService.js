@@ -1,72 +1,62 @@
-import { client } from "@/sanity/client";
-import { applicationQueries, jobPositionQueries } from "@/sanity/queries";
+import {
+  getApplicationsByOrg,
+  getApplicationsByTeamMember as repoGetApplicationsByTeamMember,
+  getApplicationsByPosition as repoGetApplicationsByPosition,
+  getApplicationById as repoGetApplicationById,
+  getApplicationStats as repoGetApplicationStats,
+  updateApplication as repoUpdateApplication,
+  checkDuplicate,
+  createApplication as repoCreateApplication,
+} from "../repositories/applicationRepository";
+import { getJobPositionById } from "@/features/company/job-positions/repositories/jobPositionRepository";
 
 /**
  * Get all applications for the organization's positions
  */
 export async function getApplications(orgId) {
-  return client.fetch(applicationQueries.getByOrgId, { orgId });
+  return getApplicationsByOrg(orgId);
 }
 
 /**
  * Get applications for a specific recruiter's positions within the org
  */
 export async function getApplicationsByTeamMember(orgId, teamMemberId) {
-  return client.fetch(applicationQueries.getByTeamMemberId, {
-    orgId,
-    teamMemberId,
-  });
+  return repoGetApplicationsByTeamMember(orgId, teamMemberId);
 }
 
 /**
  * Get applications for a specific position
  */
 export async function getApplicationsByPosition(positionId) {
-  return client.fetch(applicationQueries.getByPositionId, { positionId });
+  return repoGetApplicationsByPosition(positionId);
 }
 
 /**
  * Get a single application by ID
  */
 export async function getApplicationById(id) {
-  return client.fetch(applicationQueries.getById, { id });
+  return repoGetApplicationById(id);
 }
 
 /**
  * Get application stats for the recruiter dashboard — scoped by org
  */
 export async function getApplicationStats(orgId) {
-  return client.fetch(applicationQueries.getStats, { orgId });
+  return repoGetApplicationStats(orgId);
 }
 
 /**
  * Update an application's status
  */
 export async function updateApplicationStatus(id, status, extra = {}) {
-  const updates = {
-    status,
-    updatedAt: new Date().toISOString(),
-  };
-  if (extra.notes !== undefined) updates.notes = extra.notes;
-  if (extra.rejectionReason !== undefined)
-    updates.rejectionReason = extra.rejectionReason;
-  if (extra.rating !== undefined) updates.rating = extra.rating;
-
-  return client.patch(id).set(updates).commit();
+  return repoUpdateApplication(id, { status, ...extra });
 }
 
 /**
  * Update recruiter notes / rating on an application
  */
 export async function updateApplication(id, input) {
-  const updates = { updatedAt: new Date().toISOString() };
-  if (input.notes !== undefined) updates.notes = input.notes;
-  if (input.rating !== undefined) updates.rating = input.rating;
-  if (input.status !== undefined) updates.status = input.status;
-  if (input.rejectionReason !== undefined)
-    updates.rejectionReason = input.rejectionReason;
-
-  return client.patch(id).set(updates).commit();
+  return repoUpdateApplication(id, input);
 }
 
 /**
@@ -74,42 +64,21 @@ export async function updateApplication(id, input) {
  */
 export async function createApplication(input) {
   // Check for duplicate
-  const existing = await client.fetch(applicationQueries.checkDuplicate, {
-    positionId: input.jobPositionId,
-    userId: input.applicantId,
-  });
+  const existing = await checkDuplicate(input.jobPositionId, input.applicantId);
   if (existing > 0) {
     throw new Error("You have already applied to this position");
   }
 
-  // Fetch the job position to get its organization reference (denormalized)
-  const jobPosition = await client.fetch(jobPositionQueries.getOrganizationRef, {
-    id: input.jobPositionId,
-  });
+  // Fetch the job position to get its organization reference
+  const jobPosition = await getJobPositionById(input.jobPositionId);
 
-  const doc = {
-    _type: "application",
-    jobPosition: { _type: "reference", _ref: input.jobPositionId },
-    applicant: { _type: "reference", _ref: input.applicantId },
+  return repoCreateApplication({
+    job_position_id: input.jobPositionId,
+    applicant_id: input.applicantId,
     answers: input.answers || [],
-    status: "new",
-    appliedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  if (input.formId) {
-    doc.form = { _type: "reference", _ref: input.formId };
-  }
-
-  // Denormalize organization reference from the job position for query performance
-  if (jobPosition?.organization?._ref) {
-    doc.organization = {
-      _type: "reference",
-      _ref: jobPosition.organization._ref,
-    };
-  }
-
-  return client.create(doc);
+    form_id: input.formId || undefined,
+    org_id: jobPosition?.organization?._id || undefined,
+  });
 }
 
 export const applicationService = {

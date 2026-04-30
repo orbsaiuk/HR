@@ -188,9 +188,8 @@ export async function GET(request, { params }) {
       return NextResponse.json({ alreadyApplied: false }, { status: 200 });
     }
 
-    const { checkApplicationExists } =
-      await import("@/features/public/careers/services/careersService");
-    const alreadyApplied = await checkApplicationExists(id, sanityUser._id);
+    const { checkDuplicate } = await import("@/features/company/applications/repositories/applicationRepository");
+    const alreadyApplied = await checkDuplicate(id, sanityUser._id);
 
     return NextResponse.json({ alreadyApplied: Boolean(alreadyApplied) });
   } catch (error) {

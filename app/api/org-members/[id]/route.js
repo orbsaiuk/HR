@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveOrgContext } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
-import { client } from "@/sanity/client";
-import { teamMembersQueries } from "@/sanity/queries";
+import { getTeamMemberByUserId } from "@/features/company/org-members/services/orgMembersManagementService";
 
 export async function GET(request, { params }) {
   try {
@@ -12,10 +11,7 @@ export async function GET(request, { params }) {
     const { id } = await params;
 
     // Find team member by user ID within the organization's embedded array
-    const teamMember = await client.fetch(teamMembersQueries.getByUserId, {
-      orgId: context.orgId,
-      userId: id,
-    });
+    const teamMember = await getTeamMemberByUserId(context.orgId, id);
 
     if (!teamMember) {
       return NextResponse.json(

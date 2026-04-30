@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { companiesApi } from "../api/companiesApi";
 
 /**
  * Hook to fetch and update the current company's profile (dashboard context).
@@ -17,7 +16,7 @@ export function useCompanyProfile() {
         try {
             setLoading(true);
             setError(null);
-            const data = await apiClient.get(API_ENDPOINTS.COMPANY_PROFILE);
+            const data = await companiesApi.getProfile();
             setCompany(data);
         } catch (err) {
             setError(err.message || "فشل في تحميل بيانات الشركة");
@@ -34,7 +33,7 @@ export function useCompanyProfile() {
         try {
             setSaving(true);
             setError(null);
-            const data = await apiClient.put(API_ENDPOINTS.COMPANY_PROFILE, updates);
+            const data = await companiesApi.updateProfile(updates);
             setCompany(data);
             return { success: true };
         } catch (err) {

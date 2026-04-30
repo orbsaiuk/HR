@@ -126,6 +126,7 @@ export const SEND_CONTRACT_STEP_FIELDS = [
     "secondPartyAddress",
     "secondPartyPhone",
     "secondPartyEmail",
+    "secondPartyUserId",
   ],
   [
     "contractType",

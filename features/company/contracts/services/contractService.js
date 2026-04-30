@@ -1,5 +1,9 @@
-import { client } from "@/sanity/client";
-import { contractsQueries } from "@/sanity/queries";
+import {
+  getContractsByCreator as repoGetContractsByCreator,
+  getContractByIdScoped as repoGetContractByIdScoped,
+  createContract as repoCreateContract,
+  patchContractSent,
+} from "../repositories/contractRepository";
 
 function inferCategoryFromType(type) {
   if (!type) return "فريلانسر";
@@ -127,76 +131,59 @@ function buildWhatsAppMessage(contract = {}) {
 }
 
 export async function getContractsByCreator(orgId, userId) {
-  return client.fetch(contractsQueries.getByOrgAndCreator, { orgId, userId });
+  return repoGetContractsByCreator(orgId, userId);
 }
 
 export async function getContractByIdScoped(id, orgId) {
-  return client.fetch(contractsQueries.getByIdScoped, { id, orgId });
+  return repoGetContractByIdScoped(id, orgId);
 }
 
 export async function createContract(input, { orgId, userId }) {
   const normalized = normalizeContractPayload(input);
-  const now = new Date().toISOString();
 
-  return client.create({
-    _type: "contract",
-    organization: { _type: "reference", _ref: orgId },
-    createdBy: { _type: "reference", _ref: userId },
+  return repoCreateContract({
+    organization: { _ref: orgId },
+    createdBy: { _ref: userId },
     ...normalized,
-    status: "created",
+    status: "received",
     whatsapp: {
       sendCount: 0,
     },
-    createdAt: now,
-    updatedAt: now,
   });
 }
 
+import {
+  getContractTemplates as repoGetTemplatesByOrg,
+  getContractTemplateById as repoGetTemplateByIdScoped,
+  createContractTemplate as repoCreateTemplate,
+  incrementTemplateUsage as repoIncrementTemplateUsage,
+} from "../repositories/contractTemplateRepository";
+
 export async function getTemplatesByOrg(orgId) {
-  return client.fetch(contractsQueries.getTemplatesByOrg, { orgId });
+  return repoGetTemplatesByOrg(orgId);
 }
 
 export async function getTemplateByIdScoped(id, orgId) {
-  return client.fetch(contractsQueries.getTemplateById, { id, orgId });
+  const template = await repoGetTemplateByIdScoped(id);
+  if (!template || template.organization?._id !== orgId) return null;
+  return template;
 }
 
 export async function createTemplate(input, { orgId, userId }) {
   const normalized = normalizeTemplatePayload(input);
-  const now = new Date().toISOString();
-
-  return client.create({
-    _type: "contractTemplate",
-    organization: { _type: "reference", _ref: orgId },
-    createdBy: { _type: "reference", _ref: userId },
+  return repoCreateTemplate({
+    organization: { _ref: orgId },
+    createdBy: { _ref: userId },
     ...normalized,
-    usageCount: 0,
-    createdAt: now,
-    updatedAt: now,
   });
 }
 
 export async function incrementTemplateUsage(templateId) {
-  if (!templateId) return null;
-
-  const now = new Date().toISOString();
-  return client
-    .patch(templateId)
-    .set({ updatedAt: now })
-    .inc({ usageCount: 1 })
-    .commit();
+  return repoIncrementTemplateUsage(templateId);
 }
 
 export async function markContractAsSent(id) {
-  const now = new Date().toISOString();
-  return client
-    .patch(id)
-    .set({
-      status: "sent",
-      "whatsapp.lastSentAt": now,
-      updatedAt: now,
-    })
-    .inc({ "whatsapp.sendCount": 1 })
-    .commit();
+  return patchContractSent(id);
 }
 
 export function buildContractWhatsAppUrl(contract) {

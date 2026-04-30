@@ -3,6 +3,7 @@ import { useFreelancerProjects } from "../../model/useFreelancerProjects";
 import { FreelancerProjectCard } from "./components/FreelancerProjectCard";
 import { FreelancerProjectFilters } from "./components/FreelancerProjectFilters";
 import { FreelancerProjectsPagination } from "./components/FreelancerProjectsPagination";
+import { ProjectsEmptyState } from "../components/ProjectsEmptyState";
 
 export function FreelancerProjectsPage() {
   const {
@@ -15,9 +16,29 @@ export function FreelancerProjectsPage() {
     projectsPerPage,
     paginatedProjects,
     getProgress,
+    loading,
   } = useFreelancerProjects();
 
   const emptySlots = Math.max(projectsPerPage - paginatedProjects.length, 0);
+
+  if (loading) {
+    return (
+      <div dir="rtl" className="min-h-screen rounded-3xl bg-[#F8F9FB] p-4 sm:p-6 lg:p-10">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-1/4 rounded bg-gray-200"></div>
+          <div className="h-32 rounded bg-gray-200"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!loading && paginatedProjects.length === 0) {
+    return (
+      <div dir="rtl" className="min-h-screen rounded-3xl bg-[#F8F9FB] p-4 sm:p-6 lg:p-10">
+        <ProjectsEmptyState userType="freelancer" />
+      </div>
+    );
+  }
 
   return (
     <div

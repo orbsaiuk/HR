@@ -1,6 +1,11 @@
 import { client } from "@/sanity/client";
 import { teamMemberInviteQueries, organizationQueries } from "@/sanity/queries";
 import { sendInvitationEmail } from "@/shared/services/emailService";
+import { getTeamMemberByUserId as getTeamMemberByUserIdRepo } from "../repositories/orgMembersRepository";
+
+export async function getTeamMemberByUserId(orgId, userId) {
+  return getTeamMemberByUserIdRepo(orgId, userId);
+}
 
 export async function getInvites(orgId) {
   return client.fetch(teamMemberInviteQueries.getAllInvites, { orgId });

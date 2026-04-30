@@ -17,8 +17,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { PERMISSION_METADATA } from "@/shared/lib/permissions";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { orgMembersManagementApi } from "../../api/orgMembersManagementApi";
 
 export function TemporaryGrantDialog({ memberId, memberName, onGranted }) {
     const [open, setOpen] = useState(false);
@@ -66,7 +65,7 @@ export function TemporaryGrantDialog({ memberId, memberName, onGranted }) {
         setError(null);
 
         try {
-            await apiClient.post(API_ENDPOINTS.TEMPORARY_GRANTS(memberId), {
+            await orgMembersManagementApi.createTemporaryGrant(memberId, {
                 permissions: selectedPermissions,
                 expiresAt: new Date(expiresAt).toISOString(),
                 reason,

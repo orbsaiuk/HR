@@ -6,8 +6,7 @@ import { ArrowRight, Inbox } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { freelancerSurveysApi } from "../../api/freelancerSurveysApi";
 
 function formatDate(dateString) {
   if (!dateString) return "غير محدد";
@@ -30,7 +29,7 @@ export function SurveyResponsesPage({ surveyId }) {
     try {
       setLoading(true);
       setError(null);
-      const data = await apiClient.get(API_ENDPOINTS.FREELANCER_SURVEY_RESPONSES(surveyId));
+      const data = await freelancerSurveysApi.getResponses(surveyId);
       setResponses(data);
     } catch (err) {
       setError(err.message || "تعذر جلب ردود الاستبيان");

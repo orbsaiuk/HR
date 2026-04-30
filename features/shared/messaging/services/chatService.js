@@ -1,25 +1,26 @@
+import {
+  getConversationsByRole,
+  getConversationById as repoGetConversationById,
+  getMessages as fetchMessages,
+  createMessage,
+  markMessagesAsRead,
+  findOrCreateConversation as repoFindOrCreateConversation,
+} from "../repositories/messagingRepository";
+
+// Users/team members are still in Sanity
 import { client } from "@/sanity/client";
-import { chatQueries } from "@/sanity/queries/messaging";
+import { userProfileQueries } from "@/sanity/queries";
 
 export async function getConversations(role, userId, orgId) {
-  if (role === "teamMember") {
-    return client.fetch(chatQueries.getConversationsByTeamMember, {
-      userId,
-      orgId,
-    });
-  }
-  // User conversations don't need org scoping (users see their own conversations)
-  return client.fetch(chatQueries.getConversationsByUser, { userId });
+  return getConversationsByRole(role, userId, orgId);
 }
 
 export async function getConversationById(conversationId) {
-  return client.fetch(chatQueries.getConversationById, { conversationId });
+  return repoGetConversationById(conversationId);
 }
 
 export async function getMessages(conversationId) {
-  return client.fetch(chatQueries.getMessagesByConversationId, {
-    conversationId,
-  });
+  return fetchMessages(conversationId);
 }
 
 export async function sendMessage(
@@ -28,37 +29,11 @@ export async function sendMessage(
   recipientId,
   content,
 ) {
-  const message = await client.create({
-    _type: "message",
-    conversationId,
-    sender: { _type: "reference", _ref: senderId },
-    recipient: { _type: "reference", _ref: recipientId },
-    content,
-    read: false,
-    createdAt: new Date().toISOString(),
-  });
-
-  // Update conversation lastMessageAt
-  await client
-    .patch(conversationId)
-    .set({
-      lastMessageAt: new Date().toISOString(),
-    })
-    .commit();
-
-  // Fetch complete message with populated references
-  return client.fetch(chatQueries.getMessageById, { messageId: message._id });
+  return createMessage(conversationId, senderId, recipientId, content);
 }
 
 export async function markAsRead(conversationId, userId) {
-  const messages = await client.fetch(chatQueries.getUnreadMessages, {
-    conversationId,
-    userId,
-  });
-
-  for (const messageId of messages) {
-    await client.patch(messageId).set({ read: true }).commit();
-  }
+  return markMessagesAsRead(conversationId, userId);
 }
 
 export async function findOrCreateConversation(
@@ -67,39 +42,19 @@ export async function findOrCreateConversation(
   relatedFormId,
   orgId,
 ) {
-  // Check if conversation already exists
-  const existingConversation = await client.fetch(
-    chatQueries.getExistingConversation,
-    { teamMemberId, userId },
-  );
-
-  if (existingConversation) {
-    return existingConversation;
-  }
-
-  // Create new conversation with organization reference
-  const doc = {
-    _type: "conversation",
-    teamMember: { _type: "reference", _ref: teamMemberId },
-    user: { _type: "reference", _ref: userId },
-    relatedForm: relatedFormId
-      ? { _type: "reference", _ref: relatedFormId }
-      : undefined,
-    lastMessageAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-  };
-
-  if (orgId) {
-    doc.organization = { _type: "reference", _ref: orgId };
-  }
-
-  return client.create(doc);
+  return repoFindOrCreateConversation(teamMemberId, userId, relatedFormId, orgId);
 }
 
 export async function getTeamMemberIdByClerkId(clerkId) {
-  return client.fetch(chatQueries.getTeamMemberByClerkId, { clerkId });
+  // Inline GROQ — no longer needs the messaging queries file
+  return client.fetch(
+    `*[_type == "organization" && _id == $orgId][0]{
+      "userId": teamMembers[user->clerkId == $clerkId][0].user->_id
+    }.userId`,
+    { clerkId }
+  );
 }
 
 export async function getUserIdByClerkId(clerkId) {
-  return client.fetch(chatQueries.getUserByClerkId, { clerkId });
+  return client.fetch(userProfileQueries.getByClerkId, { clerkId });
 }

@@ -79,6 +79,8 @@ export const API_ENDPOINTS = {
   COMPANIES: "/api/companies",
   COMPANY_BY_SLUG: (slug) => `/api/companies/${slug}`,
   COMPANY_PROFILE: "/api/company/profile",
+  COMPANY_PROJECTS: "/api/company/projects",
+  COMPANY_PROJECT_BY_ID: (id) => `/api/company/projects/${id}`,
   PLATFORM_STATS: "/api/platform/stats",
   FEATURED_POSITIONS: "/api/platform/featured-positions",
 
@@ -96,10 +98,13 @@ export const API_ENDPOINTS = {
   // Freelancer Profile
   FREELANCER_PROFILE: "/api/freelancer/profile",
   FREELANCER_PROFILE_PORTFOLIO_IMAGE: "/api/freelancer/profile/portfolio-image",
+  FREELANCER_PROJECTS: "/api/freelancer/projects",
+  FREELANCER_PROJECT_BY_ID: (id) => `/api/freelancer/projects/${id}`,
 
   // Freelancer Contracts
   FREELANCER_CONTRACTS: "/api/freelancer/contracts",
   FREELANCER_CONTRACT_BY_ID: (id) => `/api/freelancer/contracts/${id}`,
+  FREELANCER_CONTRACT_DOWNLOAD_PDF: (id) => `/api/freelancer/contracts/${id}/download`,
 
   // Freelancer Surveys
   FREELANCER_SURVEYS: "/api/freelancer/surveys",
@@ -112,14 +117,6 @@ export const API_ENDPOINTS = {
   // Candidate Portal (user)
   MY_APPLICATIONS: "/api/user/applications",
   MY_APPLICATION_BY_ID: (id) => `/api/user/applications/${id}`,
-
-  // Evaluation Scorecards
-  SCORECARDS: (applicationId) =>
-    `/api/applications/${applicationId}/scorecards`,
-  SCORECARD_MINE: (applicationId) =>
-    `/api/applications/${applicationId}/scorecards/mine`,
-  SCORECARD_SUMMARY: (applicationId) =>
-    `/api/applications/${applicationId}/scorecards/summary`,
 
   // Audit Logs
   AUDIT_LOGS: "/api/audit-logs",

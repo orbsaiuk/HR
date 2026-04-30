@@ -8,8 +8,7 @@ import { toast } from "sonner";
 import { FormBuilder } from "@/features/company/forms/components/FormBuilder/FormBuilder";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { freelancerSurveysApi } from "../../api/freelancerSurveysApi";
 import { useSurveyActions } from "../../model/useSurveyActions";
 
 function validateSurvey({ title, questions }) {
@@ -43,9 +42,8 @@ export function SurveyEditPage({ surveyId }) {
     try {
       setLoading(true);
       setError(null);
-      const survey = await apiClient.get(
-        API_ENDPOINTS.FREELANCER_SURVEY_BY_ID(surveyId),
-      );
+      const survey = await freelancerSurveysApi.getSurveys()
+        .then(surveys => surveys.find(s => s._id === surveyId || s.id === surveyId));
       setTitle(survey.title || "");
       setDescription(survey.description || "");
       setQuestions(survey.questions || []);

@@ -1,44 +1,37 @@
-import { client } from "@/sanity/client";
-import { scorecardQueries } from "@/sanity/queries";
+import {
+  getScorecardsByApplication as repoGetScorecardsByApplication,
+  getScorecardById as repoGetScorecardById,
+  getScorecardByEvaluatorAndApplication,
+  getScorecardSummary as repoGetScorecardSummary,
+  createScorecard,
+  updateScorecard,
+  deleteScorecard as repoDeleteScorecard,
+} from "../repositories/scorecardRepository";
 
 /**
  * Get all scorecards for a specific application — org-scoped
  */
 export async function getScorecardsByApplication(applicationId, orgId) {
-  return client.fetch(scorecardQueries.getByApplicationId, {
-    applicationId,
-    orgId,
-  });
+  return repoGetScorecardsByApplication(applicationId, orgId);
 }
 
 /**
  * Get a single scorecard by ID
  */
 export async function getScorecardById(id) {
-  return client.fetch(scorecardQueries.getById, { id });
+  return repoGetScorecardById(id);
 }
 
 /**
  * Get existing scorecard by evaluator + application
  */
-export async function getScorecardByEvaluatorAndApplication(
-  evaluatorId,
-  applicationId,
-) {
-  return client.fetch(scorecardQueries.getByEvaluatorAndApplication, {
-    evaluatorId,
-    applicationId,
-  });
-}
+export { getScorecardByEvaluatorAndApplication };
 
 /**
  * Get average scores for an application — org-scoped
  */
 export async function getScorecardSummary(applicationId, orgId) {
-  return client.fetch(scorecardQueries.getAverageForApplication, {
-    applicationId,
-    orgId,
-  });
+  return repoGetScorecardSummary(applicationId, orgId);
 }
 
 /**
@@ -55,34 +48,25 @@ export async function upsertScorecard(input) {
     overallScore: input.overallScore,
     recommendation: input.recommendation,
     summary: input.summary,
-    updatedAt: new Date().toISOString(),
   };
 
   if (existing) {
-    return client.patch(existing._id).set(data).commit();
+    return updateScorecard(existing._id, data);
   }
 
-  const doc = {
-    _type: "evaluationScorecard",
-    application: { _type: "reference", _ref: input.applicationId },
-    evaluator: { _type: "reference", _ref: input.evaluatorId },
+  return createScorecard({
+    application: { _ref: input.applicationId },
+    evaluator: { _ref: input.evaluatorId },
+    organization: input.orgId ? { _ref: input.orgId } : undefined,
     ...data,
-    createdAt: new Date().toISOString(),
-  };
-
-  // Denormalize organization reference if provided
-  if (input.orgId) {
-    doc.organization = { _type: "reference", _ref: input.orgId };
-  }
-
-  return client.create(doc);
+  });
 }
 
 /**
  * Delete a scorecard
  */
 export async function deleteScorecard(id) {
-  return client.delete(id);
+  return repoDeleteScorecard(id);
 }
 
 export const scorecardService = {

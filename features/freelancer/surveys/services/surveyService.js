@@ -1,5 +1,11 @@
-import { client } from "@/sanity/client";
-import { surveyQueries, surveyResponseQueries } from "@/sanity/queries";
+import {
+  getSurveysByUser as repoGetSurveysByUser,
+  getSurveyByIdForUser as repoGetSurveyByIdForUser,
+  createSurvey as repoCreateSurvey,
+  updateSurvey as repoUpdateSurvey,
+  deleteSurvey as repoDeleteSurvey,
+  getUserByClerkId,
+} from "../repositories/surveyRepository";
 
 const QUESTION_TYPES = new Set([
   "text",
@@ -15,15 +21,11 @@ const QUESTION_TYPES = new Set([
 ]);
 
 async function getFreelancerUserDoc(clerkId) {
-  const userDoc = await client.fetch(surveyQueries.getUserByClerkId, {
-    clerkId,
-  });
-
+  const userDoc = await getUserByClerkId(clerkId);
   if (!userDoc) throw new Error("User not found");
   if (userDoc.accountType !== "freelancer") {
     throw new Error("Freelancer access only");
   }
-
   return userDoc;
 }
 
@@ -105,28 +107,21 @@ function sanitizeSurveyInput(input, { requireQuestions = false } = {}) {
 
 export async function getSurveysByFreelancer(clerkId) {
   const userDoc = await getFreelancerUserDoc(clerkId);
-  return client.fetch(surveyQueries.getByFreelancer, { userId: userDoc._id });
+  return repoGetSurveysByUser(userDoc._id);
 }
 
 export async function getSurveyByIdForFreelancer(clerkId, id) {
   const userDoc = await getFreelancerUserDoc(clerkId);
-  return client.fetch(surveyQueries.getByIdForFreelancer, {
-    id,
-    userId: userDoc._id,
-  });
+  return repoGetSurveyByIdForUser(id, userDoc._id);
 }
 
 export async function createSurvey(clerkId, input) {
   const userDoc = await getFreelancerUserDoc(clerkId);
-  const now = new Date().toISOString();
   const data = sanitizeSurveyInput(input, { requireQuestions: true });
 
-  return client.create({
-    _type: "survey",
-    createdBy: { _type: "reference", _ref: userDoc._id },
+  return repoCreateSurvey({
+    createdBy: { _ref: userDoc._id },
     ...data,
-    createdAt: now,
-    updatedAt: now,
   });
 }
 
@@ -135,30 +130,14 @@ export async function updateSurvey(clerkId, id, input) {
   if (!existing) throw new Error("Survey not found");
 
   const data = sanitizeSurveyInput(input, { requireQuestions: true });
-
-  return client
-    .patch(id)
-    .set({ ...data, updatedAt: new Date().toISOString() })
-    .commit();
+  return repoUpdateSurvey(id, data);
 }
 
 export async function deleteSurvey(clerkId, id) {
   const existing = await getSurveyByIdForFreelancer(clerkId, id);
   if (!existing) throw new Error("Survey not found");
 
-  const responseIds = await client.fetch(surveyResponseQueries.getBySurveyForDelete, {
-    surveyId: id,
-  });
-
-  if (responseIds.length > 0) {
-    let transaction = client.transaction();
-    responseIds.forEach((responseId) => {
-      transaction = transaction.delete(responseId);
-    });
-    await transaction.commit();
-  }
-
-  await client.delete(id);
+  return repoDeleteSurvey(id);
 }
 
 export { getFreelancerUserDoc, sanitizeQuestion };

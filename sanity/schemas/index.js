@@ -4,38 +4,10 @@ import organizationSchemas from "./organizations";
 // User management schemas
 import userSchemas from "./users";
 
-// Form schemas
-import formSchemas from "./forms";
-
-// Survey schemas
-import surveySchemas from "./surveys";
-
-// Messaging schemas
-import messagingSchemas from "./messaging";
-
-// Recruitment schemas
-import recruitmentSchemas from "./recruitment";
-
-// Contract schemas
-import contractSchemas from "./contracts";
-
-// Audit schemas
-import auditSchemas from "./audit";
-
-// API Key schemas
-import { apiKey } from "./api-keys";
-
 // Combine all schemas
 export const schemaTypes = [
   ...organizationSchemas,
   ...userSchemas,
-  ...formSchemas,
-  ...surveySchemas,
-  ...messagingSchemas,
-  ...recruitmentSchemas,
-  ...contractSchemas,
-  ...auditSchemas,
-  apiKey,
 ];
 
 export const schema = {
@@ -45,14 +17,3 @@ export const schema = {
 // Re-export individual schemas for convenience
 export { organization, organizationRequest } from "./organizations";
 export { user, freelancerProfile } from "./users";
-export { form, formField } from "./forms";
-export { survey, surveyQuestion, surveyResponse, surveyAnswer } from "./surveys";
-export { conversation, message } from "./messaging";
-export {
-  jobPosition,
-  application,
-  evaluationScorecard,
-  scorecardCriterion,
-} from "./recruitment";
-export { contract, contractTemplate } from "./contracts";
-export { auditLog } from "./audit";

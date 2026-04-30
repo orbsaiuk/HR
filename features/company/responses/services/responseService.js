@@ -1,68 +1,92 @@
-import { client } from "@/sanity/client";
-import { responsesQueries } from "@/sanity/queries";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { uploadFileAsset } from "@/shared/services/assetService";
 
 export async function getResponsesByFormId(formId) {
-  return client.fetch(responsesQueries.getByFormId, { formId });
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from("form_responses")
+    .select("*")
+    .eq("form_id", formId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data || [];
 }
 
 export async function getResponseById(id) {
-  return client.fetch(responsesQueries.getById, { id });
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from("form_responses")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data;
 }
 
 export async function updateResponseStatus(id, status) {
-  return client
-    .patch(id)
-    .set({ reviewStatus: status, reviewedAt: new Date().toISOString() })
-    .commit();
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from("form_responses")
+    .update({ 
+      status: status, 
+      status_viewed: false,
+      updated_at: new Date().toISOString() 
+    })
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Update response status with full details (status, note, rejection reason)
- */
 export async function updateResponseStatusWithDetails(
   id,
   { status, statusNote, rejectionReason },
 ) {
   const updateData = {
     status,
-    statusNote: statusNote || "",
-    updatedAt: new Date().toISOString(),
-    statusUpdated: true,
-    statusViewed: false,
+    status_note: statusNote || "",
+    updated_at: new Date().toISOString(),
+    status_viewed: false,
   };
 
   if (status === "rejected" && rejectionReason) {
-    updateData.rejectionReason = rejectionReason;
+    updateData.rejection_reason = rejectionReason;
   }
 
-  return client.patch(id).set(updateData).commit();
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from("form_responses")
+    .update(updateData)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Delete a response by ID
- */
 export async function deleteResponse(id) {
-  return client.delete(id);
+  const supabase = getSupabaseServer();
+  const { error } = await supabase.from("form_responses").delete().eq("id", id);
+  if (error) throw error;
 }
 
-/**
- * Create a new form response
- */
 export async function createResponse({ formId, userId, answers }) {
-  return client.create({
-    _type: "response",
-    form: { _type: "reference", _ref: formId },
-    user: { _type: "reference", _ref: userId },
-    answers,
-    submittedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from("form_responses")
+    .insert({
+      form_id: formId,
+      respondent_id: userId,
+      answers,
+      status: "pending",
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Process form answers, uploading file assets as needed
- */
 export async function processFormAnswers(answers, fields, formData) {
   return Promise.all(
     Object.entries(answers).map(async ([key, value]) => {

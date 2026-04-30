@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { apiClient } from "@/shared/api/client";
-import { API_ENDPOINTS } from "@/shared/api/endpoints";
+import { freelancerSurveysApi } from "../api/freelancerSurveysApi";
 
 export function useSurveyActions() {
   const [deleting, setDeleting] = useState(false);
@@ -12,7 +11,7 @@ export function useSurveyActions() {
   const deleteSurvey = useCallback(async (id) => {
     try {
       setDeleting(true);
-      await apiClient.delete(API_ENDPOINTS.FREELANCER_SURVEY_BY_ID(id));
+      await freelancerSurveysApi.deleteSurvey(id);
       return { success: true };
     } catch (err) {
       return { success: false, error: err.message || "تعذر حذف الاستبيان" };
@@ -24,7 +23,7 @@ export function useSurveyActions() {
   const createSurvey = useCallback(async (data) => {
     try {
       setCreating(true);
-      const result = await apiClient.post(API_ENDPOINTS.FREELANCER_SURVEYS, data);
+      const result = await freelancerSurveysApi.createSurvey(data);
       return { success: true, data: result };
     } catch (err) {
       return {
@@ -39,10 +38,7 @@ export function useSurveyActions() {
   const updateSurvey = useCallback(async (id, data) => {
     try {
       setUpdating(true);
-      const result = await apiClient.put(
-        API_ENDPOINTS.FREELANCER_SURVEY_BY_ID(id),
-        data,
-      );
+      const result = await freelancerSurveysApi.updateSurvey(id, data);
       return { success: true, data: result };
     } catch (err) {
       return {

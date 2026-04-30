@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
-import { client } from "@/sanity/client";
-import { userProfileQueries } from "@/sanity/queries";
+import { getTeamMemberById } from "@/features/company/org-members/services/orgMemberService";
 import { resolveOrgContext, invalidateOrgContextCache } from "@/shared/lib/orgContext";
 import { requirePermission } from "@/shared/lib/permissionChecker";
 import { PERMISSIONS } from "@/shared/lib/permissions";
@@ -29,7 +28,7 @@ export async function DELETE(request, { params }) {
     }
 
     // 1. Get the user's clerkId from Sanity
-    const userDoc = await client.fetch(userProfileQueries.getById, { id });
+    const userDoc = await getTeamMemberById(id);
     if (!userDoc?.clerkId) {
       return NextResponse.json(
         { error: "User not found" },

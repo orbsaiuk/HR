@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { COMPANY_PROJECTS_MOCK } from "../../model/companyProjectsMock";
+import { useCompanyProjects } from "../../model/useCompanyProjects";
 import { useCompanyProjectsFilters } from "../../model/useCompanyProjectsFilters";
 import { ProjectsPagination } from "../components/ProjectsPagination";
 import { CompanyProjectCard } from "./CompanyProjectCard";
@@ -23,9 +23,7 @@ import { CompanyProjectsFilters } from "./components/CompanyProjectsFilters";
 const COMPANY_PROJECTS_PER_PAGE = 5;
 
 export function CompanyProjectsPage() {
-  const [projects, setProjects] = useState(() =>
-    COMPANY_PROJECTS_MOCK.map((project) => ({ ...project })),
-  );
+  const { projects, setProjects, loading, createProject, updateProject, deleteProject } = useCompanyProjects();
   const [currentPage, setCurrentPage] = useState(1);
   const [projectToEdit, setProjectToEdit] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -63,28 +61,32 @@ export function CompanyProjectsPage() {
     });
   }, [totalPages]);
 
-  const handleCreateProject = (projectPayload) => {
-    const nextProject = {
-      id: `project-${Date.now()}`,
-      ...projectPayload,
-    };
-
-    setProjects((prev) => [nextProject, ...prev]);
-    setCurrentPage(1);
+  const handleCreateProject = async (projectPayload) => {
+    try {
+      await createProject(projectPayload);
+      setCurrentPage(1);
+      setIsEditDialogOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleDeleteProject = (projectId) => {
-    setProjects((prev) => prev.filter((project) => project.id !== projectId));
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await deleteProject(projectId);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleUpdateProject = (projectId, payload) => {
-    setProjects((prev) =>
-      prev.map((project) =>
-        project.id === projectId
-          ? { ...project, ...payload, id: project.id }
-          : project,
-      ),
-    );
+  const handleUpdateProject = async (projectId, payload) => {
+    try {
+      await updateProject(projectId, payload);
+      setIsEditDialogOpen(false);
+      setProjectToEdit(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleEditRequest = (project) => {
@@ -108,6 +110,33 @@ export function CompanyProjectsPage() {
     handleDeleteProject(projectToDelete.id);
     setProjectToDelete(null);
   };
+
+  if (loading) {
+    return (
+      <section className="p-4 sm:p-6 lg:p-8" dir="rtl">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-1/4 rounded bg-gray-200"></div>
+          <div className="h-32 rounded bg-gray-200"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!loading && projects.length === 0) {
+    return (
+      <section className="p-4 sm:p-6 lg:p-8" dir="rtl">
+        <ProjectsEmptyState onCreateClick={() => setIsEditDialogOpen(true)} userType="company" />
+        <CreateProjectDialog
+          hideTrigger
+          open={isEditDialogOpen}
+          onOpenChange={handleEditDialogOpenChange}
+          projectToEdit={projectToEdit}
+          onCreate={handleCreateProject}
+          onUpdate={handleUpdateProject}
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="p-4 sm:p-6 lg:p-8" dir="rtl">
@@ -160,7 +189,7 @@ export function CompanyProjectsPage() {
           <>
             {paginatedProjects.map((project) => (
               <CompanyProjectCard
-                key={project.id}
+                key={project.id || project._id}
                 project={project}
                 onEdit={handleEditRequest}
                 onDelete={handleDeleteRequest}

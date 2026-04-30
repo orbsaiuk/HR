@@ -73,7 +73,7 @@ function normalizeTemplateList(items = []) {
   return items.map((item) => normalizeTemplate(item));
 }
 
-export function useContractTemplates(initialTemplates = CONTRACT_TEMPLATES) {
+export function useContractTemplates(initialTemplates = []) {
   const [templates, setTemplates] = useState(() =>
     normalizeTemplateList(initialTemplates),
   );
@@ -89,7 +89,7 @@ export function useContractTemplates(initialTemplates = CONTRACT_TEMPLATES) {
 
         if (!mounted) return;
 
-        if (Array.isArray(backendTemplates) && backendTemplates.length > 0) {
+        if (Array.isArray(backendTemplates)) {
           setTemplates(normalizeTemplateList(backendTemplates));
           return;
         }

@@ -1,38 +1,22 @@
 import { client, clientRead } from "@/sanity/client";
 import { organizationQueries } from "@/sanity/queries/organizations";
 
-/**
- * Get an organization by its Sanity document ID
- */
 export async function getOrganizationById(id) {
   return client.fetch(organizationQueries.getById, { id });
 }
 
-/**
- * Get an organization by ID with teamMembers included.
- * Used by auth sync to check membership and clerkOrgId.
- */
 export async function getOrganizationByIdWithMembers(id) {
   return client.fetch(organizationQueries.getByIdWithMembers, { id });
 }
 
-/**
- * Get an organization by its Clerk org ID
- */
 export async function getOrganizationByClerkOrgId(clerkOrgId) {
   return client.fetch(organizationQueries.getByClerkOrgId, { clerkOrgId });
 }
 
-/**
- * Get an organization by its slug
- */
 export async function getOrganizationBySlug(slug) {
   return client.fetch(organizationQueries.getBySlug, { slug });
 }
 
-/**
- * Update organization settings and details
- */
 export async function updateOrganization(id, input) {
   const updates = {
     updatedAt: new Date().toISOString(),
@@ -49,21 +33,16 @@ export async function updateOrganization(id, input) {
   if (input.foundedYear !== undefined) updates.foundedYear = input.foundedYear;
   if (input.socialLinks !== undefined) updates.socialLinks = input.socialLinks;
   if (input.services !== undefined) updates.services = input.services;
-  if (input.officeLocations !== undefined) updates.officeLocations = input.officeLocations;
+  if (input.officeLocations !== undefined)
+    updates.officeLocations = input.officeLocations;
 
   return client.patch(id).set(updates).commit();
 }
 
-/**
- * Get all members of an organization
- */
 export async function getOrganizationMembers(orgId) {
   return client.fetch(organizationQueries.getMembers, { orgId });
 }
 
-/**
- * Create a new organization
- */
 export async function createOrganization(data) {
   return client.create({
     _type: "organization",
@@ -83,9 +62,6 @@ export async function createOrganization(data) {
   });
 }
 
-/**
- * Get team member by Clerk ID and organization ID
- */
 export async function getTeamMemberByClerkAndOrg(clerkId, orgId) {
   return client.fetch(organizationQueries.getTeamMemberByClerkAndOrg, {
     clerkId,
@@ -136,7 +112,12 @@ export async function updateTeamMemberRole(orgId, key, newRoleKey) {
     })
     .commit();
 }
-export async function addInviteToOrg(orgId, email, invitedByUserId, roleKey = "viewer") {
+export async function addInviteToOrg(
+  orgId,
+  email,
+  invitedByUserId,
+  roleKey = "viewer",
+) {
   const normalizedEmail = email.toLowerCase().trim();
   const timestamp = new Date().toISOString();
 
@@ -171,33 +152,29 @@ export async function getPlatformStats() {
   return clientRead.fetch(organizationQueries.getPlatformStats);
 }
 
-/**
- * Get featured positions for the landing page (public, read-only)
- */
 export async function getFeaturedPositions() {
   return clientRead.fetch(organizationQueries.getFeaturedPositions);
 }
 
-/**
- * Get a public company profile by slug (public, read-only)
- */
 export async function getPublicCompanyBySlug(slug) {
   return clientRead.fetch(organizationQueries.getPublicCompanyBySlug, { slug });
 }
 
-/**
- * Increment the permissionsVersion counter on an organization.
- * Called after any role or team member change so the frontend can detect
- * stale permissions and re-fetch.
- */
 export async function incrementPermissionsVersion(orgId) {
   try {
     return await client.patch(orgId).inc({ permissionsVersion: 1 }).commit();
   } catch (error) {
     // Version increment should never break the main operation
-    console.error("[organizationService] Failed to increment permissionsVersion:", error.message);
+    console.error(
+      "[organizationService] Failed to increment permissionsVersion:",
+      error.message,
+    );
     return null;
   }
+}
+
+export async function getPermissionsVersion(orgId) {
+  return client.fetch(organizationQueries.getPermissionsVersion, { orgId });
 }
 
 export const organizationService = {
@@ -218,4 +195,5 @@ export const organizationService = {
   getFeaturedPositions,
   getPublicCompanyBySlug,
   incrementPermissionsVersion,
+  getPermissionsVersion,
 };
