@@ -6,8 +6,6 @@ import {
   ClipboardList,
   CalendarDays,
   UserCircle2,
-  Settings,
-  Send,
 } from "lucide-react";
 
 export const FREELANCER_NAV_ITEMS = [
@@ -20,11 +18,6 @@ export const FREELANCER_NAV_ITEMS = [
     name: "مشاريعي",
     href: "/freelancer/projects",
     icon: Briefcase,
-  },
-  {
-    name: "العروض المقدمة",
-    href: "/freelancer/proposals",
-    icon: Send,
   },
   {
     name: "العقود",
@@ -50,11 +43,6 @@ export const FREELANCER_NAV_ITEMS = [
     name: "الملف الشخصي",
     href: "/freelancer/profile",
     icon: UserCircle2,
-  },
-  {
-    name: "الإعدادات",
-    href: "/freelancer/settings",
-    icon: Settings,
   },
 ];
 
