@@ -45,16 +45,17 @@ export async function findOrCreateConversation(
   return repoFindOrCreateConversation(teamMemberId, userId, relatedFormId, orgId);
 }
 
-export async function getTeamMemberIdByClerkId(clerkId) {
+export async function getTeamMemberIdByClerkId(clerkId, orgId) {
   // Inline GROQ — no longer needs the messaging queries file
   return client.fetch(
     `*[_type == "organization" && _id == $orgId][0]{
       "userId": teamMembers[user->clerkId == $clerkId][0].user->_id
     }.userId`,
-    { clerkId }
+    { clerkId, orgId }
   );
 }
 
 export async function getUserIdByClerkId(clerkId) {
-  return client.fetch(userProfileQueries.getByClerkId, { clerkId });
+  const user = await client.fetch(userProfileQueries.getByClerkId, { clerkId });
+  return user?._id || null;
 }

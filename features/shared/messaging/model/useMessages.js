@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { chatApi } from '../api/chatApi';
+import { getSupabaseBrowser } from '@/lib/supabase/client';
 
 export function useMessages(conversationId) {
     const [messages, setMessages] = useState([]);
@@ -128,6 +129,45 @@ export function useMessages(conversationId) {
 
     useEffect(() => {
         fetchMessages();
+
+        if (!conversationId) return;
+
+        const supabase = getSupabaseBrowser();
+        const channel = supabase
+            .channel(`conversation:${conversationId}`)
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'messages',
+                filter: `conversation_id=eq.${conversationId}`,
+            }, (payload) => {
+                const row = payload.new;
+                const newMsg = {
+                    _id: row.id,
+                    conversationId: row.conversation_id,
+                    sender: { _id: row.sender_id },
+                    recipient: { _id: row.recipient_id },
+                    content: row.content,
+                    read: row.read,
+                    createdAt: row.created_at,
+                };
+                
+                setMessages(prev => {
+                    // Check if message already exists (e.g. from optimistic update)
+                    if (prev.some(m => m._id === newMsg._id || (m.isPending && m.content === newMsg.content))) {
+                        return prev.map(m => (m.isPending && m.content === newMsg.content) ? newMsg : m);
+                    }
+                    return [...prev, newMsg];
+                });
+                
+                // Mark as read if we received a new message
+                chatApi.markAsRead(conversationId).catch(console.error);
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [conversationId]);
 
     return {

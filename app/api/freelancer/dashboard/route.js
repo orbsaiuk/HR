@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { getUserByClerkId } from "@/features/shared/auth/services/userService";
-import { getFreelancerProjects } from "@/features/shared/projects/services/projectService";
+import { getFreelancerDashboardStats } from "@/features/freelancer/dashboard/services/dashboardService";
 
 export async function GET(request) {
   try {
@@ -15,15 +15,14 @@ export async function GET(request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const projects = await getFreelancerProjects(sanityUser._id);
+    const stats = await getFreelancerDashboardStats(sanityUser._id);
 
-    return NextResponse.json(projects);
+    return NextResponse.json(stats);
   } catch (error) {
-    console.error("GET /api/freelancer/projects error:", error);
+    console.error("GET /api/freelancer/dashboard error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch projects" },
-      { status: 500 },
+      { error: "Failed to fetch dashboard stats" },
+      { status: 500 }
     );
   }
 }
-

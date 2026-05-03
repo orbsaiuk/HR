@@ -30,14 +30,22 @@ export function DashboardLatestJobs({ jobs }) {
         </Button>
       </CardHeader>
 
-      <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {jobs.map((job) => (
-          <JobPositionCard
-            key={job.id}
-            position={normalizeDashboardJob(job)}
-            detailsHref="/company/positions"
-          />
-        ))}
+      <CardContent>
+        {jobs && jobs.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {jobs.map((job) => (
+              <JobPositionCard
+                key={job.id}
+                position={normalizeDashboardJob(job)}
+                detailsHref="/company/positions"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-40 flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-slate-500">
+            <p>لا توجد وظائف أضيفت مؤخراً</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

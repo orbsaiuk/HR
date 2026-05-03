@@ -15,8 +15,6 @@ CREATE TABLE IF NOT EXISTS contracts (
   -- Creator: references user by Sanity _id
   created_by        TEXT NOT NULL,
 
-  -- Template reference (Sanity _id of contractTemplate)
-  template_id       TEXT,
 
   title             TEXT NOT NULL,
   description       TEXT,
