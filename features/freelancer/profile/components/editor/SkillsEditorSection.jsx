@@ -2,7 +2,7 @@
 
 import { Label } from "@/components/ui/label";
 import { Controller, useFormContext } from "react-hook-form";
-import { TagInput } from "./TagInput";
+import { TagInput } from "../shared/TagInput";
 
 export function SkillsEditorSection() {
   const { control } = useFormContext();

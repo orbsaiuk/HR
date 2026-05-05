@@ -14,20 +14,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { usePortfolioFiles } from "../model/usePortfolioFiles";
 import {
   buildSubmitPayload,
   createDefaultValues,
   getSectionMeta,
-} from "../lib/freelancerProfileEditHelpers";
-import { AboutEditorSection } from "./AboutEditorSection";
-import { DetailsEditorSection } from "./DetailsEditorSection";
-import { freelancerProfileEditSchema } from "../ui/schemas";
-import { HeaderEditorSection } from "./HeaderEditorSection";
-import { PortfolioEditorSection } from "./PortfolioEditorSection";
-import { ServicesEditorSection } from "./ServicesEditorSection";
-import { SkillsEditorSection } from "./SkillsEditorSection";
-import { SocialEditorSection } from "./SocialEditorSection";
+} from "../../lib/freelancerProfileEditHelpers";
+import { AboutEditorSection } from "../editor/AboutEditorSection";
+import { DetailsEditorSection } from "../editor/DetailsEditorSection";
+import { freelancerProfileEditSchema } from "../../ui/schemas";
+import { HeaderEditorSection } from "../editor/HeaderEditorSection";
+import { SkillsEditorSection } from "../editor/SkillsEditorSection";
+import { SocialEditorSection } from "../editor/SocialEditorSection";
 
 export function FreelancerProfileEditDialog({
   open,
@@ -50,18 +47,9 @@ export function FreelancerProfileEditDialog({
   const {
     reset,
     clearErrors,
-    setError,
     handleSubmit,
     formState: { errors },
   } = methods;
-
-  const {
-    filesById: portfolioFilesById,
-    previewsById: portfolioPreviewsById,
-    handleFileChange: handlePortfolioFileChange,
-    handleProjectRemove: handlePortfolioProjectRemove,
-    clearAll: clearAllPortfolioAssets,
-  } = usePortfolioFiles({ clearErrors, setError });
 
   const onSubmit = handleSubmit(async (values) => {
     setIsSubmittingProfile(true);
@@ -70,8 +58,6 @@ export function FreelancerProfileEditDialog({
       const payload = await buildSubmitPayload({
         section,
         values,
-        portfolioFilesById,
-        onUploadPortfolioImage,
       });
 
       await onSave(payload);
@@ -83,24 +69,19 @@ export function FreelancerProfileEditDialog({
 
   const handleOpenChange = useCallback(
     (nextOpen) => {
-      if (!nextOpen) {
-        clearAllPortfolioAssets();
-      }
       onOpenChange(nextOpen);
     },
-    [clearAllPortfolioAssets, onOpenChange],
+    [onOpenChange],
   );
 
   const resetForm = useCallback(() => {
     if (!open) {
-      clearAllPortfolioAssets();
       return;
     }
 
     reset(defaultValues);
     clearErrors();
-    clearAllPortfolioAssets();
-  }, [open, defaultValues, reset, clearErrors, clearAllPortfolioAssets]);
+  }, [open, defaultValues, reset, clearErrors]);
 
   useMemo(() => {
     resetForm();
@@ -151,16 +132,6 @@ export function FreelancerProfileEditDialog({
             {section === "social" && <SocialEditorSection />}
 
             {section === "skills" && <SkillsEditorSection />}
-
-            {section === "services" && <ServicesEditorSection />}
-
-            {section === "portfolio" && (
-              <PortfolioEditorSection
-                previewsById={portfolioPreviewsById}
-                onFileChange={handlePortfolioFileChange}
-                onRemoveProject={handlePortfolioProjectRemove}
-              />
-            )}
 
             {hasErrors ? (
               <div className="flex items-start gap-2 rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-600">

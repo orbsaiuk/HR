@@ -142,17 +142,10 @@ export default {
           preview: {
             select: {
               title: "title",
-              subtitle: "deliveryTime",
-              price: "price",
             },
-            prepare({ title, subtitle, price }) {
-              const formattedPrice =
-                typeof price === "number"
-                  ? `$${price.toLocaleString()}`
-                  : "No price";
+            prepare({ title }) {
               return {
                 title: title || "Untitled Service",
-                subtitle: `${formattedPrice} • ${subtitle || "No delivery time"}`,
               };
             },
           },
@@ -168,19 +161,7 @@ export default {
               title: "Description",
               type: "text",
               rows: 3,
-            },
-            {
-              name: "price",
-              title: "Price",
-              type: "number",
-              validation: (Rule) => Rule.min(0),
-            },
-            {
-              name: "deliveryTime",
-              title: "Delivery Time",
-              type: "string",
-              description: "e.g. 3 days, 1 week",
-            },
+            }
           ],
         },
       ],

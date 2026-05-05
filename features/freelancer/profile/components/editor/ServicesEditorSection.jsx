@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldError } from "./FieldError";
+import { FieldError } from "../shared/FieldError";
 
 export function ServicesEditorSection() {
   const {
@@ -26,8 +26,6 @@ export function ServicesEditorSection() {
       _key: undefined,
       title: "",
       description: "",
-      price: "",
-      deliveryTime: "",
     });
   }
 
@@ -86,33 +84,12 @@ export function ServicesEditorSection() {
             </Button>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-3">
             <div className="space-y-2">
               <Label>عنوان الخدمة</Label>
               <Input {...register(`services.${index}.title`)} />
               <FieldError>
                 {errors.services?.[index]?.title?.message}
-              </FieldError>
-            </div>
-            <div className="space-y-2">
-              <Label>مدة التسليم</Label>
-              <Input
-                placeholder="مثال: 3 أيام"
-                {...register(`services.${index}.deliveryTime`)}
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>السعر</Label>
-              <Input
-                type="number"
-                min="0"
-                {...register(`services.${index}.price`)}
-              />
-              <FieldError>
-                {errors.services?.[index]?.price?.message}
               </FieldError>
             </div>
             <div className="space-y-2">

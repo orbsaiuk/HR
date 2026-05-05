@@ -174,9 +174,4 @@ export async function checkUserResponse(formId, userId) {
   return data || null;
 }
 
-export async function getUserByClerkId(clerkId) {
-  // User lookups always go through Sanity (users stay in Sanity)
-  const { client: sanityClient } = await import("@/sanity/client");
-  const { userProfileQueries } = await import("@/sanity/queries");
-  return sanityClient.fetch(userProfileQueries.getByClerkId, { clerkId });
-}
+

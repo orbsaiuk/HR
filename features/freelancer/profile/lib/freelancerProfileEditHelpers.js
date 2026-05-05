@@ -47,7 +47,7 @@ export function getSectionMeta(section) {
     services: {
       title: "تعديل الخدمات",
       description:
-        "أضف الخدمات التي تقدمها مع سعر ومدة تسليم يساعدان العميل على اتخاذ القرار.",
+        "أضف الخدمات التي تقدمها.",
     },
     portfolio: {
       title: "تعديل معرض الأعمال",
@@ -81,8 +81,6 @@ export function createDefaultValues(profile) {
       _key: entry._key,
       title: entry.title || "",
       description: entry.description || "",
-      price: entry.price ?? "",
-      deliveryTime: entry.deliveryTime || "",
     })),
     portfolioProjects: (profile?.portfolioProjects || []).map((entry) => ({
       _key: entry._key,
@@ -140,11 +138,8 @@ export async function buildSubmitPayload({
         .map((entry) => {
           const title = String(entry.title || "").trim();
           const description = String(entry.description || "").trim();
-          const deliveryTime = String(entry.deliveryTime || "").trim();
-          const priceRaw =
-            entry.price == null ? "" : String(entry.price).trim();
           const hasAnyValue = Boolean(
-            title || description || deliveryTime || priceRaw,
+            title || description,
           );
 
           if (!hasAnyValue || !title) return null;
@@ -153,8 +148,6 @@ export async function buildSubmitPayload({
             _key: entry._key,
             title,
             description,
-            price: priceRaw ? Number(priceRaw) : 0,
-            deliveryTime,
           };
         })
         .filter(Boolean),

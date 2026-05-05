@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller, useFormContext } from "react-hook-form";
-import { TagInput } from "./TagInput";
+import { TagInput } from "../shared/TagInput";
 
 export function DetailsEditorSection() {
   const { control, register } = useFormContext();

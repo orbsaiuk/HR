@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  DeleteConfirmDialog,
   FreelancerProfileEditDialog,
+  FreelancerProjectEditDialog,
+  FreelancerServiceEditDialog,
   ProfileContent,
   ProfileHeader,
   ProfileSidebar,
@@ -29,12 +32,143 @@ export function FreelancerProfilePage() {
   const [editSection, setEditSection] = useState(null);
   const isEditDialogOpen = Boolean(editSection);
 
+  const [serviceDialogState, setServiceDialogState] = useState({
+    isOpen: false,
+    service: null,
+  });
+
+  const [projectDialogState, setProjectDialogState] = useState({
+    isOpen: false,
+    project: null,
+  });
+
+  const [deleteConfirmState, setDeleteConfirmState] = useState({
+    isOpen: false,
+    service: null,
+  });
+
+  const [deleteProjectConfirmState, setDeleteProjectConfirmState] = useState({
+    isOpen: false,
+    project: null,
+  });
+
   function handleEdit(section) {
     setEditSection(section);
   }
 
   function handleCloseDialog() {
     setEditSection(null);
+  }
+
+  function handleAddService() {
+    setServiceDialogState({ isOpen: true, service: null });
+  }
+
+  function handleEditService(service) {
+    setServiceDialogState({ isOpen: true, service });
+  }
+
+  function handleDeleteServiceClick(service) {
+    setDeleteConfirmState({ isOpen: true, service });
+  }
+
+  async function handleConfirmDeleteService() {
+    const { service } = deleteConfirmState;
+    if (!service) return;
+
+    try {
+      const currentServices = profile?.services || [];
+      const updatedServices = currentServices.filter(
+        (s) =>
+          (s._key && s._key !== service._key) || (s.id && s.id !== service.id),
+      );
+      await handleSave({ services: updatedServices });
+    } finally {
+      setDeleteConfirmState({ isOpen: false, service: null });
+    }
+  }
+
+  function handleAddProject() {
+    setProjectDialogState({ isOpen: true, project: null });
+  }
+
+  function handleEditProject(project) {
+    setProjectDialogState({ isOpen: true, project });
+  }
+
+  function handleDeleteProjectClick(project) {
+    setDeleteProjectConfirmState({ isOpen: true, project });
+  }
+
+  async function handleConfirmDeleteProject() {
+    const { project } = deleteProjectConfirmState;
+    if (!project) return;
+
+    try {
+      const currentProjects = profile?.portfolioProjects || [];
+      const updatedProjects = currentProjects.filter(
+        (p) =>
+          (p._key && p._key !== project._key) || (p.id && p.id !== project.id),
+      );
+      await handleSave({ portfolioProjects: updatedProjects });
+    } finally {
+      setDeleteProjectConfirmState({ isOpen: false, project: null });
+    }
+  }
+
+  async function handleSaveProject(projectData) {
+    const { imageFile, ...data } = projectData;
+    let imageUrl = data.imageUrl || "";
+    let image = data.image;
+
+    try {
+      if (imageFile) {
+        const uploadResult = await uploadPortfolioImage(imageFile);
+        imageUrl = uploadResult.imageUrl;
+        image = uploadResult.image;
+      }
+
+      const currentProjects = profile?.portfolioProjects || [];
+      let updatedProjects;
+
+      const projectWithFullData = { ...data, imageUrl, image };
+      delete projectWithFullData.imageFile;
+
+      if (projectWithFullData._key || projectWithFullData.id) {
+        updatedProjects = currentProjects.map((p) =>
+          (p._key && p._key === projectWithFullData._key) ||
+          (p.id && p.id === projectWithFullData.id)
+            ? { ...p, ...projectWithFullData }
+            : p,
+        );
+      } else {
+        updatedProjects = [...currentProjects, projectWithFullData];
+      }
+
+      await handleSave({ portfolioProjects: updatedProjects });
+      setProjectDialogState({ isOpen: false, project: null });
+    } catch (err) {
+      // Error handled in hooks
+    }
+  }
+
+  async function handleSaveService(serviceData) {
+    const currentServices = profile?.services || [];
+    let updatedServices;
+
+    if (serviceData._key || serviceData.id) {
+      updatedServices = currentServices.map((s) =>
+        (s._key && s._key === serviceData._key) ||
+        (s.id && s.id === serviceData.id)
+          ? { ...s, ...serviceData }
+          : s,
+      );
+    } else {
+      updatedServices = [...currentServices, serviceData];
+    }
+
+    await handleSave({ services: updatedServices });
+    setServiceDialogState({ isOpen: false, service: null });
   }
 
   async function handleSave(payload) {
@@ -56,7 +190,10 @@ export function FreelancerProfilePage() {
           className="grid gap-4 sm:gap-6 lg:grid-cols-[19rem_minmax(0,1fr)]"
           style={{ direction: "ltr" }}
         >
-          <aside dir="rtl" className="order-2 space-y-4 sm:space-y-6 lg:order-1">
+          <aside
+            dir="rtl"
+            className="order-2 space-y-4 sm:space-y-6 lg:order-1"
+          >
             <Skeleton className="h-64 rounded-2xl" />
             <Skeleton className="h-40 rounded-2xl" />
           </aside>
@@ -130,7 +267,16 @@ export function FreelancerProfilePage() {
             profile={profile}
             onEdit={() => handleEdit("header")}
           />
-          <ProfileContent profile={profile} onEdit={handleEdit} />
+          <ProfileContent
+            profile={profile}
+            onEdit={handleEdit}
+            onAddService={handleAddService}
+            onEditService={handleEditService}
+            onDeleteService={handleDeleteServiceClick}
+            onAddProject={handleAddProject}
+            onEditProject={handleEditProject}
+            onDeleteProject={handleDeleteProjectClick}
+          />
         </section>
       </div>
 
@@ -142,6 +288,48 @@ export function FreelancerProfilePage() {
         saving={saving}
         onSave={handleSave}
         onUploadPortfolioImage={uploadPortfolioImage}
+      />
+
+      <FreelancerServiceEditDialog
+        open={serviceDialogState.isOpen}
+        onOpenChange={(isOpen) =>
+          setServiceDialogState((prev) => ({ ...prev, isOpen }))
+        }
+        service={serviceDialogState.service}
+        saving={saving}
+        onSave={handleSaveService}
+      />
+
+      <DeleteConfirmDialog
+        open={deleteConfirmState.isOpen}
+        onOpenChange={(isOpen) =>
+          setDeleteConfirmState((prev) => ({ ...prev, isOpen }))
+        }
+        title="حذف الخدمة"
+        description="هل أنت متأكد من حذف هذه الخدمة؟ لا يمكن التراجع عن هذا الإجراء."
+        onConfirm={handleConfirmDeleteService}
+        isDeleting={saving}
+      />
+
+      <FreelancerProjectEditDialog
+        open={projectDialogState.isOpen}
+        onOpenChange={(isOpen) =>
+          setProjectDialogState((prev) => ({ ...prev, isOpen }))
+        }
+        project={projectDialogState.project}
+        saving={saving}
+        onSave={handleSaveProject}
+      />
+
+      <DeleteConfirmDialog
+        open={deleteProjectConfirmState.isOpen}
+        onOpenChange={(isOpen) =>
+          setDeleteProjectConfirmState((prev) => ({ ...prev, isOpen }))
+        }
+        title="حذف العمل"
+        description="هل أنت متأكد من حذف هذا العمل من معرض أعمالك؟ لا يمكن التراجع عن هذا الإجراء."
+        onConfirm={handleConfirmDeleteProject}
+        isDeleting={saving}
       />
     </div>
   );

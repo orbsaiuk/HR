@@ -4,8 +4,8 @@ import {
   createSurvey as repoCreateSurvey,
   updateSurvey as repoUpdateSurvey,
   deleteSurvey as repoDeleteSurvey,
-  getUserByClerkId,
 } from "../repositories/surveyRepository";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
 
 const QUESTION_TYPES = new Set([
   "text",

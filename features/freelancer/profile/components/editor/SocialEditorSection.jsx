@@ -5,8 +5,8 @@ import { useFormContext } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FieldError } from "./FieldError";
-import { SOCIAL_PLATFORMS } from "../lib/socialPlatforms";
+import { FieldError } from "../shared/FieldError";
+import { SOCIAL_PLATFORMS } from "../../lib/socialPlatforms";
 
 export function SocialEditorSection() {
   const {

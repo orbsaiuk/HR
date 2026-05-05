@@ -5,7 +5,7 @@ import { ProtectedRoute } from "@/features/shared/auth/components/ProtectedRoute
 import { AccountTypeGuard } from "@/features/shared/auth/components/AccountTypeGuard.jsx";
 import { SyncUser } from "@/features/shared/auth/components/SyncUser.jsx";
 import { FreelancerProfileProvider } from "@/features/freelancer/profile/providers/FreelancerProfileContext.jsx";
-import { ProfileCompletionBannerWrapper } from "@/features/freelancer/profile/components/ProfileCompletionBannerWrapper.jsx";
+import { ProfileCompletionBannerWrapper } from "@/features/freelancer/profile/components/shared/ProfileCompletionBannerWrapper.jsx";
 
 export default function FreelancerLayout({ children }) {
   return (

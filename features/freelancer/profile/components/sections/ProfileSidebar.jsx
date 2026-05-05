@@ -11,8 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "./EmptyState";
-import { getSocialPlatformByType } from "../lib/socialPlatforms";
+import { EmptyState } from "../shared/EmptyState";
+import { getSocialPlatformByType } from "../../lib/socialPlatforms";
 
 function iconByType(type) {
   return getSocialPlatformByType(type)?.icon || Globe;

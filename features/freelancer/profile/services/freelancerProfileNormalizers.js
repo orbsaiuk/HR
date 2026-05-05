@@ -36,8 +36,6 @@ export function normalizeServicesForUi(services) {
     id: entry._key || `service-${index}`,
     title: entry.title || "",
     description: entry.description || "",
-    price: typeof entry.price === "number" ? entry.price : 0,
-    deliveryTime: entry.deliveryTime || "",
     _key: entry._key,
   }));
 }
@@ -52,16 +50,10 @@ export function normalizeServicesForStorage(services = []) {
         _type: "serviceEntry",
         title,
         description: entry?.description?.trim?.() || "",
-        deliveryTime: entry?.deliveryTime?.trim?.() || "",
       };
 
       if (entry?._key) {
         normalized._key = entry._key;
-      }
-
-      const parsedPrice = Number(entry?.price);
-      if (!Number.isNaN(parsedPrice)) {
-        normalized.price = parsedPrice;
       }
 
       return normalized;

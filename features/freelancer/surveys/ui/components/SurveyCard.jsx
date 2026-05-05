@@ -22,10 +22,10 @@ export function SurveyCard({ survey, onDelete, onEdit, onResponses }) {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-              {survey.questionCount ?? 0} سؤال
+              {survey.questionCount == 2 ? "سؤالان" : survey.questionCount > 2 ? `${survey.questionCount} أسئلة` : survey.questionCount == 1 ? "سؤال واحد" : "لا يوجد أسئلة"}
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-3 py-1 text-sm font-medium text-[#4B2EE8]">
-              {survey.responseCount ?? 0} رد
+              {survey.responseCount == 1 ? "رد واحد" : survey.responseCount == 2 ? "ردان" : survey.responseCount > 2 ? `${survey.responseCount} ردود` : "لا يوجد ردود"}
             </span>
           </div>
         </div>

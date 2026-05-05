@@ -9,8 +9,8 @@ import {
   getPublishedFormsByUser as repoGetPublishedFormsByUser,
   getFormFields as repoGetFormFields,
   checkUserResponse,
-  getUserByClerkId,
 } from "../repositories/formRepository";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function getForms(orgId) {

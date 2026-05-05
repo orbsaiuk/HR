@@ -9,7 +9,7 @@ import {
 
 // Users/team members are still in Sanity
 import { client } from "@/sanity/client";
-import { userProfileQueries } from "@/sanity/queries";
+import { getUserByClerkId } from "@/features/shared/auth/services/userService";
 
 export async function getConversations(role, userId, orgId) {
   return getConversationsByRole(role, userId, orgId);
@@ -56,6 +56,6 @@ export async function getTeamMemberIdByClerkId(clerkId, orgId) {
 }
 
 export async function getUserIdByClerkId(clerkId) {
-  const user = await client.fetch(userProfileQueries.getByClerkId, { clerkId });
+  const user = await getUserByClerkId(clerkId);
   return user?._id || null;
 }

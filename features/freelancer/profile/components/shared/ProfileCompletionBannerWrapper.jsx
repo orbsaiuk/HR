@@ -2,8 +2,8 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { useFreelancerProfileContext } from "../providers/FreelancerProfileContext";
-import { useProfileCompletion } from "../model/useProfileCompletion";
+import { useFreelancerProfileContext } from "../../providers/FreelancerProfileContext";
+import { useProfileCompletion } from "../../model/useProfileCompletion";
 import { ProfileCompletionBanner } from "./ProfileCompletionBanner";
 
 export function ProfileCompletionBannerWrapper() {

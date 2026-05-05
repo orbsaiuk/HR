@@ -42,8 +42,7 @@ export function SurveyEditPage({ surveyId }) {
     try {
       setLoading(true);
       setError(null);
-      const survey = await freelancerSurveysApi.getSurveys()
-        .then(surveys => surveys.find(s => s._id === surveyId || s.id === surveyId));
+      const survey = await freelancerSurveysApi.getSurvey(surveyId);
       setTitle(survey.title || "");
       setDescription(survey.description || "");
       setQuestions(survey.questions || []);
@@ -138,7 +137,6 @@ export function SurveyEditPage({ surveyId }) {
           onFieldsChange={setQuestions}
         />
       </div>
-
     </div>
   );
 }

@@ -21,11 +21,20 @@ export async function getSurveysByUser(userId) {
   const supabase = getSupabaseServer();
   const { data, error } = await supabase
     .from("surveys")
-    .select("*")
+    .select(`
+      *,
+      survey_questions(count),
+      survey_responses(count)
+    `)
     .eq("created_by", userId)
     .order("updated_at", { ascending: false });
   if (error) throw error;
-  return (data || []).map(mapSurvey);
+  return (data || []).map(row => {
+    const s = mapSurvey(row);
+    s.questionCount = row.survey_questions?.[0]?.count || 0;
+    s.responseCount = row.survey_responses?.[0]?.count || 0;
+    return s;
+  });
 }
 
 export async function getSurveyByIdForUser(id, userId) {
@@ -68,7 +77,26 @@ export async function createSurvey(doc) {
     .select()
     .single();
   if (error) throw error;
-  return mapSurvey(data);
+
+  if (doc.questions && doc.questions.length > 0) {
+    const questionsToInsert = doc.questions.map((q, index) => ({
+      survey_id: data.id,
+      type: q.type,
+      label: q.label,
+      placeholder: q.placeholder,
+      required: q.required || false,
+      options: q.options || [],
+      file_type: q.fileType || 'any',
+      validation: q.validation || {},
+      sort_order: q.order !== undefined ? q.order : index,
+    }));
+    const { error: questionsError } = await supabase
+      .from("survey_questions")
+      .insert(questionsToInsert);
+    if (questionsError) throw questionsError;
+  }
+
+  return getSurveyByIdForUser(data.id, data.created_by);
 }
 
 export async function updateSurvey(id, updates) {
@@ -85,7 +113,49 @@ export async function updateSurvey(id, updates) {
     .select()
     .single();
   if (error) throw error;
-  return mapSurvey(data);
+
+  if (updates.questions) {
+    const questionsToUpsert = updates.questions.map((q, index) => {
+      const row = {
+        survey_id: id,
+        type: q.type,
+        label: q.label,
+        placeholder: q.placeholder,
+        required: q.required || false,
+        options: q.options || [],
+        file_type: q.fileType || 'any',
+        validation: q.validation || {},
+        sort_order: q.order !== undefined ? q.order : index,
+      };
+      if (q._key && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(q._key)) {
+        row.id = q._key;
+      }
+      return row;
+    });
+
+    const { data: existingQuestions } = await supabase
+      .from("survey_questions")
+      .select("id")
+      .eq("survey_id", id);
+      
+    const keepIds = questionsToUpsert.map(q => q.id).filter(Boolean);
+    const toDelete = (existingQuestions || [])
+      .map(eq => eq.id)
+      .filter(eqId => !keepIds.includes(eqId));
+
+    if (toDelete.length > 0) {
+      await supabase.from("survey_questions").delete().in("id", toDelete);
+    }
+    
+    if (questionsToUpsert.length > 0) {
+      const { error: upsertError } = await supabase
+        .from("survey_questions")
+        .upsert(questionsToUpsert);
+      if (upsertError) throw upsertError;
+    }
+  }
+
+  return getSurveyByIdForUser(id, data.created_by);
 }
 
 export async function deleteSurvey(id) {
@@ -115,9 +185,3 @@ export async function deleteResponsesBatch(ids) {
   if (error) throw error;
 }
 
-export async function getUserByClerkId(clerkId) {
-  // Users always stay in Sanity
-  const { client: sanityClient } = await import("@/sanity/client");
-  const { userProfileQueries } = await import("@/sanity/queries");
-  return sanityClient.fetch(userProfileQueries.getByClerkId, { clerkId });
-}

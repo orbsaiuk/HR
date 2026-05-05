@@ -5,6 +5,9 @@ export const freelancerSurveysApi = {
   getSurveys: async () => {
     return apiClient.get(API_ENDPOINTS.FREELANCER_SURVEYS);
   },
+  getSurvey: async (id) => {
+    return apiClient.get(API_ENDPOINTS.FREELANCER_SURVEY_BY_ID(id));
+  },
   createSurvey: async (data) => {
     return apiClient.post(API_ENDPOINTS.FREELANCER_SURVEYS, data);
   },
@@ -18,6 +21,8 @@ export const freelancerSurveysApi = {
     return apiClient.get(API_ENDPOINTS.FREELANCER_SURVEY_RESPONSES(id));
   },
   getResponseById: async (id, responseId) => {
-    return apiClient.get(API_ENDPOINTS.FREELANCER_SURVEY_RESPONSE_BY_ID(id, responseId));
-  }
+    return apiClient.get(
+      API_ENDPOINTS.FREELANCER_SURVEY_RESPONSE_BY_ID(id, responseId),
+    );
+  },
 };
