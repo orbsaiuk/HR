@@ -22,7 +22,7 @@ export default {
     },
     {
       name: "skills",
-      title: "Skills & Languages",
+      title: "Skills",
       options: { collapsible: true },
     },
     {
@@ -82,16 +82,6 @@ export default {
     {
       name: "skills",
       title: "Skills",
-      type: "array",
-      fieldset: "skills",
-      of: [{ type: "string" }],
-      options: {
-        layout: "tags",
-      },
-    },
-    {
-      name: "languages",
-      title: "Languages",
       type: "array",
       fieldset: "skills",
       of: [{ type: "string" }],
@@ -161,7 +151,7 @@ export default {
               title: "Description",
               type: "text",
               rows: 3,
-            }
+            },
           ],
         },
       ],

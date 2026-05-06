@@ -1,23 +1,3 @@
-export function normalizeLanguagesForUi(languages) {
-  return (languages || [])
-    .map((entry) => {
-      if (typeof entry === "string") return entry.trim();
-      // Back-compat: legacy data may still be `{language, proficiency}`.
-      return entry?.language?.trim?.() || "";
-    })
-    .filter(Boolean);
-}
-
-export function normalizeLanguagesForStorage(languages = []) {
-  return languages
-    .map((entry) => {
-      if (typeof entry === "string") return entry.trim();
-      // Back-compat: tolerate legacy `{language}` objects on write.
-      return entry?.language?.trim?.() || "";
-    })
-    .filter(Boolean);
-}
-
 export function normalizeSkillsForStorage(skills = []) {
   const seen = new Set();
   return skills

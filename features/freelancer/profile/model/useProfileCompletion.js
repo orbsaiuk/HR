@@ -39,10 +39,9 @@ export const PROFILE_COMPLETION_ITEMS = [
   },
   {
     key: "details",
-    label: "الهاتف واللغات",
+    label: "رقم الهاتف",
     section: "details",
-    isComplete: (profile) =>
-      Boolean(profile?.phone) && (profile?.languages || []).length > 0,
+    isComplete: (profile) => Boolean(profile?.phone),
   },
   {
     key: "social",

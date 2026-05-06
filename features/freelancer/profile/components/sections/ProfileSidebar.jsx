@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  Globe,
-  Languages,
-  Mail,
-  Pencil,
-  Phone,
-  Plus,
-} from "lucide-react";
+import { Globe, Mail, Pencil, Phone, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +26,6 @@ function InlineAddButton({ label, onClick }) {
 
 export function ProfileSidebar({ profile, onEdit }) {
   const hasPhone = Boolean(profile.phone);
-  const hasLanguages = profile.languages && profile.languages.length > 0;
   const socialLinks = profile.socialLinks || [];
   const hasSocial = socialLinks.length > 0;
 
@@ -77,29 +69,10 @@ export function ProfileSidebar({ profile, onEdit }) {
                 {profile.phone}
               </p>
             ) : (
-              <InlineAddButton label="أضف رقم هاتفك" onClick={() => onEdit?.("details")} />
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-slate-400">
-              <Languages className="h-4 w-4 shrink-0" />
-              <p className="text-sm font-semibold">اللغة</p>
-            </div>
-            {hasLanguages ? (
-              <div className="flex flex-wrap justify-end gap-2">
-                {profile.languages.map((language, index) => (
-                  <Badge
-                    key={`${language}-${index}`}
-                    variant="secondary"
-                    className="rounded-lg border-transparent bg-[#F5F5FF] px-3 py-1 text-xs font-semibold text-[#5D5BDA] shadow-none"
-                  >
-                    {language}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <InlineAddButton label="أضف اللغات التي تتقنها" onClick={() => onEdit?.("details")} />
+              <InlineAddButton
+                label="أضف رقم هاتفك"
+                onClick={() => onEdit?.("details")}
+              />
             )}
           </div>
         </CardContent>

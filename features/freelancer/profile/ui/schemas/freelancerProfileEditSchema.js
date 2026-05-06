@@ -9,7 +9,6 @@ export const freelancerProfileEditSchema = z.object({
   location: z.string().default(""),
   bio: z.string().default(""),
   phone: z.string().default(""),
-  languages: z.array(z.string()).default([]),
   skills: z.array(z.string()).default([]),
   linkedinUrl: optionalHttpUrlSchema,
   githubUrl: optionalHttpUrlSchema,

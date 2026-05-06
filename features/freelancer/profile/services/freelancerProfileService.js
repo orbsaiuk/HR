@@ -6,7 +6,6 @@ import {
 
 import { PROFILE_FIELDS, toFreelancerProfileDto } from "./freelancerProfileDto";
 import {
-  normalizeLanguagesForStorage,
   normalizePortfolioForStorage,
   normalizeServicesForStorage,
   normalizeSkillsForStorage,
@@ -71,11 +70,6 @@ function buildPatchFields(data) {
 
   for (const field of PROFILE_FIELDS) {
     if (data[field] === undefined) continue;
-
-    if (field === "languages") {
-      setFields.languages = normalizeLanguagesForStorage(data.languages || []);
-      continue;
-    }
 
     if (field === "skills") {
       setFields.skills = normalizeSkillsForStorage(data.skills || []);

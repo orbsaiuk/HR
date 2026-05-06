@@ -46,8 +46,7 @@ export function getSectionMeta(section) {
     },
     services: {
       title: "تعديل الخدمات",
-      description:
-        "أضف الخدمات التي تقدمها.",
+      description: "أضف الخدمات التي تقدمها.",
     },
     portfolio: {
       title: "تعديل معرض الأعمال",
@@ -70,7 +69,6 @@ export function createDefaultValues(profile) {
     location: profile?.location || "",
     bio: profile?.bio || "",
     phone: profile?.phone || "",
-    languages: normalizeTags(profile?.languages || []),
     skills: normalizeTags(profile?.skills || []),
     linkedinUrl: profile?.linkedinUrl || "",
     githubUrl: profile?.githubUrl || "",
@@ -114,7 +112,6 @@ export async function buildSubmitPayload({
   if (section === "details") {
     return {
       phone: values.phone.trim(),
-      languages: normalizeTags(values.languages),
     };
   }
 
@@ -138,9 +135,7 @@ export async function buildSubmitPayload({
         .map((entry) => {
           const title = String(entry.title || "").trim();
           const description = String(entry.description || "").trim();
-          const hasAnyValue = Boolean(
-            title || description,
-          );
+          const hasAnyValue = Boolean(title || description);
 
           if (!hasAnyValue || !title) return null;
 

@@ -1,6 +1,5 @@
 import { buildSocialLinks } from "../lib/socialPlatforms";
 import {
-  normalizeLanguagesForUi,
   normalizePortfolioForUi,
   normalizeServicesForUi,
 } from "./freelancerProfileNormalizers";
@@ -11,7 +10,6 @@ export const PROFILE_FIELDS = [
   "bio",
   "location",
   "skills",
-  "languages",
   "linkedinUrl",
   "githubUrl",
   "twitterUrl",
@@ -34,7 +32,6 @@ export function toFreelancerProfileDto(user, profile) {
     bio: profile.bio || "",
     location: profile.location || "",
     skills: profile.skills || [],
-    languages: normalizeLanguagesForUi(profile.languages),
     linkedinUrl: profile.linkedinUrl || "",
     githubUrl: profile.githubUrl || "",
     twitterUrl: profile.twitterUrl || "",
