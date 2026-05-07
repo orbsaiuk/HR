@@ -2,24 +2,13 @@ import { client } from "@/sanity/client";
 import { categoryQueries } from "@/sanity/queries";
 
 /**
- * Helper to parse comma separated string into an array of trimmed strings
- */
-const parseSubcategories = (subcategoriesStr) => {
-  if (!subcategoriesStr) return [];
-  return subcategoriesStr
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-};
-
-/**
  * Map sanity category object to application category object
  */
 const mapCategory = (category) => {
   if (!category) return null;
   return {
     ...category,
-    subcategories: parseSubcategories(category.subcategories),
+    subcategories: category.subcategories || [],
   };
 };
 

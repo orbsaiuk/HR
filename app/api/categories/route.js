@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { categoryService } from "@/shared/services/categoryService";
 
+export const revalidate = 86400; // Cache this route for 24 hours
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);

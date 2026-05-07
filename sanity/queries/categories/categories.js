@@ -4,7 +4,10 @@ export const categoryQueries = {
     _id,
     title,
     "slug": slug.current,
-    subcategories,
+    subcategories[]{
+      title,
+      "slug": slug.current
+    },
     order
   }`,
 
@@ -13,7 +16,10 @@ export const categoryQueries = {
     _id,
     title,
     "slug": slug.current,
-    subcategories,
+    subcategories[]{
+      title,
+      "slug": slug.current
+    },
     order
   }`,
 };

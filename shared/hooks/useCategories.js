@@ -1,32 +1,16 @@
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 import { categoryApi } from "../api/categoryApi";
+import { API_ENDPOINTS } from "../api/endpoints";
 
 export const useCategories = () => {
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const result = await categoryApi.getAll();
-        setCategories(result.data || []);
-      } catch (err) {
-        setError(err.message || "An error occurred while fetching categories");
-        setCategories([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  const { data, error, isLoading } = useSWR(
+    API_ENDPOINTS.CATEGORIES || "/api/categories",
+    () => categoryApi.getAll().then((res) => res.data)
+  );
 
   return {
-    categories,
+    categories: data || [],
     isLoading,
-    error,
+    error: error ? error.message || "An error occurred while fetching categories" : null,
   };
 };

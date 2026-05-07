@@ -22,8 +22,34 @@ export default {
     {
       name: "subcategories",
       title: "Subcategories",
-      type: "text",
-      description: "Comma separated list of subcategories",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "subcategory",
+          fields: [
+            {
+              name: "title",
+              title: "Title",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "slug",
+              title: "Slug",
+              type: "slug",
+              options: {
+                source: (doc, options) => options.parent.title,
+                maxLength: 96,
+              },
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+        },
+      ],
+      options: {
+        layout: "tags",
+      },
     },
     {
       name: "order",
