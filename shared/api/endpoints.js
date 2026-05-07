@@ -58,6 +58,9 @@ export const API_ENDPOINTS = {
   CAREER_FILTERS: "/api/careers/filters",
   CAREER_APPLY: (id) => `/api/careers/${id}/apply`,
 
+  // Categories
+  CATEGORIES: "/api/categories",
+
   // Projects (public)
   PROJECTS: "/api/projects",
   PROJECT_BY_ID: (id) => `/api/projects/${id}`,
@@ -104,7 +107,8 @@ export const API_ENDPOINTS = {
   // Freelancer Contracts
   FREELANCER_CONTRACTS: "/api/freelancer/contracts",
   FREELANCER_CONTRACT_BY_ID: (id) => `/api/freelancer/contracts/${id}`,
-  FREELANCER_CONTRACT_DOWNLOAD_PDF: (id) => `/api/freelancer/contracts/${id}/download`,
+  FREELANCER_CONTRACT_DOWNLOAD_PDF: (id) =>
+    `/api/freelancer/contracts/${id}/download`,
 
   // Freelancer Surveys
   FREELANCER_SURVEYS: "/api/freelancer/surveys",

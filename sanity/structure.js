@@ -87,6 +87,23 @@ export const structure = (S) =>
 
       S.divider(),
 
+      // Taxonomy Group
+      S.listItem()
+        .title("Taxonomy")
+        .icon(() => "🏷️")
+        .child(
+          S.list()
+            .title("Taxonomy")
+            .items([
+              S.listItem()
+                .title("Categories")
+                .icon(() => "📁")
+                .child(S.documentTypeList("category").title("Categories")),
+            ]),
+        ),
+
+      S.divider(),
+
       // Users Group
       S.listItem()
         .title("Users")

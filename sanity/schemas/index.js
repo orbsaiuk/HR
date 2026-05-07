@@ -4,10 +4,14 @@ import organizationSchemas from "./organizations";
 // User management schemas
 import userSchemas from "./users";
 
+// Category schemas
+import categorySchemas from "./categories";
+
 // Combine all schemas
 export const schemaTypes = [
   ...organizationSchemas,
   ...userSchemas,
+  ...categorySchemas,
 ];
 
 export const schema = {
@@ -17,3 +21,4 @@ export const schema = {
 // Re-export individual schemas for convenience
 export { organization, organizationRequest } from "./organizations";
 export { user, freelancerProfile } from "./users";
+export { default as category } from "./categories/category";
