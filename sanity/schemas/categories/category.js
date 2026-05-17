@@ -39,7 +39,7 @@ export default {
               title: "Slug",
               type: "slug",
               options: {
-                source: (doc, options) => options.parent.title,
+                source: (doc, context) => context.parent?.title,
                 maxLength: 96,
               },
               validation: (Rule) => Rule.required(),

@@ -13,10 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  PROJECT_CATEGORY_OPTIONS,
-  PROJECT_STATUS_OPTIONS,
-} from "../../../model/companyProjectsSchema";
+import { PROJECT_STATUS_OPTIONS } from "../../../model/companyProjectsSchema";
+import { useCategories } from "@/shared/hooks/useCategories";
 
 function FieldError({ error }) {
   if (!error) return null;
@@ -33,6 +31,10 @@ export function CreateProjectForm({
   submitLabel = "إضافة المشروع",
   submittingLabel = "جارٍ الحفظ...",
 }) {
+  const { categories } = useCategories();
+  const categoryOptions = categories?.length 
+    ? categories.map(c => ({ value: c.title, label: c.title }))
+    : [];
   return (
     <form onSubmit={onSubmit} className="space-y-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -75,7 +77,7 @@ export function CreateProjectForm({
                   <SelectValue placeholder="اختر التصنيف" />
                 </SelectTrigger>
                 <SelectContent>
-                  {PROJECT_CATEGORY_OPTIONS.map((option) => (
+                  {categoryOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>

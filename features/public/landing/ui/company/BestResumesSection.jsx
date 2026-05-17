@@ -1,5 +1,7 @@
-import { CategoriesSection } from "@/shared/components/sections/CategoriesSection";
+"use client";
 
+import { CategoriesSection } from "@/shared/components/sections/CategoriesSection";
+import { useCategories } from "@/shared/hooks/useCategories";
 const RESUME_CATEGORIES = [
     {
         label: "برمجه",
@@ -36,11 +38,19 @@ const RESUME_CATEGORIES = [
 ];
 
 export function BestResumesSection() {
+    const { categories } = useCategories();
+    const displayCategories = categories?.length > 0
+        ? categories.map((cat, i) => ({
+            label: cat.title,
+            image: RESUME_CATEGORIES[i % RESUME_CATEGORIES.length].image,
+        }))
+        : RESUME_CATEGORIES;
+
     return (
         <CategoriesSection
             title="قائمة افضل السير الذاتيه"
             buttonTitle="عرض جميع السير الذاتيه"
-            categories={RESUME_CATEGORIES}
+            categories={displayCategories}
         />
     );
 }

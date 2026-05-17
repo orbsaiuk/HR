@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useCategories } from "@/shared/hooks/useCategories";
 
 /**
  * Arabic labels for employment types
@@ -117,8 +118,15 @@ export function CareersSidebar({
   }));
 
   // Build department options - merge static Arabic labels with dynamic API data
-  const departmentOptionsWithCounts =
-    apiDepartments.length > 0
+  const { categories } = useCategories();
+  
+  const departmentOptionsWithCounts = categories?.length > 0
+    ? categories.map((cat) => ({
+        value: cat.title,
+        label: cat.title,
+        count: departmentCounts[cat.title] || 0,
+      }))
+    : apiDepartments.length > 0
       ? apiDepartments.map((dept) => ({
           value: dept,
           label: dept,

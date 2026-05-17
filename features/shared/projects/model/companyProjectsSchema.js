@@ -13,7 +13,6 @@ export const PROJECT_STATUS_OPTIONS = [
   { value: "مكتمل", label: "مكتمل" },
 ];
 
-const categoryValues = PROJECT_CATEGORY_OPTIONS.map((option) => option.value);
 const statusValues = PROJECT_STATUS_OPTIONS.map((option) => option.value);
 
 export const companyProjectFormSchema = z
@@ -28,9 +27,7 @@ export const companyProjectFormSchema = z
       .trim()
       .min(2, "الموقع مطلوب")
       .max(80, "الموقع طويل جداً"),
-    category: z.enum(categoryValues, {
-      message: "يرجى اختيار تصنيف المشروع",
-    }),
+    category: z.string().min(1, "يرجى اختيار تصنيف المشروع"),
     status: z.enum(statusValues, {
       message: "يرجى اختيار حالة المشروع",
     }),

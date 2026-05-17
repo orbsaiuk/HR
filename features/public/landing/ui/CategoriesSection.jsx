@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useCategories } from "@/shared/hooks/useCategories";
 
 const CATEGORIES = [
     {
@@ -40,6 +43,17 @@ const CATEGORIES = [
 ];
 
 export function CategoriesSection() {
+    const { categories, isLoading } = useCategories();
+    
+    // Use dynamic categories if available, otherwise fallback to static list
+    const displayCategories = categories?.length > 0 
+        ? categories.map((cat, i) => ({
+            label: cat.title,
+            icon: CATEGORIES[i % CATEGORIES.length].icon, // Cycle through available icons
+            slug: cat.slug || "برمجة"
+        }))
+        : CATEGORIES;
+
     return (
         <section className="relative bg-[#F8F8F8] py-12 sm:py-16 md:py-24" dir="rtl">
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -73,10 +87,10 @@ export function CategoriesSection() {
 
                 {/* Categories Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-                    {CATEGORIES.map((category, index) => (
+                    {displayCategories.map((category, index) => (
                         <Link
                             key={index}
-                            href="/careers"
+                            href={`/careers?category=${category.slug || "برمجة"}`}
                             className="flex flex-col items-center gap-2 sm:gap-3 group cursor-pointer transition-transform hover:scale-105"
                         >
                             <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center">

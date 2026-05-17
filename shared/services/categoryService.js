@@ -1,4 +1,4 @@
-import { client } from "@/sanity/client";
+import { clientRead } from "@/sanity/client";
 import { categoryQueries } from "@/sanity/queries";
 
 /**
@@ -18,7 +18,7 @@ export const categoryService = {
    */
   getAllCategories: async () => {
     try {
-      const categories = await client.fetch(categoryQueries.getAll);
+      const categories = await clientRead.fetch(categoryQueries.getAll);
       return categories.map(mapCategory);
     } catch (error) {
       console.error("Error fetching categories from Sanity:", error);
@@ -32,7 +32,7 @@ export const categoryService = {
   getCategoryBySlug: async (slug) => {
     if (!slug) return null;
     try {
-      const category = await client.fetch(categoryQueries.getBySlug, { slug });
+      const category = await clientRead.fetch(categoryQueries.getBySlug, { slug });
       return mapCategory(category);
     } catch (error) {
       console.error(

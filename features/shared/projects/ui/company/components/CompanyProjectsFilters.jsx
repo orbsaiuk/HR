@@ -10,10 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  PROJECT_CATEGORY_OPTIONS,
-  PROJECT_STATUS_OPTIONS,
-} from "../../../model/companyProjectsSchema";
+import { PROJECT_STATUS_OPTIONS } from "../../../model/companyProjectsSchema";
+import { useCategories } from "@/shared/hooks/useCategories";
 import { COMPANY_PROJECTS_ALL_FILTER } from "../../../model/useCompanyProjectsFilters";
 
 export function CompanyProjectsFilters({
@@ -27,6 +25,10 @@ export function CompanyProjectsFilters({
   onClearFilters,
   resultCount,
 }) {
+  const { categories } = useCategories();
+  const categoryOptions = categories?.length 
+    ? categories.map(c => ({ value: c.title, label: c.title }))
+    : [];
   return (
     <section className="rounded-sm border border-[#E6EAF2] bg-white p-4">
       <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -89,7 +91,7 @@ export function CompanyProjectsFilters({
               <SelectItem value={COMPANY_PROJECTS_ALL_FILTER}>
                 كل التصنيفات
               </SelectItem>
-              {PROJECT_CATEGORY_OPTIONS.map((option) => (
+              {categoryOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
