@@ -1,11 +1,6 @@
 import { z } from "zod";
 
-export const PROJECT_CATEGORY_OPTIONS = [
-  { value: "برمجة", label: "برمجة" },
-  { value: "تصميم", label: "تصميم" },
-  { value: "تسويق", label: "تسويق" },
-  { value: "إدارة", label: "إدارة" },
-];
+
 
 export const PROJECT_STATUS_OPTIONS = [
   { value: "قيد التنفيذ", label: "قيد التنفيذ" },
@@ -46,13 +41,12 @@ export const companyProjectFormSchema = z
         invalid_type_error: "الحد الأدنى للميزانية غير صحيح",
       })
       .int("الحد الأدنى يجب أن يكون رقماً صحيحاً")
-      .min(100, "الحد الأدنى للميزانية يجب أن يكون 100 دولار على الأقل"),
+      .min(20, "الحد الأدنى للميزانية يجب أن يكون 20 دولار على الأقل"),
     budgetMax: z.coerce
       .number({
         invalid_type_error: "الحد الأعلى للميزانية غير صحيح",
       })
       .int("الحد الأعلى يجب أن يكون رقماً صحيحاً")
-      .min(100, "الحد الأعلى للميزانية يجب أن يكون 100 دولار على الأقل"),
   })
   .refine((data) => data.budgetMax >= data.budgetMin, {
     message: "الحد الأعلى يجب أن يكون أكبر من أو يساوي الحد الأدنى",

@@ -7,6 +7,8 @@ export const freelancerProfileEditSchema = z.object({
   name: z.string().default(""),
   headline: z.string().default(""),
   location: z.string().default(""),
+  category: z.string().default(""),
+  subcategory: z.string().default(""),
   bio: z.string().default(""),
   phone: z.string().default(""),
   skills: z.array(z.string()).default([]),

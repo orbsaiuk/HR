@@ -28,7 +28,7 @@ export function PositionReviewSummary({ formData }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <p className="font-medium">القسم</p>
+            <p className="font-medium">التصنيف</p>
             <p className="text-muted-foreground">
               {formData.department || "لم يتم تعيينه"}
             </p>

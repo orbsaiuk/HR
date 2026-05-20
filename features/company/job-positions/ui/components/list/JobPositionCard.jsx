@@ -42,7 +42,7 @@ export function JobPositionCard({
   const seniorityValue = position?.seniority || position?.level;
   const levelLabel =
     SENIORITY_LABELS[seniorityValue] || seniorityValue || "متوسط الخبرة";
-  const status = position?.status || "draft";
+  const status = position?.status || "open";
   const statusLabel = STATUS_LABELS[status] || status;
   const applicationsCount =
     position?.applicationCount ?? position?.applications ?? 0;
@@ -76,7 +76,7 @@ export function JobPositionCard({
           location={location}
           status={status}
           statusLabel={statusLabel}
-          statusClassName={STATUS_CLASSES[status] || STATUS_CLASSES.draft}
+          statusClassName={STATUS_CLASSES[status] || STATUS_CLASSES.open}
           detailsHref={resolvedDetailsHref}
           editHref={resolvedEditHref}
           formHref={formHref}
@@ -122,21 +122,26 @@ export function JobPositionCard({
             </span>
           </div>
 
-          {remainingDays != null ? (
-            <>
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>الأيام المتبقية</span>
-                <span>{formatNumber(remainingDays)} يوم</span>
-              </div>
-              <Progress
-                value={progressValue}
-                className="h-1.5 bg-slate-200 transform-[scaleX(-1)] [&>div]:bg-violet-600"
-              />
-            </>
-          ) : (
-            <p className="text-xs text-slate-500">
-              تاريخ النشر: {position?.postedAt || "غير محدد"}
-            </p>
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>
+              نشر:{" "}
+              {position?.createdAt
+                ? new Date(position.createdAt).toLocaleDateString("ar-SA", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                : "غير محدد"}
+            </span>
+            {remainingDays != null && (
+              <span>متبقي {formatNumber(remainingDays)} يوم</span>
+            )}
+          </div>
+          {remainingDays != null && (
+            <Progress
+              value={progressValue}
+              className="h-1.5 bg-slate-200 transform-[scaleX(-1)] [&>div]:bg-violet-600"
+            />
           )}
         </div>
       </CardContent>

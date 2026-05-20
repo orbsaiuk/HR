@@ -19,8 +19,8 @@ import {
   mapCompanyProjectCardToForm,
   companyProjectFormSchema,
   mapCompanyProjectFormToCard,
-} from "../../model/companyProjectsSchema";
-import { CreateProjectForm } from "./components";
+} from "../../../model/companyProjectsSchema";
+import { CreateProjectForm } from "./CreateProjectForm";
 
 export function CreateProjectDialog({
   onCreate,

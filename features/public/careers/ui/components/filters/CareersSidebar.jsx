@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -18,20 +19,6 @@ const TYPE_OPTIONS = [
   { value: "remote", label: "عن بعد" },
   { value: "internship", label: "تدريب" },
   { value: "contract", label: "تعاقد" },
-];
-
-/**
- * Arabic labels for departments
- */
-const DEPARTMENT_OPTIONS = [
-  { value: "التصميم", label: "التصميم" },
-  { value: "المبيعات", label: "المبيعات" },
-  { value: "التسويق", label: "التسويق" },
-  { value: "إدارة الأعمال", label: "إدارة الأعمال" },
-  { value: "الموارد البشرية", label: "الموارد البشرية" },
-  { value: "المالية", label: "المالية" },
-  { value: "الهندسة", label: "الهندسة" },
-  { value: "التقنية", label: "التقنية" },
 ];
 
 /**
@@ -89,6 +76,92 @@ function FilterCheckboxList({ options, selectedValues, onToggle }) {
   );
 }
 
+/**
+ * Renders categories with nested subcategories as checkboxes.
+ * - Parent categories with subcategories show as a bold label with indented children.
+ * - Parent categories without subcategories are directly selectable.
+ */
+function CategoryCheckboxList({ categories, selectedValues, onToggle, departmentCounts }) {
+  return (
+    <div className="space-y-3">
+      {categories.map((cat) => {
+        const hasSubs = cat.subcategories?.length > 0;
+
+        if (hasSubs) {
+          // Count all positions that match any subcategory of this parent
+          const parentCount = cat.subcategories.reduce(
+            (sum, sub) => sum + (departmentCounts[sub.title] || 0),
+            0,
+          );
+
+          return (
+            <div key={cat._id || cat.slug}>
+              {/* Parent category label (non-selectable header) */}
+              <p className="text-xs font-bold text-muted-foreground mb-2">
+                {cat.title}
+                {parentCount > 0 && (
+                  <span className="text-gray-400 font-normal mr-1">({parentCount})</span>
+                )}
+              </p>
+              {/* Subcategories as checkboxes */}
+              <div className="space-y-2.5 pr-2">
+                {cat.subcategories.map((sub) => {
+                  const isChecked = selectedValues.includes(sub.title);
+                  const count = departmentCounts[sub.title] || 0;
+                  return (
+                    <div
+                      key={sub.slug}
+                      className="flex items-center justify-between cursor-pointer group"
+                      onClick={() => onToggle(sub.title)}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Checkbox
+                          checked={isChecked}
+                          onCheckedChange={() => onToggle(sub.title)}
+                          className="data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                          {sub.title}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-400">({count})</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        }
+
+        // Category without subcategories — directly selectable
+        const isChecked = selectedValues.includes(cat.title);
+        const count = departmentCounts[cat.title] || 0;
+        return (
+          <div
+            key={cat._id || cat.slug}
+            className="flex items-center justify-between cursor-pointer group"
+            onClick={() => onToggle(cat.title)}
+          >
+            <div className="flex items-center gap-2.5">
+              <Checkbox
+                checked={isChecked}
+                onCheckedChange={() => onToggle(cat.title)}
+                className="data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                onClick={(e) => e.stopPropagation()}
+              />
+              <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                {cat.title}
+              </span>
+            </div>
+            <span className="text-xs text-gray-400">({count})</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function CareersSidebar({
   // Filter state
   selectedTypes = [],
@@ -101,8 +174,6 @@ export function CareersSidebar({
   onToggleSalaryRange,
   // Counts
   filterCounts = {},
-  // Dynamic departments from API
-  apiDepartments = [],
 }) {
   const {
     typeCounts = {},
@@ -111,31 +182,13 @@ export function CareersSidebar({
     salaryRangeCounts = {},
   } = filterCounts;
 
+  const { categories } = useCategories();
+
   // Build type options with counts
   const typeOptionsWithCounts = TYPE_OPTIONS.map((opt) => ({
     ...opt,
     count: typeCounts[opt.value] || 0,
   }));
-
-  // Build department options - merge static Arabic labels with dynamic API data
-  const { categories } = useCategories();
-  
-  const departmentOptionsWithCounts = categories?.length > 0
-    ? categories.map((cat) => ({
-        value: cat.title,
-        label: cat.title,
-        count: departmentCounts[cat.title] || 0,
-      }))
-    : apiDepartments.length > 0
-      ? apiDepartments.map((dept) => ({
-          value: dept,
-          label: dept,
-          count: departmentCounts[dept] || 0,
-        }))
-      : DEPARTMENT_OPTIONS.map((opt) => ({
-          ...opt,
-          count: departmentCounts[opt.value] || 0,
-        }));
 
   // Build level options with counts
   const levelOptionsWithCounts = LEVEL_OPTIONS.map((opt) => ({
@@ -153,7 +206,7 @@ export function CareersSidebar({
     <aside className="w-full">
       <Accordion
         type="multiple"
-        defaultValue={["type", "departments", "level", "salary"]}
+        defaultValue={["type", "categories", "level", "salary"]}
         className="w-full"
       >
         {/* Employment Type */}
@@ -170,16 +223,17 @@ export function CareersSidebar({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Departments */}
-        <AccordionItem value="departments">
+        {/* Categories */}
+        <AccordionItem value="categories">
           <AccordionTrigger className="text-sm md:text-base text-gray-900 hover:no-underline">
-            الأقسام
+            التصنيف
           </AccordionTrigger>
           <AccordionContent>
-            <FilterCheckboxList
-              options={departmentOptionsWithCounts}
+            <CategoryCheckboxList
+              categories={categories}
               selectedValues={selectedDepartments}
               onToggle={onToggleDepartment}
+              departmentCounts={departmentCounts}
             />
           </AccordionContent>
         </AccordionItem>

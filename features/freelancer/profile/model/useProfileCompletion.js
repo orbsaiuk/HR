@@ -14,6 +14,12 @@ export const PROFILE_COMPLETION_ITEMS = [
     isComplete: (profile) => Boolean(profile?.headline),
   },
   {
+    key: "category",
+    label: "التخصص المهني",
+    section: "header",
+    isComplete: (profile) => Boolean(profile?.category),
+  },
+  {
     key: "bio",
     label: "نبذة عنك",
     section: "about",

@@ -67,6 +67,8 @@ export function createDefaultValues(profile) {
     name: profile?.name || "",
     headline: profile?.headline || "",
     location: profile?.location || "",
+    category: profile?.category || "",
+    subcategory: profile?.subcategory || "",
     bio: profile?.bio || "",
     phone: profile?.phone || "",
     skills: normalizeTags(profile?.skills || []),
@@ -102,6 +104,8 @@ export async function buildSubmitPayload({
       name: values.name.trim(),
       headline: values.headline.trim(),
       location: values.location.trim(),
+      category: values.category.trim(),
+      subcategory: values.subcategory.trim(),
     };
   }
 

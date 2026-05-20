@@ -57,9 +57,7 @@ export function JobPositionDetailPage({ positionId }) {
           ? "تم فتح المنصب"
           : newStatus === "closed"
             ? "تم إغلاق المنصب"
-            : newStatus === "draft"
-              ? "تم تحويل المنصب إلى مسودة"
-              : "تم تحديث حالة المنصب";
+            : "تم تحديث حالة المنصب";
       showToast(statusMessage, "success");
     } else {
       showToast(result.error, "error");

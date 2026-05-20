@@ -7,6 +7,7 @@ export async function getPublicPositions() {
     .from("job_positions")
     .select("*, forms(*)")
     .in("status", ["open", "published"])
+    .or(`deadline.is.null,deadline.gte.${new Date().toISOString()}`)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -53,6 +54,7 @@ export async function getPublicPositionById(id) {
     .select("*, forms(*)")
     .eq("id", id)
     .in("status", ["open", "published"])
+    .or(`deadline.is.null,deadline.gte.${new Date().toISOString()}`)
     .single();
 
   if (error || !p) return null;
@@ -102,7 +104,8 @@ export async function getDepartments() {
   const { data, error } = await supabase
     .from("job_positions")
     .select("department")
-    .in("status", ["open", "published"]);
+    .in("status", ["open", "published"])
+    .or(`deadline.is.null,deadline.gte.${new Date().toISOString()}`);
     
   if (error) throw error;
   return [...new Set(data.map(d => d.department).filter(Boolean))];
@@ -113,7 +116,8 @@ export async function getLocations() {
   const { data, error } = await supabase
     .from("job_positions")
     .select("location")
-    .in("status", ["open", "published"]);
+    .in("status", ["open", "published"])
+    .or(`deadline.is.null,deadline.gte.${new Date().toISOString()}`);
     
   if (error) throw error;
   return [...new Set(data.map(d => d.location).filter(Boolean))];

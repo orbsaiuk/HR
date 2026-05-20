@@ -35,7 +35,7 @@ export function filterPositions(
 
   return positions.filter((position) => {
     const matchesStatus =
-      statusFilter === "all" || (position?.status || "draft") === statusFilter;
+      statusFilter === "all" || (position?.status || "open") === statusFilter;
 
     const matchesType =
       typeFilter === "all" || normalizePositionType(position) === typeFilter;

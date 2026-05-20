@@ -1,6 +1,20 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 function mapJobPosition(row) {
+  let computedStatus = row.status;
+  
+  if (row.status === "open" && row.deadline) {
+    const deadlineDate = new Date(row.deadline);
+    const today = new Date();
+    // Reset time portion to compare dates
+    today.setHours(0, 0, 0, 0);
+    deadlineDate.setHours(0, 0, 0, 0);
+    
+    if (!isNaN(deadlineDate.getTime()) && deadlineDate < today) {
+      computedStatus = "closed";
+    }
+  }
+
   return {
     _id: row.id,
     title: row.title,
@@ -13,7 +27,7 @@ function mapJobPosition(row) {
     salaryMin: row.salary_min,
     salaryMax: row.salary_max,
     currency: row.currency,
-    status: row.status,
+    status: computedStatus,
     deadline: row.deadline,
     isUrgent: row.is_urgent,
     applicationMethod: row.application_method,
@@ -61,19 +75,13 @@ export async function getJobPositionById(id) {
 }
 
 export async function getJobPositionStats(orgId) {
-  const supabase = getSupabaseServer();
-  const statuses = ["draft", "open", "on-hold", "closed"];
-  const result = { total: 0 };
+  const positions = await getJobPositionsByOrg(orgId);
+  const result = { total: positions.length, open: 0, "on-hold": 0, closed: 0 };
 
-  for (const status of statuses) {
-    const { count, error } = await supabase
-      .from("job_positions")
-      .select("*", { count: "exact", head: true })
-      .eq("org_id", orgId)
-      .eq("status", status);
-    if (error) throw error;
-    result[status] = count || 0;
-    result.total += count || 0;
+  for (const position of positions) {
+    if (result[position.status] !== undefined) {
+      result[position.status]++;
+    }
   }
 
   return result;
@@ -96,7 +104,7 @@ export async function createJobPosition(doc) {
       salary_min: doc.salaryMin,
       salary_max: doc.salaryMax,
       currency: doc.currency,
-      status: doc.status || "draft",
+      status: doc.status || "open",
       deadline: doc.deadline,
       is_urgent: doc.isUrgent || false,
       application_method: doc.applicationMethod || "form",

@@ -17,14 +17,14 @@ import { usePermissions } from "@/features/company/org-members/model/usePermissi
 import { PERMISSIONS } from "@/shared/lib/permissions";
 
 const STATUS_VARIANT = {
-  draft: "secondary",
+
   open: "default",
   "on-hold": "outline",
   closed: "destructive",
 };
 
 const STATUS_LABELS = {
-  draft: "مسودة",
+
   open: "مفتوح",
   "on-hold": "قيد الانتظار",
   closed: "مغلق",

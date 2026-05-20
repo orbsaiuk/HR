@@ -35,6 +35,11 @@ export function FreelancerProjectsPage() {
   if (!loading && paginatedProjects.length === 0) {
     return (
       <div dir="rtl" className="min-h-screen rounded-3xl bg-[#F8F9FB] p-4 sm:p-6 lg:p-10">
+        <header className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+          <h1 className="text-2xl font-bold text-[#1F2937] sm:text-3xl">
+            المشاريع
+          </h1>
+        </header>
         <ProjectsEmptyState userType="freelancer" />
       </div>
     );

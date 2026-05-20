@@ -14,14 +14,14 @@ export const SENIORITY_LABELS = {
 };
 
 export const STATUS_LABELS = {
-  draft: "مسودة",
+
   open: "نشطة",
   "on-hold": "معلقة",
   closed: "مغلقة",
 };
 
 export const STATUS_CLASSES = {
-  draft: "bg-slate-100 text-slate-600 border-transparent",
+
   open: "bg-emerald-100 text-emerald-700 border-transparent",
   "on-hold": "bg-amber-100 text-amber-700 border-transparent",
   closed: "bg-rose-100 text-rose-700 border-transparent",

@@ -109,7 +109,7 @@ export const jobPositionCreateSchema = withCompensationValidation(
   z
     .object({
       ...baseFormShape,
-      department: z.string().trim().min(1, "القسم مطلوب"),
+      department: z.string().trim().min(1, "التصنيف مطلوب"),
     })
     .superRefine((values, ctx) => {
       if (!values.deadline) return;
@@ -152,7 +152,7 @@ export const jobPositionCreateDefaults = {
   salaryMin: "",
   salaryMax: "",
   currency: "USD",
-  status: "draft",
+  status: "open",
   deadline: "",
   isUrgent: false,
   formId: "",
@@ -211,7 +211,7 @@ export function mapPositionToEditValues(position) {
         ? ""
         : String(position.salaryMax),
     currency: position.currency || "USD",
-    status: position.status || "draft",
+    status: position.status || "open",
     deadline: position.deadline ? position.deadline.slice(0, 16) : "",
     isUrgent: Boolean(position.isUrgent),
     formId: position.form?._id || "",

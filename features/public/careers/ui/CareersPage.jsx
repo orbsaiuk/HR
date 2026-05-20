@@ -61,7 +61,6 @@ export function CareersPage() {
     selectedSalaryRanges,
     onToggleSalaryRange: toggleSalaryRange,
     filterCounts,
-    apiDepartments: filters.departments,
   };
 
   return (

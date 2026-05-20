@@ -3,7 +3,6 @@ export const PAGE_SIZE_OPTIONS = [6, 9, 12];
 export const STATUS_FILTERS = [
   { value: "all", label: "كل الحالات" },
   { value: "open", label: "نشطة" },
-  { value: "draft", label: "مسودة" },
   { value: "on-hold", label: "معلقة" },
   { value: "closed", label: "مغلقة" },
 ];

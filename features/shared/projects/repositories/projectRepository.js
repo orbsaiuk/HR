@@ -1,21 +1,31 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { clientRead } from "@/sanity/client";
+import { formatBudgetRange } from "@/features/shared/projects/model/companyProjectsSchema";
 
 function mapProject(row) {
+  const budgetMin = row.budget_min;
+  const budgetMax = row.budget_max;
   return {
     _id: row.id,
+    id: row.id,
     organization: { _id: row.org_id },
     title: row.title,
     shortDescription: row.short_description,
     description: row.description,
     projectType: row.project_type,
     industry: row.industry,
+    location: row.location || "",
+    category: row.category || "",
     status: row.status,
     technologies: row.technologies || [],
-    budgetMin: row.budget_min,
-    budgetMax: row.budget_max,
+    budgetMin,
+    budgetMax,
+    budgetRange:
+      budgetMin != null && budgetMax != null
+        ? formatBudgetRange(budgetMin, budgetMax)
+        : "",
     currency: row.currency,
-    duration: row.duration || { value: 1, unit: "months" },
+    duration: row.duration || "",
     experienceLevel: row.experience_level,
     teamSize: row.team_size,
     requirements: row.requirements || [],
@@ -146,6 +156,8 @@ export async function createProject(doc) {
       description: doc.description || "",
       project_type: doc.projectType,
       industry: doc.industry,
+      location: doc.location || null,
+      category: doc.category || null,
       status: doc.status || "open",
       technologies: doc.technologies || [],
       budget_min: doc.budgetMin || null,
@@ -175,6 +187,8 @@ export async function updateProject(id, doc) {
   if (doc.description !== undefined) updateData.description = doc.description;
   if (doc.projectType !== undefined) updateData.project_type = doc.projectType;
   if (doc.industry !== undefined) updateData.industry = doc.industry;
+  if (doc.location !== undefined) updateData.location = doc.location;
+  if (doc.category !== undefined) updateData.category = doc.category;
   if (doc.status !== undefined) updateData.status = doc.status;
   if (doc.technologies !== undefined) updateData.technologies = doc.technologies;
   if (doc.budgetMin !== undefined) updateData.budget_min = doc.budgetMin;

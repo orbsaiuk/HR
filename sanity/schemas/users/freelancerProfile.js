@@ -80,6 +80,18 @@ export default {
       description: "City, Country",
     },
     {
+      name: "category",
+      title: "Category",
+      type: "string",
+      fieldset: "basic",
+    },
+    {
+      name: "subcategory",
+      title: "Subcategory",
+      type: "string",
+      fieldset: "basic",
+    },
+    {
       name: "skills",
       title: "Skills",
       type: "array",

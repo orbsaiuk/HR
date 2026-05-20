@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -87,15 +89,38 @@ export function CompanyProjectsFilters({
             <SelectTrigger className="h-10 border-[#E6EAF2]">
               <SelectValue placeholder="فلترة حسب التصنيف" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-60">
               <SelectItem value={COMPANY_PROJECTS_ALL_FILTER}>
                 كل التصنيفات
               </SelectItem>
-              {categoryOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
+              {categories.map((cat) => {
+                const hasSubs = cat.subcategories?.length > 0;
+
+                if (hasSubs) {
+                  return (
+                    <SelectGroup key={cat._id || cat.slug}>
+                      <SelectLabel className="text-xs font-bold text-muted-foreground px-2 pt-2">
+                        {cat.title}
+                      </SelectLabel>
+                      {cat.subcategories.map((sub) => (
+                        <SelectItem
+                          key={`${cat.slug}-${sub.slug}`}
+                          value={sub.title}
+                          className="pr-6"
+                        >
+                          {sub.title}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  );
+                }
+
+                return (
+                  <SelectItem key={cat._id || cat.slug} value={cat.title}>
+                    {cat.title}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>

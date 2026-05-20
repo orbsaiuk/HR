@@ -7,12 +7,18 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
+import { useCategories } from "@/shared/hooks/useCategories";
 
 export function PositionBasicInfoCard({ formData, onChange }) {
+  const { categories, isLoading: categoriesLoading } = useCategories();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     onChange({ ...formData, [name]: value });
@@ -39,14 +45,54 @@ export function PositionBasicInfoCard({ formData, onChange }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="department">القسم</Label>
-            <Input
-              id="department"
-              name="department"
+            <Label htmlFor="department">التصنيف</Label>
+            <Select
               value={formData.department}
-              onChange={handleChange}
-              placeholder="مثال: الهندسة"
-            />
+              onValueChange={(val) => onChange({ ...formData, department: val })}
+              dir="rtl"
+              disabled={categoriesLoading}
+            >
+              <SelectTrigger id="department" className="w-full">
+                {categoriesLoading ? (
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    جاري التحميل...
+                  </span>
+                ) : (
+                  <SelectValue placeholder="اختر التصنيف" />
+                )}
+              </SelectTrigger>
+              <SelectContent dir="rtl" className="max-h-60">
+                {categories.map((cat) => {
+                  const hasSubs = cat.subcategories?.length > 0;
+
+                  if (hasSubs) {
+                    return (
+                      <SelectGroup key={cat._id || cat.slug}>
+                        <SelectLabel className="text-xs font-bold text-muted-foreground px-2 pt-2">
+                          {cat.title}
+                        </SelectLabel>
+                        {cat.subcategories.map((sub) => (
+                          <SelectItem
+                            key={`${cat.slug}-${sub.slug}`}
+                            value={sub.title}
+                            className="pr-6"
+                          >
+                            {sub.title}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    );
+                  }
+
+                  return (
+                    <SelectItem key={cat._id || cat.slug} value={cat.title}>
+                      {cat.title}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="location">الموقع</Label>

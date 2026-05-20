@@ -9,7 +9,9 @@ import { DialogFooter } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -76,12 +78,35 @@ export function CreateProjectForm({
                 <SelectTrigger id="project-category" className="mt-2">
                   <SelectValue placeholder="اختر التصنيف" />
                 </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
+                <SelectContent dir="rtl" className="max-h-60">
+                  {categories.map((cat) => {
+                    const hasSubs = cat.subcategories?.length > 0;
+
+                    if (hasSubs) {
+                      return (
+                        <SelectGroup key={cat._id || cat.slug}>
+                          <SelectLabel className="text-xs font-bold text-muted-foreground px-2 pt-2">
+                            {cat.title}
+                          </SelectLabel>
+                          {cat.subcategories.map((sub) => (
+                            <SelectItem
+                              key={`${cat.slug}-${sub.slug}`}
+                              value={sub.title}
+                              className="pr-6"
+                            >
+                              {sub.title}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      );
+                    }
+
+                    return (
+                      <SelectItem key={cat._id || cat.slug} value={cat.title}>
+                        {cat.title}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             )}

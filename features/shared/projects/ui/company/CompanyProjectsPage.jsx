@@ -2,23 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useCompanyProjects } from "../../model/useCompanyProjects";
 import { useCompanyProjectsFilters } from "../../model/useCompanyProjectsFilters";
+import { ProjectsEmptyState } from "../components/ProjectsEmptyState";
 import { ProjectsPagination } from "../components/ProjectsPagination";
-import { CompanyProjectCard } from "./CompanyProjectCard";
-import { CreateProjectDialog } from "./CreateProjectDialog";
-import { CompanyProjectsFilters } from "./components/CompanyProjectsFilters";
+import { CompanyProjectCard } from "./components/CompanyProjectCard";
+import { CreateProjectDialog } from "./components/CreateProjectDialog";
+import { DeleteProjectDialog } from "./components/DeleteProjectDialog";
+import { CompanyProjectsFilters, CompanyProjectsSkeleton } from "./components";
 
 const COMPANY_PROJECTS_PER_PAGE = 5;
 
@@ -112,19 +104,23 @@ export function CompanyProjectsPage() {
   };
 
   if (loading) {
-    return (
-      <section className="p-4 sm:p-6 lg:p-8" dir="rtl">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 w-1/4 rounded bg-gray-200"></div>
-          <div className="h-32 rounded bg-gray-200"></div>
-        </div>
-      </section>
-    );
+    return <CompanyProjectsSkeleton />;
   }
 
   if (!loading && projects.length === 0) {
     return (
       <section className="p-4 sm:p-6 lg:p-8" dir="rtl">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
+              إدارة المشاريع
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 sm:text-base">
+              إدارة مشاريع الشركة ومتابعة حالة التنفيذ.
+            </p>
+          </div>
+        </div>
+
         <ProjectsEmptyState onCreateClick={() => setIsEditDialogOpen(true)} userType="company" />
         <CreateProjectDialog
           hideTrigger
@@ -209,31 +205,11 @@ export function CompanyProjectsPage() {
         )}
       </div>
 
-      <AlertDialog
-        open={!!projectToDelete}
-        onOpenChange={(open) => !open && setProjectToDelete(null)}
-      >
-        <AlertDialogContent dir="rtl">
-          <AlertDialogHeader>
-            <AlertDialogTitle>هل أنت متأكد من حذف المشروع؟</AlertDialogTitle>
-            <AlertDialogDescription>
-              سيتم حذف المشروع
-              {projectToDelete?.title ? ` "${projectToDelete.title}"` : ""}
-              نهائياً ولا يمكن التراجع عن هذا الإجراء.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          <AlertDialogFooter className="flex gap-2 sm:justify-start">
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              حذف المشروع
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteProjectDialog
+        project={projectToDelete}
+        onOpenChange={setProjectToDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </section>
   );
 }

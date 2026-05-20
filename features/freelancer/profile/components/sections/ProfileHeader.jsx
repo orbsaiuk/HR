@@ -1,4 +1,4 @@
-import { MapPin, Pencil, Plus } from "lucide-react";
+import { MapPin, Pencil, Plus, Briefcase } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +8,8 @@ export function ProfileHeader({ profile, onEdit }) {
   const hasHeadline = Boolean(profile.headline);
   const hasLocation = Boolean(profile.location);
   const hasName = Boolean(profile.name);
+  const hasCategory = Boolean(profile.category);
+  const hasSubcategory = Boolean(profile.subcategory);
 
   return (
     <Card className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-none sm:rounded-[1.5rem]">
@@ -70,21 +72,42 @@ export function ProfileHeader({ profile, onEdit }) {
               </button>
             )}
 
-            {hasLocation ? (
-              <p className="mt-2 flex items-center gap-1.5 text-sm font-medium text-slate-400">
-                <MapPin className="h-4 w-4 shrink-0" />
-                <span className="break-words">{profile.location}</span>
-              </p>
-            ) : (
-              <button
-                type="button"
-                onClick={onEdit}
-                className="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-slate-300 px-3 py-1 text-sm font-medium text-slate-400 transition hover:border-[#5D5BDA] hover:bg-[#F5F5FF] hover:text-[#5D5BDA]"
-              >
-                <MapPin className="h-4 w-4" />
-                أضف موقعك
-              </button>
-            )}
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+              {hasLocation ? (
+                <p className="flex items-center gap-1.5 text-sm font-medium text-slate-400">
+                  <MapPin className="h-4 w-4 shrink-0" />
+                  <span className="break-words">{profile.location}</span>
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onEdit}
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-slate-300 px-3 py-1 text-sm font-medium text-slate-400 transition hover:border-[#5D5BDA] hover:bg-[#F5F5FF] hover:text-[#5D5BDA]"
+                >
+                  <MapPin className="h-4 w-4" />
+                  أضف موقعك
+                </button>
+              )}
+
+              {hasCategory ? (
+                <p className="flex items-center gap-1.5 text-sm font-medium text-slate-400">
+                  <Briefcase className="h-4 w-4 shrink-0" />
+                  <span className="break-words">
+                    {profile.category}
+                    {hasSubcategory && ` / ${profile.subcategory}`}
+                  </span>
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onEdit}
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-slate-300 px-3 py-1 text-sm font-medium text-slate-400 transition hover:border-[#5D5BDA] hover:bg-[#F5F5FF] hover:text-[#5D5BDA]"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  أضف تخصصك
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>
